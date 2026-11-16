@@ -48,7 +48,7 @@ Before a release, also check 320px and desktop layouts in a real browser, keyboa
 
 ### Direct Android test APK
 
-In the private repository's **Releases**, open the Android test prerelease and download **`Stillwater-1.2.0-test.1.apk`** under Assets, while signed into GitHub with repository access. Do not download the source ZIP expecting an app. Open the APK on an **Android 7.0 or newer** phone. If Android asks, grant your browser or Files app permission to install this specific trusted download; turn that permission back off afterward. Keep Play Protect enabled; if installation is blocked, stop and check the exact message rather than bypassing protection.
+Open the public [Android test release](https://github.com/daltonnesmith/rosary/releases/tag/android-test-v1.2.0-1) and download **`Stillwater-1.2.0-test.1.apk`** under Assets. No GitHub sign-in is required. Do not download the source ZIP expecting an app. Open the APK on an **Android 7.0 or newer** phone. If Android asks, grant your browser or Files app permission to install this specific trusted download; turn that permission back off afterward. Keep Play Protect enabled; if installation is blocked, stop and check the exact message rather than bypassing protection.
 
 This installs **Stillwater Test**, package `io.github.daltonnesmith.stillwater.test`, version `1.2.0-test.1`. It bundles the entire app and works offline from its first launch, without website hosting or publishing to Google Play. A SHA-256 checksum accompanies the APK. This is a debug-signed personal test build, not a Play Store production release. The build uses a newly generated, disposable CI test key; no existing signing key is recovered or reused, and no signing key is published or committed. Later test builds may require uninstalling this one because their signing certificates can differ. A future production app will use a separate identity and deliberately managed signing credentials.
 
@@ -77,15 +77,15 @@ First visit the **hosted app's HTTPS URL**, not its GitHub repository page. Once
 
 There is no verified live deployment included merely by pushing this repository. A build or GitHub Actions artifact is not an installable HTTPS address.
 
-## Hosting while keeping this repository private
+## Website hosting
 
-This repository must remain **private** unless its owner explicitly decides otherwise. At initial setup, the coordinating session reported a Free GitHub plan and no existing Pages site. GitHub Pages from a private repository generally requires an eligible paid plan; a missing Pages site alone is not a deployment. Do not silently make the repository public to enable it.
+The owner has made this repository **public** so friends can download the Android APK without a GitHub account. Source code, commit history and published releases are public; saved notes and prayer history remain on each device. Making the repository public does not automatically deploy a website.
 
-With the owner's approval, either use an eligible GitHub Pages plan or another static HTTPS host that accepts a private repository/build upload. A public static website may expose the compiled application code even when its source repository is private. The app does not upload notes to that host; access logs are controlled by the chosen host. Password-protected/private hosting is a separate hosting choice.
+With the owner's approval, the browser/PWA version can be deployed through GitHub Pages or another static HTTPS host. The app does not upload notes to that host; access logs are controlled by the chosen host. Password-protected/private hosting is a separate hosting choice.
 
 Build with `npm run build`, then publish **the contents of `dist`** as the site root. The app uses relative paths throughout: both a domain root and a repository path such as `/rosary/` work without recompilation. Keep the trailing slash on the app's base URL. Serve `.webmanifest` as `application/manifest+json`, JavaScript as JavaScript, and `sw.js` without long-lived HTTP caching. Do not rewrite missing static files to the HTML shell. HTTPS is required except on localhost.
 
-No hosting account, paid plan, public visibility, or deployment is configured by the app. A manual Pages deployment workflow can be added after entitlement and the owner's desired public/private site access are confirmed.
+No hosting account, paid plan or deployment is configured by the app. A Pages deployment workflow can be added when website hosting is requested; the APK download does not require it.
 
 ## Privacy, storage, and recovery
 
