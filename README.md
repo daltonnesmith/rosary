@@ -11,13 +11,13 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 - Records a rosary only when you choose **Complete rosary** after the final prayer. Completion belongs to the local calendar day when you finish, even if you started before midnight.
 - Shows a monthly calendar, daily prayer history, total days, and a current streak. An unfinished current day does not break yesterday's streak.
 - Saves dated reflections, supports editing, and exports/imports validated JSON backups. Import merges rather than replacing your journal; conflicting notes are both preserved.
-- Installs as an offline-capable progressive web app (PWA), not a native App Store/Play Store package. Includes generated PNG icons (192, 512, and Apple 180 pixels), a maskable icon, a manifest, and an app-shell service worker.
+- Installs as an offline-capable progressive web app (PWA), with a separate Android test APK wrapper for direct installation. Neither is a published App Store/Play Store listing. Includes generated PNG icons (192, 512, and Apple 180 pixels), a maskable icon, a manifest, and an app-shell service worker.
 - Adds independent **Scripture & prayer** companions for the deuterocanon and all four Gospels, with 235 full chapter readings, Jesus Prayers, Marian prayers, per-book bars, and exact resumption. The traditional rosary is unchanged.
 - Adds a separate **Calendar** tab for U.S. Roman Catholic feasts and seasons, with color-coded months, daily observances, optional memorials, and Sunday/Thursday Ascension variants, available offline for 2024-2035.
 
 ## Run locally
 
-Requires **Node.js 22 or newer**. There are no runtime dependencies. The checked-in datasets mean no install step is needed to build, test, or run the app. Pinned development-only packages are needed only to regenerate the liturgical dataset.
+Requires **Node.js 22 or newer**. The static web app has no external runtime dependencies, and its checked-in datasets mean no install step is needed for the web build/tests/server. Run `npm ci` for Android tooling or calendar regeneration. The Android wrapper uses pinned Capacitor packages; it does not fetch application content from a website.
 
 ```powershell
 npm run build
@@ -40,9 +40,34 @@ npm run build
 
 The GitHub Actions **Check and build** workflow runs these commands and makes a `stillwater-site` artifact available to repository collaborators. It does **not** deploy or change repository visibility.
 
+The separate **Android test APK** workflow builds the Android package, runs an Android 15 emulator test with Wi-Fi and mobile data disabled, checks its signature/manifest, and byte-compares every bundled web asset against `dist`. It runs on relevant feature-branch pushes or manually; it produces a test APK artifact, not an automatic public release.
+
 Before a release, also check 320px and desktop layouts in a real browser, keyboard-only navigation, focus visibility, no horizontal overflow, reload resumption, notes containing HTML displayed as plain text, blocked/quota-full storage feedback, two-tab write protection, and offline reload. On a hosted HTTPS site, test installation on actual iPhone Safari and Android Chrome. These browser/device checks cannot be inferred from unit tests.
 
 ## Installation
+
+### Direct Android test APK
+
+In the private repository's **Releases**, open the Android test prerelease and download **`Stillwater-1.2.0-test.1.apk`** under Assets, while signed into GitHub with repository access. Do not download the source ZIP expecting an app. Open the APK on an **Android 7.0 or newer** phone. If Android asks, grant your browser or Files app permission to install this specific trusted download; turn that permission back off afterward. Keep Play Protect enabled; if installation is blocked, stop and check the exact message rather than bypassing protection.
+
+This installs **Stillwater Test**, package `io.github.daltonnesmith.stillwater.test`, version `1.2.0-test.1`. It bundles the entire app and works offline from its first launch, without website hosting or publishing to Google Play. A SHA-256 checksum accompanies the APK. This is a debug-signed personal test build, not a Play Store production release. The build uses a newly generated, disposable CI test key; no existing signing key is recovered or reused, and no signing key is published or committed. Later test builds may require uninstalling this one because their signing certificates can differ. A future production app will use a separate identity and deliberately managed signing credentials.
+
+**Export a journal backup before uninstalling, clearing data, or switching builds.** Android uninstall can erase local progress and notes. Android automatic cloud backup and device transfer are disabled for the wrapper. Its data is separate from Chrome, the PWA, and your PC preview: export there and import the JSON file here to move it. **Export backup** uses Android's system file picker, with a chosen destination, rather than a WebView blob download. Canceling leaves all saved data untouched. Import uses the existing validated file picker and merge.
+
+To build locally, install Node 22+, **Java 21**, Android SDK platform **36** and the Android build tools, then:
+
+```powershell
+npm ci
+npm run android:sync
+Set-Location android
+.\gradlew.bat assembleDebug
+```
+
+The result is `android\app\build\outputs\apk\debug\app-debug.apk`. The checked-in Gradle wrapper downloads its pinned Gradle distribution. Set `ANDROID_HOME` or Android Studio's local SDK configuration for a local build. On macOS/Linux use `./gradlew assembleDebug` inside `android`. The GitHub workflow supplies these tools when they are not installed locally. To rerun native integration checks on a connected test device/emulator, use `connectedDebugAndroidTest` after syncing.
+
+`capacitor.config.json` intentionally has no remote `server.url`. Native Android uses the installed assets, skips web service-worker registration, applies safe-area insets, and uses the same validated local journal format. Original launcher icons are generated from the same artwork as the web app. Never commit keystores, passwords, APK build outputs or copied assets; publish only the intended test APK and checksum. See `NATIVE-LICENSE.txt` and `APACHE-2.0.txt` for native dependency notices.
+
+### Browser/PWA installation
 
 First visit the **hosted app's HTTPS URL**, not its GitHub repository page. Once the service worker finishes installing, its app files work offline. In-app **Install app** opens these instructions:
 

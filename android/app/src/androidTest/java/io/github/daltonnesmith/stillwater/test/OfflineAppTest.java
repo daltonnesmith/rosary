@@ -1,0 +1,126 @@
+package io.github.daltonnesmith.stillwater.test;
+
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
+import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.*;
+
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.SystemClock;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class OfflineAppTest {
+    private ActivityScenario<MainActivity> scenario;
+
+    private Object evaluate(String expression) throws Exception {
+        AtomicReference<String> result = new AtomicReference<>();
+        CountDownLatch ready = new CountDownLatch(1);
+        scenario.onActivity(activity -> activity.getBridge().getWebView().evaluateJavascript(
+            "(function(){" + expression + "})()", value -> { result.set(value); ready.countDown(); }));
+        assertTrue("WebView JavaScript did not respond", ready.await(15, TimeUnit.SECONDS));
+        return new JSONTokener(result.get()).nextValue();
+    }
+    private void waitFor(String expression) throws Exception {
+        long end = SystemClock.elapsedRealtime() + 20000;
+        while (SystemClock.elapsedRealtime() < end) {
+            if (Boolean.TRUE.equals(evaluate("return Boolean(" + expression + ");"))) return;
+            SystemClock.sleep(150);
+        }
+        fail("WebView condition did not become true: " + expression);
+    }
+    private void click(String selector) throws Exception {
+        evaluate("document.querySelector(" + JSONObject.quote(selector) + ").click();");
+    }
+    private String text(String selector) throws Exception {
+        return (String) evaluate("return document.querySelector(" + JSONObject.quote(selector) + ").textContent;");
+    }
+
+    @Test
+    public void firstLaunchOfflinePrayersCalendarJournalBackupsAndResumption() throws Exception {
+        try (ActivityScenario<MainActivity> activity = ActivityScenario.launch(MainActivity.class)) {
+            scenario = activity;
+            waitFor("document.querySelector('#prayer-title')?.textContent");
+            assertEquals(Boolean.TRUE, evaluate("return document.documentElement.classList.contains('native-app');"));
+            assertEquals(Boolean.TRUE, evaluate("return document.querySelector('#web-install-guidance').hidden;"));
+            assertEquals(Boolean.TRUE, evaluate("return typeof Capacitor.Plugins.StillwaterBackup.save === 'function';"));
+            assertEquals(Boolean.TRUE, evaluate("return !navigator.onLine;"));
+            assertEquals("Sign of the Cross", text("#prayer-title"));
+            click("#next");
+            click("#next");
+            click("#next");
+            assertEquals("Our Father", text("#prayer-title"));
+            click("[data-tab=scripture]");
+            click("#reading-next");
+            click("#reading-next");
+            assertTrue(text("#reading-verses").contains("Tobit"));
+            evaluate("document.querySelector('#reading-plan').value='gospels';document.querySelector('#reading-plan').dispatchEvent(new Event('change'));");
+            click("#reading-next");
+            for (int i = 0; i < 4; i++) click("#reading-next");
+            assertEquals("Hail Mary", text("#reading-title"));
+            click("[data-tab=liturgical]");
+            evaluate("const d=document.querySelector('#lit-date');d.value='2026-02-18';d.dispatchEvent(new Event('change'));");
+            assertTrue(text("#lit-events").contains("Ash Wednesday"));
+            assertTrue(text("#lit-season").contains("Lent"));
+            click("[data-tab=journal]");
+            evaluate("document.querySelector('#note-date').value='2026-11-16';document.querySelector('#note-text').value='Synthetic Android backup test.';document.querySelector('#note-form').requestSubmit();");
+            assertTrue(text("#notes-list").contains("Synthetic Android backup test."));
+            Intents.init();
+            try {
+                intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
+                click("#export");
+                waitFor("document.querySelector('#status').textContent.includes('Backup cancelled')");
+                intended(allOf(hasAction(Intent.ACTION_CREATE_DOCUMENT), hasType("application/json")));
+            } finally { Intents.release(); }
+            Uri backup = Uri.parse("content://io.github.daltonnesmith.stillwater.test.backup-test/backup.json");
+            Intents.init();
+            try {
+                intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent().setData(backup)));
+                click("#export");
+                waitFor("document.querySelector('#status').textContent.startsWith('Backup saved')");
+            } finally { Intents.release(); }
+            try (InputStream input = InstrumentationRegistry.getInstrumentation().getContext().getContentResolver().openInputStream(backup)) {
+                assertNotNull(input);
+                JSONObject saved = new JSONObject(new String(input.readAllBytes(), StandardCharsets.UTF_8));
+                assertEquals(2, saved.getInt("version"));
+                assertEquals("Synthetic Android backup test.", saved.getJSONArray("notes").getJSONObject(0).getString("text"));
+                assertEquals(2, saved.getJSONObject("progress").getInt("step"));
+                assertEquals(1, saved.getJSONObject("reading").getJSONObject("deuterocanon").getJSONObject("progress").getInt("step"));
+                assertEquals(4, saved.getJSONObject("reading").getJSONObject("gospels").getJSONObject("progress").getInt("step"));
+            }
+            String before = (String) evaluate("return localStorage.getItem('stillwater-v1');");
+            Intents.init();
+            try {
+                Uri denied = Uri.parse("content://io.github.daltonnesmith.stillwater.test.backup-test/denied.json");
+                intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, new Intent().setData(denied)));
+                click("#export");
+                waitFor("document.querySelector('#status').textContent.startsWith('Backup could not be exported')");
+                assertEquals(before, evaluate("return localStorage.getItem('stillwater-v1');"));
+                assertEquals(Boolean.FALSE, evaluate("return document.querySelector('#export').disabled;"));
+            } finally { Intents.release(); }
+            scenario.recreate();
+            waitFor("document.querySelector('#prayer-title')?.textContent");
+            assertEquals(before, evaluate("return localStorage.getItem('stillwater-v1');"));
+            assertEquals("Our Father", text("#prayer-title"));
+            assertTrue(text("#notes-list").contains("Synthetic Android backup test."));
+            assertEquals(Boolean.TRUE, evaluate("return !navigator.serviceWorker?.controller;"));
+        }
+    }
+}

@@ -2,6 +2,7 @@ import { MYSTERIES, PRAYERS, emptyState, sequence, suggestedMystery, localDate, 
 import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
 import { createLiturgicalCalendar } from './liturgical-ui.js';
+import { isAndroidApp, saveAndroidBackup } from './platform.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -303,17 +304,29 @@ function renderNotes() {
     list.append(article);
   });
 }
-$('#export').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = make('a');
-  link.href = url;
-  link.download = `stillwater-backup-${localDate()}.json`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 10000);
-  notify('Backup download requested. Keep this file private; it includes your notes.');
+$('#export').addEventListener('click', async event => {
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const data = JSON.stringify(state, null, 2);
+    const filename = `stillwater-backup-${localDate()}.json`;
+    if (isAndroidApp()) {
+      const result = await saveAndroidBackup(data, filename);
+      notify(result.cancelled ? 'Backup cancelled. Your saved data is unchanged.' : 'Backup saved to your chosen location. Keep it private; it includes your notes.');
+      return;
+    }
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = make('a');
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    notify('Backup download requested. Keep this file private; it includes your notes.');
+  } catch (error) { notify(`Backup could not be exported: ${error.message}`); }
+  finally { button.disabled = false; }
 });
 $('#import').addEventListener('change', async event => {
   const input = event.target;
@@ -359,7 +372,13 @@ window.addEventListener('appinstalled', () => {
   $('#install-native').hidden = true;
   notify('Stillwater is installed. Your quiet space is ready.');
 });
-if ('serviceWorker' in navigator) {
+if (isAndroidApp()) {
+  document.documentElement.classList.add('native-app');
+  $('#install-help').textContent = 'App help';
+  $('#web-install-guidance').hidden = true;
+  $('#native-install-guidance').hidden = false;
+  $('#offline-status').textContent = 'All prayers, Scripture and calendar files are included in this Android app. No first online visit is needed. Your journal is saved separately on this device.';
+} else if ('serviceWorker' in navigator) {
   $('#offline-status').textContent = 'Preparing offline app files…';
   navigator.serviceWorker.register('./sw.js', { scope: './' }).then(async registration => {
     const watch = worker => {

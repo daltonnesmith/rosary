@@ -1,0 +1,87 @@
+name: Android test APK
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]
+    paths:
+      - 'android/**'
+      - 'src/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'capacitor.config.json'
+      - 'package*.json'
+      - '.github/workflows/android-test.yml'
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm run check && npm test && npm run android:sync
+      - name: Create a fresh disposable test signing key
+        run: |
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          export STILLWATER_TEST_KEY_PASSWORD="$password"
+          keytool -genkeypair -noprompt -keystore "$RUNNER_TEMP/stillwater-test.jks" -storepass:env STILLWATER_TEST_KEY_PASSWORD -keypass:env STILLWATER_TEST_KEY_PASSWORD -alias stillwater-test -keyalg RSA -keysize 2048 -validity 365 -dname "CN=Stillwater Test"
+          echo "STILLWATER_TEST_KEYSTORE=$RUNNER_TEMP/stillwater-test.jks" >> "$GITHUB_ENV"
+          echo "STILLWATER_TEST_KEY_PASSWORD=$password" >> "$GITHUB_ENV"
+      - name: Prepare Android SDK and emulator access
+        run: |
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+          sudo chmod a+rw /dev/kvm
+          chmod +x android/gradlew
+      - name: Build, install and test with Wi-Fi and mobile data disabled
+        uses: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          disable-animations: true
+          emulator-boot-timeout: 600
+          script: |
+            adb shell svc wifi disable
+            adb shell svc data disable
+            cd android && ./gradlew --no-daemon :app:assembleDebug :app:connectedDebugAndroidTest
+      - name: Verify signature, Android metadata and all bundled assets
+        run: |
+          set -euo pipefail
+          apk=android/app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$apk"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" > apk-metadata.txt
+          grep -q "name='io.github.daltonnesmith.stillwater.test'" apk-metadata.txt
+          grep -q "versionName='1.2.0-test.1'" apk-metadata.txt
+          grep -q "sdkVersion:'24'" apk-metadata.txt
+          grep -q "targetSdkVersion:'36'" apk-metadata.txt
+          grep -q "launchable-activity: name='io.github.daltonnesmith.stillwater.test.MainActivity'" apk-metadata.txt
+          node scripts/inspect-apk.mjs "$apk"
+          mkdir -p android-artifacts
+          cp "$apk" android-artifacts/Stillwater-1.2.0-test.1.apk
+          cd android-artifacts && sha256sum Stillwater-1.2.0-test.1.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stillwater-android-test
+          path: android-artifacts/
+          if-no-files-found: error
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-test-results
+          path: |
+            android/app/build/reports/androidTests/
+            android/app/build/outputs/androidTest-results/
+            apk-metadata.txt
+          retention-days: 7

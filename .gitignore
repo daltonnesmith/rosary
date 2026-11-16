@@ -1,3 +1,6 @@
 dist/
 node_modules/
+android-artifacts/
+*.jks
+*.keystore
 .DS_Store
