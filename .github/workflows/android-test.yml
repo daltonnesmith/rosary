@@ -37,9 +37,12 @@ jobs:
           keytool -genkeypair -noprompt -keystore "$RUNNER_TEMP/stillwater-test.jks" -storepass:env STILLWATER_TEST_KEY_PASSWORD -keypass:env STILLWATER_TEST_KEY_PASSWORD -alias stillwater-test -keyalg RSA -keysize 2048 -validity 365 -dname "CN=Stillwater Test"
           echo "STILLWATER_TEST_KEYSTORE=$RUNNER_TEMP/stillwater-test.jks" >> "$GITHUB_ENV"
           echo "STILLWATER_TEST_KEY_PASSWORD=$password" >> "$GITHUB_ENV"
-      - name: Prepare Android SDK and emulator access
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+        with:
+          packages: platform-tools platforms;android-36 build-tools;36.0.0
+      - name: Prepare emulator access
         run: |
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
           sudo chmod a+rw /dev/kvm
           chmod +x android/gradlew
       - name: Build, install and test with Wi-Fi and mobile data disabled
