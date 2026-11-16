@@ -5,6 +5,7 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 ## What it does
 
 - Guides you through the full traditional English rosary, with the complete prayer text on every step, Back/Next controls, current mystery, bead count, and progress.
+- Offers **Rosary > Virtual rosary**, a tappable 59-bead rosary with a cross, medal and decade links. Each piece opens its full prayers and mystery reading. Previewing leaves your journal and saved place unchanged; **Pray from here** saves that position, and the popup's Back/Next controls share progress with the guided view. Only explicitly completing the final prayer records a rosary. The long necklace scrolls on phones to keep individual touch targets large; **Begin/Continue** and **Find my bead** avoid hunting for your place.
 - Includes all four sets of mysteries and weekday suggestions. Five decades each contain one Our Father, ten Hail Marys, and a Glory Be; the Fatima prayer is optional.
 - Writes out the story of each mystery (including the Annunciation and Visitation), with a scripture reference and a short reflection. Open **Read the five mysteries** to read ahead, or read the current mystery above its decade's prayers. These are original devotional retellings, not quotations from a modern Bible translation; the Assumption and Coronation are clearly identified as traditional meditations rather than narrated Gospel events.
 - Remembers your exact place, including the mystery set and Fatima setting. Starting over changes only the unfinished rosary, never your notes or completed days.
@@ -47,6 +48,8 @@ Before a release, also check 320px and desktop layouts in a real browser, keyboa
 ## Installation
 
 ### Direct Android test APK
+
+The published `1.2.0-test.1` APK predates the virtual rosary option. That option is available in the current web source and in new builds, not automatically added to an already installed APK.
 
 Open the public [Android test release](https://github.com/daltonnesmith/rosary/releases/tag/android-test-v1.2.0-1) and download **`Stillwater-1.2.0-test.1.apk`** under Assets. No GitHub sign-in is required. Do not download the source ZIP expecting an app. Open the APK on an **Android 7.0 or newer** phone. If Android asks, grant your browser or Files app permission to install this specific trusted download; turn that permission back off afterward. Keep Play Protect enabled; if installation is blocked, stop and check the exact message rather than bypassing protection.
 

@@ -3,6 +3,7 @@ import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
 import { createLiturgicalCalendar } from './liturgical-ui.js';
 import { isAndroidApp, saveAndroidBackup } from './platform.js';
+import { createVirtualRosary } from './rosary-ui.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -143,7 +144,8 @@ function renderPrayer(focus = false) {
   $('#previous').disabled = !progress || index === 0;
   $('#next').textContent = completed ? 'Pray again →' : !progress ? 'Begin rosary →' : index === steps.length - 1 ? 'Complete rosary ✓' : 'Next prayer →';
   $('#restart').hidden = !progress;
-  if (focus) {
+  virtualRosary.render();
+  if (focus && !$('#guided-rosary').hidden) {
     const heading = enteringDecade ? $('#meditation') : $('#prayer-title');
     heading.focus({ preventScroll: true });
     const bounds = heading.getBoundingClientRect();
@@ -155,7 +157,7 @@ function start() {
   commit({ ...state, progress: { set: selectedSet, fatima: state.fatima, step: 0, startedAt: new Date().toISOString() } });
   renderPrayer(true);
 }
-$('#next').addEventListener('click', () => {
+function nextPrayer() {
   if (!state.progress) return start();
   const last = sequence(state.progress.set, state.progress.fatima).length - 1;
   if (state.progress.step === last) {
@@ -166,12 +168,14 @@ $('#next').addEventListener('click', () => {
     notify(saved ? 'Rosary completed and saved. Your journal is up to date.' : 'Rosary completed in this tab, but not saved to device storage. Export a backup.');
   } else commit({ ...state, progress: { ...state.progress, step: state.progress.step + 1 } });
   renderPrayer(true);
-});
-$('#previous').addEventListener('click', () => {
+}
+$('#next').addEventListener('click', nextPrayer);
+function previousPrayer() {
   if (!state.progress || state.progress.step === 0) return;
   commit({ ...state, progress: { ...state.progress, step: state.progress.step - 1 } });
   renderPrayer(true);
-});
+}
+$('#previous').addEventListener('click', previousPrayer);
 async function confirmRestart(options = {}) {
   const dialog = $('#confirm-dialog');
   if (dialog.open) return false;
@@ -205,7 +209,7 @@ $('#fatima').addEventListener('change', async event => {
   renderPrayer();
 });
 document.addEventListener('keydown', event => {
-  if ($('#pray').hidden || $('#confirm-dialog').open || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+  if ($('#pray').hidden || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(event.target.tagName) || event.target.isContentEditable) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
     event.preventDefault();
     $(event.key === 'ArrowRight' ? '#next' : '#previous').click();
@@ -349,6 +353,7 @@ window.addEventListener('storage', event => {
   if (event.key === STORAGE_KEY || event.key === null) {
     canWrite = false;
     storageError('Your saved data changed in another tab. This tab will not overwrite it. Export any unsaved activity, then reload before continuing.');
+    virtualRosary.render();
   }
 });
 document.addEventListener('visibilitychange', () => {
@@ -402,6 +407,22 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar();
+const virtualRosary = createVirtualRosary({
+  getContext: () => ({
+    progress: state.progress, set: state.progress?.set ?? selectedSet,
+    fatima: state.progress?.fatima ?? state.fatima, completed,
+    storageMessage: $('#storage-error').hidden ? '' : $('#storage-error').textContent,
+  }),
+  start, next: nextPrayer, previous: previousPrayer,
+  selectStep(step) {
+    const set = state.progress?.set ?? selectedSet;
+    const fatima = state.progress?.fatima ?? state.fatima;
+    if (!Number.isInteger(step) || step < 0 || step >= sequence(set, fatima).length) throw new Error('Invalid rosary prayer.');
+    completed = false;
+    commit({ ...state, progress: { set, fatima, step, startedAt: state.progress?.startedAt ?? new Date().toISOString() } });
+    renderPrayer();
+  },
+});
 readingCompanion.render();
 renderPrayer();
 renderJournal();
