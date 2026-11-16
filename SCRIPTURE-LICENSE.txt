@@ -1,0 +1,27 @@
+Scripture source and notice
+
+The application bundles selected, verbatim verse text from the World English
+Bible, Catholic Edition, published by eBible.org and dedicated to the public
+domain. "World English Bible" is a trademark of eBible.org; Stillwater is an
+independent companion, not an official publication or endorsement.
+
+Source: https://ebible.org/Scriptures/eng-web-c_vpl.zip
+Translation: https://ebible.org/eng-web-c/
+Public-domain notice: https://ebible.org/eng-web-c/copyright.htm
+
+The publisher permits copying, publishing, distributing, sharing and using this
+translation. Its notice asks that changed Bible text not be called the World
+English Bible. The bundled Scripture wording is not rewritten or paraphrased.
+Formatting, chapter selection and division into five readings are Stillwater's.
+Source footnotes and empty verse entries are omitted; nonempty verse text and
+its numbering are retained. The source-text SHA-256 is in src/scripture.js.
+
+The plan contains the seven Catholic deuterocanonical books, including Baruch 6
+(the Letter of Jeremiah). Esther's Greek additions are presented in the context
+of complete Greek-edition chapters 1, 3, 4, 5, 8 and 10; Daniel's additions are
+presented in complete chapters 3, 13 and 14. These collections do not claim to
+contain every chapter of Esther or Daniel. All four Gospels are included.
+
+To reproduce the dataset, download and extract eng-web-c_vpl.txt from the source
+archive, then run node scripts\prepare-scripture.mjs <path-to-that-file>.
+The build never downloads Scripture; the generated dataset is checked in.

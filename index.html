@@ -21,9 +21,10 @@
         <button id="install-help" class="quiet">Install app <span aria-hidden="true">↗</span></button>
       </header>
       <nav class="tabs" aria-label="Main navigation">
-        <button data-tab="pray" aria-current="page">Pray the rosary</button>
+        <button data-tab="pray" aria-current="page">Rosary</button>
+        <button data-tab="scripture">Scripture & prayer</button>
         <button data-tab="journal">Your journal</button>
-        <button data-tab="about">A little guidance</button>
+        <button data-tab="about">Guidance</button>
       </nav>
       <div id="storage-error" class="notice error" role="alert" hidden></div>
       <div id="status" class="notice" role="status" hidden></div>
@@ -66,11 +67,42 @@
           </div>
           <div class="gentle-footer"><span aria-hidden="true">✧</span> Let this be a little sanctuary in your day.</div>
         </section>
+        <section id="scripture" aria-labelledby="scripture-heading" hidden>
+          <div class="intro"><p class="eyebrow">THE WORD, HELD IN PRAYER</p><h1 id="scripture-heading">Read slowly. Pray deeply.</h1><p>One chapter, five readings, a faithful rhythm. Always at your own pace.</p></div>
+          <div class="prayer-layout scripture-layout">
+            <aside class="panel reading-sidebar">
+              <label for="reading-plan">Your companion</label>
+              <select id="reading-plan"><option value="deuterocanon">The deuterocanon</option><option value="gospels">The four Gospels</option></select>
+              <p id="reading-description" class="small muted"></p>
+              <label for="reading-book">Book</label><select id="reading-book"></select>
+              <label for="reading-chapter">Chapter</label><select id="reading-chapter"></select>
+              <p id="reading-book-note" class="small muted"></p>
+              <button id="reading-change" class="text-button" hidden>Choose another chapter</button>
+              <div class="reading-overall"><p id="reading-total" class="small"></p><progress id="reading-total-bar" max="100" value="0" aria-label="Reading plan completion"></progress></div>
+              <details class="book-progress-details"><summary>Your book progress</summary><div id="reading-books"></div></details>
+              <p class="small muted">Missing a day never skips a chapter. You can start at any book or chapter; choosing a place does not mark earlier chapters complete.</p>
+            </aside>
+            <article class="prayer-card reading-card">
+              <div class="card-top"><span id="reading-phase" class="eyebrow"></span><span id="reading-step-count" class="small muted"></span></div>
+              <p id="reading-reference" class="meditation"></p>
+              <div id="reading-beads" class="beads" aria-hidden="true"></div>
+              <h2 id="reading-title" tabindex="-1"></h2>
+              <div id="reading-verses" class="scripture-text"></div>
+              <p id="reading-prayer" class="prayer-text"></p>
+              <details id="reading-review" class="mystery-reading" hidden><summary>Read this passage again</summary><div id="reading-review-verses" class="scripture-text"></div></details>
+              <div class="progress-label"><span id="reading-progress-label"></span><span id="reading-percent"></span></div>
+              <progress id="reading-progress" max="100" value="0" aria-label="Current chapter and prayers"></progress>
+              <div class="prayer-controls"><button id="reading-back" class="secondary">← Back</button><button id="reading-next" class="primary">Begin chapter →</button></div>
+              <p class="small muted reading-personal-note">A personal Scripture devotion inspired by the rosary, separate from its traditional mysteries.</p>
+            </article>
+          </div>
+          <div class="panel reading-source"><h2>Scripture, always within reach.</h2><p>The complete readings are bundled for offline use: the public-domain <a href="https://ebible.org/eng-web-c/" target="_blank" rel="noopener noreferrer">World English Bible, Catholic Edition</a>. Each chapter is divided at verse boundaries into five readings. Verse numbering follows this edition; footnotes and empty verse entries are not included. The Esther and Daniel collections include the Greek additions in their full chapter context. <a href="./SCRIPTURE-LICENSE.txt" target="_blank" rel="noopener">Source notice</a>.</p><p>Your exact reading, prayer, and bead are saved independently for each companion. Book bars count only chapters explicitly completed after the closing prayers, not chapters merely opened or skipped. Your journal backup includes both companions.</p></div>
+        </section>
         <section id="journal" aria-labelledby="journal-heading" hidden>
           <div class="intro"><p class="eyebrow">A FAITHFUL RHYTHM</p><h1 id="journal-heading">One day at a time.</h1><p>Your prayers and reflections, kept only on this device.</p></div>
           <div class="stats" id="stats"></div>
           <div class="journal-layout">
-            <article class="panel"><div class="calendar-heading"><button id="month-back" class="quiet" aria-label="Previous month">←</button><h2 id="month-title"></h2><button id="month-next" class="quiet" aria-label="Next month">→</button></div><p class="small muted">A gold mark means a completed rosary. A dot means a note.</p><div id="calendar" class="calendar" aria-label="Prayer calendar"></div><div id="day-history" class="day-history"></div></article>
+            <article class="panel"><div class="calendar-heading"><button id="month-back" class="quiet" aria-label="Previous month">←</button><h2 id="month-title"></h2><button id="month-next" class="quiet" aria-label="Next month">→</button></div><p class="small muted">Gold marks a completed rosary or Scripture chapter. A dot means a note. The statistics above count traditional rosaries only.</p><div id="calendar" class="calendar" aria-label="Prayer calendar"></div><div id="day-history" class="day-history"></div></article>
             <article class="panel"><p class="eyebrow">INTENTIONS & REFLECTIONS</p><h2>A place for your thoughts.</h2><form id="note-form"><label for="note-date">Date</label><input id="note-date" type="date" required><label for="note-text">Your note <span class="muted">(optional)</span></label><textarea id="note-text" rows="5" maxlength="10000" placeholder="An intention, a gratitude, something to carry with you…" required></textarea><div class="note-actions"><button class="primary" type="submit">Save note</button><button id="cancel-edit" class="quiet" type="button" hidden>Cancel edit</button></div></form><div id="notes-list"></div></article>
           </div>
           <div class="backup panel"><div><h2>Keep a little safekeeping.</h2><p class="muted">Browser storage can be cleared. Back up your journal regularly.</p></div><div class="backup-actions"><button id="export" class="secondary">Export backup</button><label class="secondary file-label">Import backup<input id="import" type="file" accept=".json,application/json"></label></div></div>

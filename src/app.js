@@ -1,4 +1,6 @@
 import { MYSTERIES, PRAYERS, emptyState, sequence, suggestedMystery, localDate, validDate, loadState, saveState, parseBackup, mergeBackup, stats, finishRosary, STORAGE_KEY } from './core.js';
+import { createReadingCompanion } from './reading-ui.js';
+import { READING_BOOKS } from './reading.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -64,12 +66,13 @@ function humanDate(value, options = { month: 'long', day: 'numeric', year: 'nume
   return new Date(`${value}T12:00:00`).toLocaleDateString(undefined, options);
 }
 function showTab(tab) {
-  for (const name of ['pray', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
+  for (const name of ['pray', 'scripture', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
   document.querySelectorAll('[data-tab]').forEach(button => {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
   if (tab === 'journal') renderJournal();
+  if (tab === 'scripture') readingCompanion.render();
 }
 document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => showTab(button.dataset.tab)));
 $('.brand').addEventListener('click', () => showTab('pray'));
@@ -166,10 +169,14 @@ $('#previous').addEventListener('click', () => {
   commit({ ...state, progress: { ...state.progress, step: state.progress.step - 1 } });
   renderPrayer(true);
 });
-async function confirmRestart() {
+async function confirmRestart(options = {}) {
   const dialog = $('#confirm-dialog');
   if (dialog.open) return false;
-  $('#confirm-text').textContent = 'Only your current place will be reset. Your completed days and saved notes will be kept. An unfinished rosary will not be recorded as complete.';
+  $('#confirm-title').textContent = options.title ?? 'Start again?';
+  $('#confirm-text').textContent = options.message ?? 'Only your current place will be reset. Your completed days and saved notes will be kept. An unfinished rosary will not be recorded as complete.';
+  dialog.querySelector('[value=confirm]').textContent = options.confirmLabel ?? 'Start new rosary';
+  dialog.querySelector('[value=cancel]').textContent = options.cancelLabel ?? 'Keep my place';
+  dialog.returnValue = 'cancel';
   dialog.showModal();
   return new Promise(resolve => dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), { once: true }));
 }
@@ -217,10 +224,12 @@ function renderJournal() {
   for (let i = 0; i < first.getDay(); i++) calendar.append(make('span'));
   for (let day = 1; day <= count; day++) {
     const date = localDate(new Date(first.getFullYear(), first.getMonth(), day));
-    const prayed = state.completions.some(item => item.date === date);
+    const rosary = state.completions.some(item => item.date === date);
+    const scripture = [...state.reading.deuterocanon.completed, ...state.reading.gospels.completed].some(item => item.date === date);
+    const prayed = rosary || scripture;
     const noted = state.notes.some(note => note.date === date);
     const button = make('button', String(day), `calendar-day${prayed ? ' prayed' : ''}${noted ? ' noted' : ''}${date === selectedDay ? ' selected' : ''}`);
-    button.setAttribute('aria-label', `${humanDate(date)}${prayed ? ', rosary completed' : ', no completed rosary'}${noted ? ', has notes' : ''}`);
+    button.setAttribute('aria-label', `${humanDate(date)}${rosary ? ', rosary completed' : ''}${scripture ? ', Scripture chapter completed' : ''}${!prayed ? ', no completion' : ''}${noted ? ', has notes' : ''}`);
     button.setAttribute('aria-pressed', String(date === selectedDay));
     if (date === localDate()) button.setAttribute('aria-current', 'date');
     button.addEventListener('click', () => { selectedDay = date; renderJournal(); });
@@ -230,6 +239,10 @@ function renderJournal() {
   $('#day-history').replaceChildren(make('h3', humanDate(selectedDay)));
   if (!entries.length) $('#day-history').append(make('p', 'No completed rosary recorded for this day.', 'muted small'));
   entries.forEach(item => $('#day-history').append(make('p', `${MYSTERIES[item.mystery].name} mysteries · ${new Date(item.completedAt).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}`, 'history-entry')));
+  for (const item of [...state.reading.deuterocanon.completed, ...state.reading.gospels.completed].filter(item => item.date === selectedDay)) {
+    const book = READING_BOOKS.find(book => book.id === item.book);
+    $('#day-history').append(make('p', `${book.name} ${item.chapter} · Scripture & prayer`, 'history-entry'));
+  }
   const notes = state.notes.filter(note => note.date === selectedDay);
   notes.forEach(note => $('#day-history').append(make('p', note.text, 'history-note')));
   renderNotes();
@@ -312,6 +325,7 @@ $('#import').addEventListener('change', async event => {
     completed = false;
     renderPrayer();
     renderJournal();
+    readingCompanion.resetView();
     notify(saved ? 'Backup merged and saved. Existing notes and history were kept.' : 'Backup merged in this tab but could not be saved. Export a backup before closing.');
   } catch (error) { notify(`Import failed: ${error.message}`); }
   finally { input.value = ''; }
@@ -323,7 +337,7 @@ window.addEventListener('storage', event => {
   }
 });
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) { renderPrayer(); if (!$('#journal').hidden) renderJournal(); }
+  if (!document.hidden) { renderPrayer(); if (!$('#journal').hidden) renderJournal(); if (!$('#scripture').hidden) readingCompanion.render(); }
 });
 window.addEventListener('beforeinstallprompt', event => {
   event.preventDefault();
@@ -365,5 +379,7 @@ if ('serviceWorker' in navigator) {
   });
 } else $('#offline-status').textContent = 'This browser does not support offline app installation. You can use Stillwater online.';
 
+const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
+readingCompanion.render();
 renderPrayer();
 renderJournal();

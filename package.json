@@ -1,13 +1,13 @@
 {
   "name": "stillwater-rosary",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "preview": "node scripts/serve.mjs dist",
-    "check": "node --check src/core.js && node --check src/app.js && node --check sw.js && node --check scripts/build.mjs && node --check scripts/serve.mjs",
+    "check": "node --check src/core.js && node --check src/app.js && node --check src/dates.js && node --check src/reading.js && node --check src/reading-ui.js && node --check src/scripture.js && node --check sw.js && node --check scripts/build.mjs && node --check scripts/serve.mjs && node --check scripts/prepare-scripture.mjs",
     "test": "node --test"
   },
   "engines": { "node": ">=22" }

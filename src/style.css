@@ -49,3 +49,40 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 }
 @media(max-width:650px){input,select{font-size:16px}.journal-layout>.panel:first-child{margin-inline:-20px;padding-inline:5px;border-left:0;border-right:0;border-radius:0}.journal-layout>.panel:first-child>.calendar-heading,.journal-layout>.panel:first-child>p,.day-history{margin-inline:15px}.calendar{gap:0}.calendar-day{min-width:44px}.mystery-list{display:block;padding-bottom:8px}.mystery-browser>summary{padding:10px 0;font-size:11px}.mystery-list summary{font-size:12px}.mystery-story{font-size:16px}.mystery-reading{padding-inline:16px}.mystery-reading>p:not(.reading-reference):not(.reading-note){font-size:17px}}
 @media(prefers-reduced-motion:no-preference){button{transition:background .15s,box-shadow .15s}.prayer-card{animation:arrive .4s ease-out}@keyframes arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}}
+
+.reading-sidebar { padding: 22px; }
+.reading-sidebar>label { margin-top: 16px; }
+.reading-sidebar>label:first-child { margin-top: 0; }
+.reading-overall { border-top: 1px solid var(--line); padding-top: 8px; margin: 22px 0; }
+.book-progress-details>summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-size: 13px; }
+.book-progress-row { margin: 16px 0 20px; }
+.book-progress-row>p { font-size: 12px; line-height: 1.7; margin: 0 0 8px; }
+.reading-card>#reading-reference { margin: 28px 0 22px; }
+.scripture-text { text-align: left; font: 19px/1.9 var(--serif); overflow-wrap: anywhere; }
+.scripture-text>p { margin: 0 0 16px; }
+.verse-number { font: 10px system-ui; color: var(--gold); padding-right: 4px; }
+.reading-card .prayer-text { min-height: 0; }
+.reading-card .mystery-reading .scripture-text { font-size: 17px; }
+.reading-card .mystery-reading .scripture-text>p:last-child { padding-bottom: 12px; }
+.reading-personal-note { margin: 22px 0 0; font-size: 10px; }
+.reading-source { margin: 30px 0 42px; }
+.reading-source>p { font-size: 13px; line-height: 1.9; }
+.reading-source a { color: var(--ink); text-underline-offset: 3px; }
+@media(max-width:850px) {
+  .scripture-layout { grid-template-columns: 220px minmax(0,1fr); gap: 20px; }
+  .reading-sidebar { padding: 18px; }
+}
+@media(max-width:650px) {
+  .tabs button { font-size: 10px; }
+  .scripture-layout { display: flex; }
+  .reading-sidebar { width: 100%; padding: 22px; }
+  .reading-sidebar>p.small { margin: 12px 0; }
+  .reading-sidebar.reading-active label[for="reading-book"],
+  .reading-sidebar.reading-active label[for="reading-chapter"],
+  .reading-sidebar.reading-active #reading-book,
+  .reading-sidebar.reading-active #reading-chapter { display: none; }
+  .reading-overall { margin: 18px 0 8px; }
+  .reading-card .prayer-controls { flex-wrap: wrap; }
+  .reading-card .prayer-controls .primary { flex: 1; }
+  .scripture-text { font-size: 19px; line-height: 1.85; }
+}

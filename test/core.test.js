@@ -110,7 +110,7 @@ test('backups round-trip and reject malformed schemas, dates, duplicates, versio
   assert.throws(() => parseBackup('{'), /not readable JSON/);
   assert.throws(() => parseBackup('x'.repeat(2_000_001)), /too large/);
   for (const bad of [
-    null, [], {}, { ...state, version: 2 }, { ...state, fatima: 'yes' },
+    null, [], {}, { ...state, version: 99 }, { ...state, fatima: 'yes' },
     { ...state, notes: [note({ date: '2026-02-30' })] },
     { ...state, notes: [note({ text: ' ' })] },
     { ...state, notes: [note({ text: 'x'.repeat(10001) })] },

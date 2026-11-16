@@ -1,5 +1,5 @@
-const CACHE = 'stillwater-shell-v2';
-const FILES = ['./', './index.html', './src/style.css', './src/app.js', './src/core.js', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+const CACHE = 'stillwater-shell-v4';
+const FILES = ['./', './index.html', './src/style.css', './src/app.js', './src/core.js', './src/dates.js', './src/reading.js', './src/reading-ui.js', './src/scripture.js', './SCRIPTURE-LICENSE.txt', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
 });

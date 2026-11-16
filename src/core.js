@@ -1,3 +1,7 @@
+import { localDate, validDate, previousDate, validTimestamp as stamp } from './dates.js';
+import { emptyReading, validateReading, mergeReading } from './reading.js';
+export { localDate, validDate, previousDate } from './dates.js';
+
 export const PRAYERS = {
   cross: ['Sign of the Cross', 'In the name of the Father, and of the Son, and of the Holy Ghost. Amen.'],
   creed: ["The Apostles' Creed", 'I believe in God, the Father Almighty, Creator of heaven and earth; and in Jesus Christ, His only Son, our Lord; who was conceived by the Holy Ghost, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died, and was buried. He descended into hell; the third day He rose again from the dead; He ascended into heaven, and sitteth at the right hand of God the Father Almighty; from thence He shall come to judge the living and the dead.\n\nI believe in the Holy Ghost, the holy Catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen.'],
@@ -53,19 +57,6 @@ export const MYSTERIES = {
 };
 
 export const suggestedMystery = (date = new Date()) => ['glorious', 'joyful', 'sorrowful', 'glorious', 'luminous', 'sorrowful', 'joyful'][date.getDay()];
-export function localDate(date = new Date()) {
-  return `${String(date.getFullYear()).padStart(4, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-export function validDate(value) {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const parsed = new Date(`${value}T12:00:00Z`);
-  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
-}
-export function previousDate(value) {
-  const date = new Date(`${value}T12:00:00Z`);
-  date.setUTCDate(date.getUTCDate() - 1);
-  return date.toISOString().slice(0, 10);
-}
 export function sequence(set, fatima = true) {
   if (!Object.hasOwn(MYSTERIES, set)) throw new Error('Unknown mystery set.');
   const steps = [];
@@ -82,15 +73,14 @@ export function sequence(set, fatima = true) {
   add('queen'); add('closing'); add('cross');
   return steps;
 }
-export const emptyState = () => ({ version: 1, progress: null, completions: [], notes: [], fatima: true });
+export const emptyState = () => ({ version: 2, progress: null, completions: [], notes: [], fatima: true, reading: emptyReading() });
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-const stamp = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
 const id = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value);
 const mystery = value => typeof value === 'string' && Object.hasOwn(MYSTERIES, value);
 
 export function validateState(value) {
-  const invalid = () => { throw new Error('This is not a valid Stillwater v1 backup. No data has been changed.'); };
-  if (!record(value) || value.version !== 1 || typeof value.fatima !== 'boolean' || !Array.isArray(value.notes) || !Array.isArray(value.completions) || value.notes.length > 10000 || value.completions.length > 100000) invalid();
+  const invalid = () => { throw new Error('This is not a valid Stillwater backup. No data has been changed.'); };
+  if (!record(value) || ![1, 2].includes(value.version) || typeof value.fatima !== 'boolean' || !Array.isArray(value.notes) || !Array.isArray(value.completions) || value.notes.length > 10000 || value.completions.length > 100000) invalid();
   const progress = value.progress;
   if (progress !== null && (!record(progress) || !mystery(progress.set) || typeof progress.fatima !== 'boolean' || !Number.isInteger(progress.step) || progress.step < 0 || progress.step >= sequence(progress.set, progress.fatima).length || !stamp(progress.startedAt))) invalid();
   const notes = value.notes.map(note => {
@@ -102,7 +92,8 @@ export function validateState(value) {
     return { id: item.id, date: item.date, mystery: item.mystery, completedAt: item.completedAt };
   });
   if (new Set(notes.map(note => note.id)).size !== notes.length || new Set(completions.map(item => item.id)).size !== completions.length) invalid();
-  return { version: 1, progress: progress && { set: progress.set, fatima: progress.fatima, step: progress.step, startedAt: progress.startedAt }, fatima: value.fatima, notes, completions };
+  const reading = value.version === 1 && value.reading === undefined ? emptyReading() : validateReading(value.reading);
+  return { version: 2, progress: progress && { set: progress.set, fatima: progress.fatima, step: progress.step, startedAt: progress.startedAt }, fatima: value.fatima, notes, completions, reading };
 }
 export const STORAGE_KEY = 'stillwater-v1';
 export function loadState(storage) {
@@ -139,6 +130,7 @@ export function mergeBackup(current, incoming, createId = () => crypto.randomUUI
   }
   // An import never interrupts a rosary already in progress.
   merged.progress ??= backup.progress;
+  merged.reading = mergeReading(merged.reading, backup.reading);
   return validateState(merged);
 }
 export function stats(completions, today = localDate()) {

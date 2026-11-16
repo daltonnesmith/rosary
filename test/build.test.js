@@ -34,5 +34,5 @@ test('production build includes a subpath-safe offline shell and real raster ins
   for (const file of paths) await read(file);
   const html = (await read('index.html')).toString();
   assert.ok(!/(?:src|href)="\/(?!\/)/.test(html), 'No root-absolute assets that break repository hosting');
-  assert.ok(!/https?:\/\//.test(html), 'No external asset requests');
+  assert.ok(!/<(?:script|link|img|iframe)\b[^>]*(?:src|href)="https?:\/\//.test(html), 'No external asset requests');
 });
