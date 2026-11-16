@@ -63,18 +63,23 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 .touch-rosary-dock { position: sticky; bottom: 0; z-index: 2; background: var(--card); border-top: 1px solid var(--line); padding: 14px 0 12px; box-shadow: 0 -12px 15px var(--card); }
 .touch-progress { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 10px; color: var(--gold); margin-bottom: 8px; }
 .rosary-track { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 12px 0 6px; }
-.rosary-track::before { content: ""; position: absolute; height: 1px; top: 27px; left: 10%; right: 10%; background: #b6a37a; }
+.rosary-track::before { content: ""; position: absolute; height: 3px; top: 30px; left: 10%; right: 10%; background: repeating-linear-gradient(90deg, #ae8b49 0 2px, #d9c79d 2px 5px, #ae8b49 5px 6px, transparent 6px 8px); opacity: .7; }
 .touch-bead { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-width: 44px; min-height: 76px; padding: 6px 0; color: var(--muted); border: 1px solid transparent; background: transparent; border-radius: 12px; }
-.touch-bead-stone { display: grid; place-items: center; width: 36px; height: 36px; background: var(--soft); color: var(--muted); border: 1px solid #c9c6ba; border-radius: 50%; font: 13px var(--serif); }
+.touch-bead-stone { position: relative; display: grid; place-items: center; width: 42px; height: 48px; color: #80602d; border: 1px solid #b4975c; border-radius: 48%; background: radial-gradient(ellipse at 30% 20%, #fffef7, #eadbb6); box-shadow: inset 0 0 0 2px #fff9e6, inset 0 0 0 3px #b69c6660, 0 2px 4px #45372220; }
+.touch-bead-stone::before { content: ""; position: absolute; width: 5px; height: 5px; top: -5px; left: calc(50% - 3px); border: 1px solid #b4975c; border-radius: 50%; background: var(--card); }
+.touch-bead-stone svg { display: block; width: 32px; height: 36px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.medal-halo { opacity: .55; }
+.medal-robe { fill: currentColor; fill-opacity: .1; }
+.medal-shield { fill: currentColor; fill-opacity: .08; }
+.touch-bead-count { position: absolute; right: -2px; bottom: -1px; display: grid; place-items: center; width: 15px; height: 15px; border: 1px solid #ba9c62; border-radius: 50%; background: #fffaf0; color: #634b26; font: 700 9px/1 system-ui; }
 .touch-bead-label { font-size: 8px; font-weight: 750; letter-spacing: .5px; text-transform: uppercase; }
 .touch-bead[data-state="done"] { opacity: .8; }
-.touch-bead[data-state="done"] .touch-bead-stone { background: #dce5da; color: #324d3b; border-color: #9daf9a; }
-.touch-bead[data-state="locked"] { opacity: .65; }
+.touch-bead[data-state="done"] .touch-bead-stone { background: radial-gradient(ellipse at 30% 20%, #f6f7ee, #d5dfd3); color: #4a604c; border-color: #a4af96; box-shadow: inset 0 0 0 2px #f4f4e7, inset 0 0 0 3px #9ca68d60, 0 1px 3px #29463c18; }
+.touch-bead[data-state="locked"] { opacity: .6; }
 .touch-bead[data-state="now"] { color: var(--ink); }
-.touch-bead[data-state="now"] .touch-bead-stone { background: radial-gradient(circle at 30% 25%, #698276, #29463c 70%); color: var(--card); border-color: var(--ink); box-shadow: 0 0 0 3px #29463c16; }
-.touch-bead[data-state="next"], .touch-bead[data-state="start"] { border-color: var(--gold); background: #f3e7c9; color: #664c1e; }
-.touch-bead[data-state="next"] .touch-bead-stone, .touch-bead[data-state="start"] .touch-bead-stone { background: #e4ce99; color: #4a391a; border-color: var(--gold); }
-.touch-cross { border-radius: 7px; font: 28px var(--serif); }
+.touch-bead[data-state="now"] .touch-bead-stone { background: radial-gradient(ellipse at 30% 20%, #547568, #203e34 80%); color: #fff1c8; border-color: #a88b4c; box-shadow: inset 0 0 0 2px #36574a, inset 0 0 0 3px #ccb57d, 0 3px 6px #29463c30; }
+.touch-bead[data-state="next"], .touch-bead[data-state="start"] { color: #664c1e; }
+.touch-bead[data-state="next"] .touch-bead-stone, .touch-bead[data-state="start"] .touch-bead-stone { background: radial-gradient(ellipse at 30% 20%, #fff8df, #d7b267); color: #654516; border-color: #95702c; box-shadow: inset 0 0 0 2px #f8e6b5, inset 0 0 0 3px #b38c43, 0 0 0 3px #c19b4c24, 0 3px 6px #7f60252a; }
 #virtual-hint { font-size: 11px; line-height: 1.5; min-height: 33px; margin: 8px 0; }
 .touch-rosary-dock .prayer-controls { margin-top: 12px; }
 .touch-rosary-dock .prayer-controls button { flex: 1; }

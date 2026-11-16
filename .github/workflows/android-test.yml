@@ -66,14 +66,15 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$apk"
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" > apk-metadata.txt
           grep -q "name='io.github.daltonnesmith.stillwater.test'" apk-metadata.txt
-          grep -q "versionName='1.2.0-test.1'" apk-metadata.txt
+          grep -q "versionName='1.2.0-test.2'" apk-metadata.txt
+          grep -q "versionCode='2'" apk-metadata.txt
           grep -q "sdkVersion:'24'" apk-metadata.txt
           grep -q "targetSdkVersion:'36'" apk-metadata.txt
           grep -q "launchable-activity: name='io.github.daltonnesmith.stillwater.test.MainActivity'" apk-metadata.txt
           node scripts/inspect-apk.mjs "$apk"
           mkdir -p android-artifacts
-          cp "$apk" android-artifacts/Stillwater-1.2.0-test.1.apk
-          cd android-artifacts && sha256sum Stillwater-1.2.0-test.1.apk > SHA256SUMS.txt
+          cp "$apk" android-artifacts/Stillwater-1.2.0-test.2.apk
+          cd android-artifacts && sha256sum Stillwater-1.2.0-test.2.apk > SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         with:
           name: stillwater-android-test
