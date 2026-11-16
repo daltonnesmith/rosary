@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
@@ -64,9 +65,24 @@ public class OfflineAppTest {
         UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         automation.adoptShellPermissionIdentity(Manifest.permission.ACCESS_NETWORK_STATE);
         try {
+            // Device-test setup can re-enable Wi-Fi after the workflow disabled it.
+            for (String command : new String[] {
+                "cmd connectivity airplane-mode enable", "svc wifi disable", "svc data disable"
+            }) {
+                try (InputStream output = new ParcelFileDescriptor.AutoCloseInputStream(
+                    automation.executeShellCommand(command))) {
+                    assertEquals("Network setup failed: " + command, "",
+                        new String(output.readAllBytes(), StandardCharsets.UTF_8).trim());
+                }
+            }
             ConnectivityManager connectivity = InstrumentationRegistry.getInstrumentation()
                 .getTargetContext().getSystemService(ConnectivityManager.class);
             Network network = connectivity.getActiveNetwork();
+            long deadline = SystemClock.elapsedRealtime() + 20000;
+            while (network != null && SystemClock.elapsedRealtime() < deadline) {
+                SystemClock.sleep(200);
+                network = connectivity.getActiveNetwork();
+            }
             // WebView's navigator.onLine does not reliably reflect Android connectivity.
             assertNull("Emulator must be offline before first launch: " +
                 (network == null ? "none" : connectivity.getNetworkCapabilities(network)), network);
