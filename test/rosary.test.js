@@ -1,37 +1,38 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MYSTERIES, sequence } from '../src/core.js';
-import { rosaryPieces, rosaryPositions } from '../src/rosary-ui.js';
+import { canTapRosaryStep, rosaryWindow } from '../src/rosary-ui.js';
 
-test('the 59 physical beads, cross, medal and links cover every prayer exactly once', () => {
-  for (const set of Object.keys(MYSTERIES)) {
-    for (const fatima of [true, false]) {
-      const { steps, opening, loop } = rosaryPieces(set, fatima);
-      const pieces = [...opening, ...loop];
-      assert.deepEqual(pieces.flatMap(piece => piece.indices).sort((a, b) => a - b), steps.map((_, i) => i));
-      assert.equal(pieces.filter(piece => piece.kind === 'mary').length, 53);
-      assert.equal(pieces.filter(piece => piece.kind === 'father').length, 6);
-      assert.deepEqual(opening[0].indices.map(i => steps[i].prayer), ['cross', 'creed', 'cross']);
-      assert.deepEqual(opening.at(-1).indices.map(i => steps[i].prayer), ['glory', 'queen', 'closing']);
-      for (let decade = 1; decade <= 5; decade++) {
-        const group = loop.slice((decade - 1) * 12, decade * 12);
-        assert.deepEqual(group.flatMap(piece => piece.indices).map(i => steps[i]), sequence(set, fatima).filter(step => step.decade === decade));
-        assert.deepEqual(group.at(-1).indices.map(i => steps[i].prayer), fatima ? ['glory', 'fatima'] : ['glory']);
+test('only starting at the cross or tapping the immediate next prayer is allowed', () => {
+  for (const fatima of [true, false]) {
+    const total = sequence('joyful', fatima).length;
+    for (let target = -1; target <= total; target++) {
+      assert.equal(canTapRosaryStep(null, target, total), target === 0);
+      for (let current = 0; current < total; current++) {
+        assert.equal(canTapRosaryStep(current, target, total), target === current + 1 && target < total);
       }
     }
+    assert.equal(canTapRosaryStep(2, 5, total), false);
+    assert.equal(canTapRosaryStep(2, 1, total), false);
+    assert.equal(canTapRosaryStep(2, 2, total), false);
+    assert.equal(canTapRosaryStep(2.5, 3.5, total), false);
   }
 });
 
-test('phone and desktop rosaries keep bead targets distinct and inside the drawing', () => {
-  for (const width of [180, 254, 320, 480, 760, 1100]) {
-    const layout = rosaryPositions(width);
-    const points = [...layout.opening, ...layout.loop];
-    assert.equal(points.length, 66);
-    for (const [i, point] of points.entries()) {
-      assert.ok(point.x >= 22 && point.x <= width - 22);
-      assert.ok(point.y >= 22 && point.y <= layout.height - 22);
-      for (const other of points.slice(i + 1)) assert.ok(Math.hypot(point.x - other.x, point.y - other.y) >= 44, `Overlapping bead targets at ${width}px`);
+test('the compact bead chain always contains the current and next prayer without gaps', () => {
+  for (const set of Object.keys(MYSTERIES)) {
+    for (const fatima of [true, false]) {
+      const total = sequence(set, fatima).length;
+      for (let current = 0; current < total; current++) {
+        const { steps, indices } = rosaryWindow(set, fatima, current);
+        assert.equal(steps.length, total);
+        assert.equal(indices.length, 5);
+        assert.ok(indices.includes(current));
+        if (current < total - 1) assert.ok(indices.includes(current + 1));
+        assert.deepEqual(indices, Array.from({ length: 5 }, (_, i) => indices[0] + i));
+        assert.ok(indices[0] >= 0 && indices.at(-1) < total);
+      }
     }
   }
-  assert.throws(() => rosaryPositions(0), /drawing space/);
+  assert.throws(() => rosaryWindow('joyful', true, -1), /Invalid rosary position/);
 });

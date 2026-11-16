@@ -55,48 +55,36 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 
 .rosary-view-switch { display: flex; justify-content: center; gap: 8px; margin: 0 0 26px; }
 .rosary-view-switch [aria-pressed="true"] { background: var(--ink); color: var(--card); border-color: var(--ink); }
-.virtual-card { width: 100%; min-width: 0; text-align: center; }
-.virtual-card>h2 { font-size: 30px; }
-.virtual-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
-.virtual-actions button { flex: 1; }
-#virtual-current { color: var(--gold); min-height: 24px; }
-.rosary-key { padding-top: 14px; border-top: 1px solid var(--line); }
-.rosary-drawing { position: relative; width: 100%; margin: 20px 0; }
-.rosary-string { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #b6a37a; stroke-width: 1.5; pointer-events: none; }
-.rosary-center-label { position: absolute; left: 50%; transform: translate(-50%, -50%); width: min(150px, calc(100% - 112px)); margin: 0; font: italic 24px/1.6 var(--serif); color: var(--gold); pointer-events: none; }
-.rosary-piece { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; padding: 0; width: 44px; height: 44px; min-height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--card); }
-.rosary-piece:hover { background: #91733816; }
-.rosary-piece[aria-current="step"] { outline: 2px solid var(--gold); outline-offset: 1px; background: #91733816; }
-.rosary-piece:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-.rosary-mary>span, .rosary-father>span { display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, #698276, #29463c 65%, #1d332c); border: 1px solid #253f35; box-shadow: 1px 3px 4px #243b3628; }
-.rosary-father>span { width: 29px; height: 29px; font: 12px var(--serif); }
-.rosary-chain>span { width: 22px; height: 10px; border: 2px solid var(--gold); border-radius: 50%; transform: rotate(-25deg); background: var(--card); }
-.rosary-medal { height: 52px; border-radius: 18px; }
-.rosary-medal>span { width: 29px; height: 39px; border: 2px solid var(--gold); border-radius: 50%; background: linear-gradient(120deg, #f8edcc, #c0a266); box-shadow: 1px 3px 4px #243b3620; }
-.rosary-medal>span::after { content: "+"; color: #665027; font: 30px/32px var(--serif); }
-.rosary-cross { width: 56px; height: 72px; border-radius: 12px; }
-.rosary-cross>span { position: relative; display: block; width: 9px; height: 54px; background: linear-gradient(90deg, #ad8b48, #d6bd80, #927237); border: 1px solid var(--gold); }
-.rosary-cross>span::after { content: ""; position: absolute; width: 35px; height: 8px; top: 14px; left: -14px; border: 1px solid var(--gold); background: linear-gradient(#d6bd80, #a78340); }
-.bead-dialog { max-width: 620px; max-height: calc(100dvh - 32px); padding: 24px; overflow-y: auto; overscroll-behavior: contain; }
-.bead-dialog-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; position: sticky; top: -24px; background: var(--card); z-index: 1; }
-.bead-dialog-top .eyebrow { font-size: 9px; letter-spacing: 1px; }
-.bead-dialog h2 { font-size: 32px; margin: 12px 0 16px; }
-.bead-dialog h2:focus { outline: none; }
-.bead-prayer-text { font: 21px/1.85 var(--serif); white-space: pre-line; overflow-wrap: anywhere; }
-.bead-piece-prayers { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
-.bead-piece-prayers button { text-align: left; font-size: 11px; border: 1px solid var(--line); }
-.bead-piece-prayers [aria-pressed="true"] { background: var(--soft); border-color: var(--gold); }
-.bead-dialog-actions { position: sticky; bottom: -24px; background: var(--card); border-top: 1px solid var(--line); padding: 16px 0; margin-bottom: -24px; }
+.virtual-card { width: 100%; min-width: 0; text-align: center; scroll-margin-top: 12px; padding: 24px; }
+.virtual-card>h2 { font-size: 32px; }
+#virtual-prayer-title:focus { outline: none; }
+.virtual-card .prayer-text { min-height: 120px; margin-bottom: 24px; }
+.virtual-card>.eyebrow { margin-bottom: 20px; }
+.touch-rosary-dock { position: sticky; bottom: 0; z-index: 2; background: var(--card); border-top: 1px solid var(--line); padding: 14px 0 12px; box-shadow: 0 -12px 15px var(--card); }
+.touch-progress { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 10px; color: var(--gold); margin-bottom: 8px; }
+.rosary-track { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 12px 0 6px; }
+.rosary-track::before { content: ""; position: absolute; height: 1px; top: 27px; left: 10%; right: 10%; background: #b6a37a; }
+.touch-bead { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-width: 44px; min-height: 76px; padding: 6px 0; color: var(--muted); border: 1px solid transparent; background: transparent; border-radius: 12px; }
+.touch-bead-stone { display: grid; place-items: center; width: 36px; height: 36px; background: var(--soft); color: var(--muted); border: 1px solid #c9c6ba; border-radius: 50%; font: 13px var(--serif); }
+.touch-bead-label { font-size: 8px; font-weight: 750; letter-spacing: .5px; text-transform: uppercase; }
+.touch-bead[data-state="done"] { opacity: .8; }
+.touch-bead[data-state="done"] .touch-bead-stone { background: #dce5da; color: #324d3b; border-color: #9daf9a; }
+.touch-bead[data-state="locked"] { opacity: .65; }
+.touch-bead[data-state="now"] { color: var(--ink); }
+.touch-bead[data-state="now"] .touch-bead-stone { background: radial-gradient(circle at 30% 25%, #698276, #29463c 70%); color: var(--card); border-color: var(--ink); box-shadow: 0 0 0 3px #29463c16; }
+.touch-bead[data-state="next"], .touch-bead[data-state="start"] { border-color: var(--gold); background: #f3e7c9; color: #664c1e; }
+.touch-bead[data-state="next"] .touch-bead-stone, .touch-bead[data-state="start"] .touch-bead-stone { background: #e4ce99; color: #4a391a; border-color: var(--gold); }
+.touch-cross { border-radius: 7px; font: 28px var(--serif); }
+#virtual-hint { font-size: 11px; line-height: 1.5; min-height: 33px; margin: 8px 0; }
+.touch-rosary-dock .prayer-controls { margin-top: 12px; }
+.touch-rosary-dock .prayer-controls button { flex: 1; }
+#virtual-restart { margin-top: 10px; }
 @media(max-width:650px) {
   .rosary-view-switch button { flex: 1; padding-inline: 10px; font-size: 12px; }
-  .virtual-card { padding: 20px 12px; }
-  .virtual-card>p, .virtual-card>h2, .virtual-actions { margin-inline: 8px; }
-  .virtual-actions button { padding-inline: 10px; font-size: 12px; }
-  .rosary-center-label { font-size: 21px; }
-  .bead-dialog { padding: 20px; }
-  .bead-dialog-top { top: -20px; }
-  .bead-dialog-actions { bottom: -20px; margin-bottom: -20px; }
-  .bead-prayer-text { font-size: 20px; }
+  .virtual-card { padding: 20px 16px 12px; }
+  .virtual-card .prayer-text { font-size: 20px; line-height: 1.7; }
+  .touch-rosary-dock { padding-bottom: max(10px, env(safe-area-inset-bottom, 0px)); }
+  .touch-progress { font-size: 9px; }
 }
 
 .reading-sidebar { padding: 22px; }

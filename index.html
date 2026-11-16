@@ -70,17 +70,20 @@
               <p class="keyboard-hint small muted">Use ← and → to move between prayers.</p>
             </article>
             <article id="virtual-rosary" class="panel virtual-card" aria-labelledby="virtual-heading" hidden>
-              <p class="eyebrow">A ROSARY IN YOUR HANDS</p>
-              <h2 id="virtual-heading">A prayer on every bead.</h2>
-              <p class="small muted">Tap a bead, the cross, the medal, or a chain link to open its prayers. Previewing never changes your place or records a completion. Choose <strong>Pray from here</strong> to save your place.</p>
-              <div class="virtual-actions"><button id="virtual-resume" class="primary">Begin at the cross</button><button id="virtual-locate" class="secondary" disabled>Find my bead</button></div>
-              <p id="virtual-current" class="small" role="status" tabindex="-1"></p>
-              <p class="small muted rosary-key">Large beads: Our Father · Small beads: Hail Mary · Links: Glory Be and optional Fatima prayer. Numbers mark the five decades.</p>
-              <div id="rosary-drawing" class="rosary-drawing" role="group" aria-label="Interactive rosary: cross, opening beads, medal and five decades">
-                <svg id="rosary-string" class="rosary-string" aria-hidden="true" focusable="false"><rect id="rosary-loop" /><line id="rosary-stem" /></svg>
-                <p id="rosary-center-label" class="rosary-center-label" aria-hidden="true"></p>
+              <p id="virtual-heading" class="eyebrow">YOUR FINGERTIP ROSARY</p>
+              <p id="virtual-intention" class="meditation"></p>
+              <h2 id="virtual-prayer-title" tabindex="-1" aria-live="polite"></h2>
+              <div id="virtual-storage-error" class="notice error" role="alert" hidden></div>
+              <p id="virtual-prayer-text" class="prayer-text"></p>
+              <details id="virtual-mystery" class="mystery-reading" hidden><summary>Read this mystery</summary><p id="virtual-mystery-text"></p><p id="virtual-mystery-reference" class="reading-reference"></p><p id="virtual-mystery-reflection" class="reflection"></p><p class="reading-note">An original devotional retelling, not a verbatim Bible translation.</p></details>
+              <div class="touch-rosary-dock">
+                <div class="touch-progress"><span id="virtual-phase"></span><span id="virtual-count"></span></div>
+                <progress id="virtual-progress" max="100" value="0" aria-label="Fingertip rosary progress"></progress>
+                <div id="rosary-track" class="rosary-track" role="group" aria-label="Rosary beads: tap only the next bead to move forward"></div>
+                <p id="virtual-hint" class="small muted"></p>
+                <div class="prayer-controls"><button id="virtual-back" class="secondary">Back</button><button id="virtual-next" class="primary">Begin rosary</button></div>
               </div>
-              <p class="small muted">The 59 beads follow the same prayers as the guided view. The highlighted piece is your saved position, not a count of prayers completed. Only <strong>Complete rosary</strong> after the final prayer records a day.</p>
+              <button id="virtual-restart" class="text-button" hidden>Start a new rosary</button>
             </article>
           </div>
           <div class="gentle-footer"><span aria-hidden="true">✧</span> Let this be a little sanctuary in your day.</div>
@@ -176,17 +179,6 @@
       <footer class="site-footer"><span>stillwater</span><span>A quiet companion. A daily grace.</span><span>Private & offline-ready</span></footer>
     </div>
     <dialog id="confirm-dialog"><form method="dialog"><h2 id="confirm-title">Start again?</h2><p id="confirm-text"></p><div class="dialog-actions"><button value="cancel" class="secondary" autofocus>Keep my place</button><button value="confirm" class="primary">Start new rosary</button></div></form></dialog>
-    <dialog id="bead-dialog" class="bead-dialog" aria-labelledby="bead-dialog-title" aria-describedby="bead-dialog-context">
-      <div class="bead-dialog-top"><p id="bead-dialog-phase" class="eyebrow"></p><button id="bead-close" class="quiet" aria-label="Close prayer">Close</button></div>
-      <h2 id="bead-dialog-title" tabindex="-1"></h2>
-      <p id="bead-dialog-context" class="meditation"></p>
-      <div id="bead-storage-error" class="notice error" role="alert" hidden></div>
-      <div id="bead-piece-options"><p class="small muted">Prayers on this piece</p><div id="bead-piece-prayers" class="bead-piece-prayers"></div></div>
-      <p id="bead-dialog-text" class="bead-prayer-text"></p>
-      <details id="bead-dialog-mystery" class="mystery-reading" hidden><summary>Read this mystery</summary><p id="bead-dialog-story"></p><p id="bead-dialog-reference" class="reading-reference"></p><p id="bead-dialog-reflection" class="reflection"></p><p class="reading-note">An original devotional retelling, not a verbatim Bible translation.</p></details>
-      <p id="bead-preview-note" class="small muted">Just looking? Close this window to keep your saved place unchanged.</p>
-      <div class="dialog-actions bead-dialog-actions"><button id="bead-back" class="secondary">Back</button><button id="bead-next" class="primary">Pray from here</button></div>
-    </dialog>
     <noscript><p class="notice error">Stillwater needs JavaScript to display prayers and save your journal. Enable JavaScript and reload.</p></noscript>
   </body>
 </html>

@@ -212,7 +212,8 @@ document.addEventListener('keydown', event => {
   if ($('#pray').hidden || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(event.target.tagName) || event.target.isContentEditable) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
     event.preventDefault();
-    $(event.key === 'ArrowRight' ? '#next' : '#previous').click();
+    if ($('#virtual-rosary').hidden) $(event.key === 'ArrowRight' ? '#next' : '#previous').click();
+    else virtualRosary[event.key === 'ArrowRight' ? 'advance' : 'back']();
   }
 });
 
@@ -413,15 +414,8 @@ const virtualRosary = createVirtualRosary({
     fatima: state.progress?.fatima ?? state.fatima, completed,
     storageMessage: $('#storage-error').hidden ? '' : $('#storage-error').textContent,
   }),
-  start, next: nextPrayer, previous: previousPrayer,
-  selectStep(step) {
-    const set = state.progress?.set ?? selectedSet;
-    const fatima = state.progress?.fatima ?? state.fatima;
-    if (!Number.isInteger(step) || step < 0 || step >= sequence(set, fatima).length) throw new Error('Invalid rosary prayer.');
-    completed = false;
-    commit({ ...state, progress: { set, fatima, step, startedAt: state.progress?.startedAt ?? new Date().toISOString() } });
-    renderPrayer();
-  },
+  start, next: nextPrayer, previous: previousPrayer, notify,
+  restart: () => $('#restart').click(),
 });
 readingCompanion.render();
 renderPrayer();
