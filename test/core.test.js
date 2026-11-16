@@ -76,6 +76,19 @@ test('blocked, full and corrupt storage errors are surfaced, never overwritten o
   assert.throws(() => loadState({ getItem: key => values.get(key) }), /valid Stillwater/);
   assert.equal(values.get(STORAGE_KEY), '{"version":99}');
 });
+test('a pending mystery card survives storage, backup and import without shifting its canonical prayer', () => {
+  const state = { ...emptyState(), progress: progress({ step: 20, stage: 'mystery' }), notes: [note()] };
+  const values = new Map();
+  const storage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
+  saveState(storage, state);
+  assert.deepEqual(loadState(storage), state);
+  const backup = parseBackup(JSON.stringify(state));
+  assert.deepEqual(backup, state);
+  assert.deepEqual(mergeBackup(emptyState(), backup).progress, state.progress);
+  for (const invalid of [{ step: 19, stage: 'mystery' }, { step: 2, stage: 'mystery' }, { step: 20, stage: 'prayer' }, { step: 20, stage: null }]) {
+    assert.throws(() => validateState({ ...state, progress: progress(invalid) }), /valid Stillwater/);
+  }
+});
 test('local dates are not UTC dates in either hemisphere, including a year boundary', () => {
   const moduleUrl = new URL('../src/core.js', import.meta.url).href;
   for (const [timezone, instant, expected] of [

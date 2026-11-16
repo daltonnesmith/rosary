@@ -60,6 +60,9 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 #virtual-prayer-title:focus { outline: none; }
 .virtual-card .prayer-text { min-height: 120px; margin-bottom: 24px; }
 .virtual-card>.eyebrow { margin-bottom: 20px; }
+.virtual-card[data-card="mystery"] .prayer-text { text-align: left; }
+.virtual-mystery-reading { margin-bottom: 24px; }
+.virtual-mystery-reading .reflection { padding-top: 16px; border-top: 1px solid var(--line); font: italic 17px/1.8 var(--serif); }
 .touch-rosary-dock { position: sticky; bottom: 0; z-index: 2; background: var(--card); border-top: 1px solid var(--line); padding: 14px 0 12px; box-shadow: 0 -12px 15px var(--card); }
 .touch-progress { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 10px; color: var(--gold); margin-bottom: 8px; }
 .rosary-track { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 12px 0 6px; }

@@ -73,6 +73,19 @@ export function sequence(set, fatima = true) {
   add('queen'); add('closing'); add('cross');
   return steps;
 }
+export function moveRosaryProgress(progress, direction, { mysteryCards = false } = {}) {
+  if (direction !== 1 && direction !== -1) throw new Error('Invalid rosary direction.');
+  const steps = sequence(progress.set, progress.fatima);
+  const result = { ...progress };
+  delete result.stage;
+  const atMystery = steps[progress.step].prayer === 'father' && steps[progress.step].decade > 0;
+  if (mysteryCards && direction === 1 && progress.stage === 'mystery') return result;
+  if (mysteryCards && direction === -1 && atMystery && progress.stage !== 'mystery') return { ...result, stage: 'mystery' };
+  result.step += direction;
+  if (result.step < 0 || result.step >= steps.length) throw new Error('There is no rosary prayer in that direction.');
+  if (mysteryCards && direction === 1 && steps[result.step].prayer === 'father' && steps[result.step].decade > 0) result.stage = 'mystery';
+  return result;
+}
 export const emptyState = () => ({ version: 2, progress: null, completions: [], notes: [], fatima: true, reading: emptyReading() });
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const id = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value);
@@ -83,6 +96,7 @@ export function validateState(value) {
   if (!record(value) || ![1, 2].includes(value.version) || typeof value.fatima !== 'boolean' || !Array.isArray(value.notes) || !Array.isArray(value.completions) || value.notes.length > 10000 || value.completions.length > 100000) invalid();
   const progress = value.progress;
   if (progress !== null && (!record(progress) || !mystery(progress.set) || typeof progress.fatima !== 'boolean' || !Number.isInteger(progress.step) || progress.step < 0 || progress.step >= sequence(progress.set, progress.fatima).length || !stamp(progress.startedAt))) invalid();
+  if (progress?.stage !== undefined && (progress.stage !== 'mystery' || sequence(progress.set, progress.fatima)[progress.step].prayer !== 'father' || !sequence(progress.set, progress.fatima)[progress.step].decade)) invalid();
   const notes = value.notes.map(note => {
     if (!record(note) || !id(note.id) || !validDate(note.date) || typeof note.text !== 'string' || !note.text.trim() || note.text.length > 10000 || !stamp(note.updatedAt)) invalid();
     return { id: note.id, date: note.date, text: note.text, updatedAt: note.updatedAt };
@@ -93,7 +107,7 @@ export function validateState(value) {
   });
   if (new Set(notes.map(note => note.id)).size !== notes.length || new Set(completions.map(item => item.id)).size !== completions.length) invalid();
   const reading = value.version === 1 && value.reading === undefined ? emptyReading() : validateReading(value.reading);
-  return { version: 2, progress: progress && { set: progress.set, fatima: progress.fatima, step: progress.step, startedAt: progress.startedAt }, fatima: value.fatima, notes, completions, reading };
+  return { version: 2, progress: progress && { set: progress.set, fatima: progress.fatima, step: progress.step, startedAt: progress.startedAt, ...(progress.stage === undefined ? {} : { stage: progress.stage }) }, fatima: value.fatima, notes, completions, reading };
 }
 export const STORAGE_KEY = 'stillwater-v1';
 export function loadState(storage) {

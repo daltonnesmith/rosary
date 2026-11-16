@@ -111,6 +111,17 @@ public class OfflineAppTest {
             assertEquals("1", text(".touch-bead[aria-current=step] .touch-bead-count"));
             assertEquals(Boolean.TRUE, evaluate("return !document.querySelector('dialog[open]') && JSON.parse(localStorage.getItem('stillwater-v1')).progress.step === 3;"));
             click("#virtual-back");
+            for (int i = 0; i < 5; i++) click(".touch-bead[data-state=next]");
+            assertEquals(Boolean.TRUE, evaluate("return document.querySelector('#virtual-rosary').dataset.card === 'mystery' && document.querySelector('#virtual-prayer-text').textContent.length > 100 && JSON.parse(localStorage.getItem('stillwater-v1')).progress.stage === 'mystery';"));
+            scenario.recreate();
+            waitFor("document.querySelector('#prayer-title')?.textContent");
+            click("#view-virtual");
+            assertEquals(Boolean.TRUE, evaluate("return document.querySelector('#virtual-rosary').dataset.card === 'mystery';"));
+            click(".touch-bead[data-state=next]");
+            assertEquals("Our Father", text("#virtual-prayer-title"));
+            click("#virtual-back");
+            assertEquals(Boolean.TRUE, evaluate("return document.querySelector('#virtual-rosary').dataset.card === 'mystery';"));
+            for (int i = 0; i < 5; i++) click("#virtual-back");
             click("#view-guided");
             assertEquals("Our Father", text("#prayer-title"));
             click("[data-tab=scripture]");

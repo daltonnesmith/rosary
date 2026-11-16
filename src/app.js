@@ -1,4 +1,4 @@
-import { MYSTERIES, PRAYERS, emptyState, sequence, suggestedMystery, localDate, validDate, loadState, saveState, parseBackup, mergeBackup, stats, finishRosary, STORAGE_KEY } from './core.js';
+import { MYSTERIES, PRAYERS, emptyState, sequence, moveRosaryProgress, suggestedMystery, localDate, validDate, loadState, saveState, parseBackup, mergeBackup, stats, finishRosary, STORAGE_KEY } from './core.js';
 import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
 import { createLiturgicalCalendar } from './liturgical-ui.js';
@@ -157,7 +157,7 @@ function start() {
   commit({ ...state, progress: { set: selectedSet, fatima: state.fatima, step: 0, startedAt: new Date().toISOString() } });
   renderPrayer(true);
 }
-function nextPrayer() {
+function nextPrayer(options = {}) {
   if (!state.progress) return start();
   const last = sequence(state.progress.set, state.progress.fatima).length - 1;
   if (state.progress.step === last) {
@@ -166,16 +166,16 @@ function nextPrayer() {
     completionSaved = saved;
     completedDate = localDate();
     notify(saved ? 'Rosary completed and saved. Your journal is up to date.' : 'Rosary completed in this tab, but not saved to device storage. Export a backup.');
-  } else commit({ ...state, progress: { ...state.progress, step: state.progress.step + 1 } });
+  } else commit({ ...state, progress: moveRosaryProgress(state.progress, 1, options) });
   renderPrayer(true);
 }
-$('#next').addEventListener('click', nextPrayer);
-function previousPrayer() {
+$('#next').addEventListener('click', () => nextPrayer());
+function previousPrayer(options = {}) {
   if (!state.progress || state.progress.step === 0) return;
-  commit({ ...state, progress: { ...state.progress, step: state.progress.step - 1 } });
+  commit({ ...state, progress: moveRosaryProgress(state.progress, -1, options) });
   renderPrayer(true);
 }
-$('#previous').addEventListener('click', previousPrayer);
+$('#previous').addEventListener('click', () => previousPrayer());
 async function confirmRestart(options = {}) {
   const dialog = $('#confirm-dialog');
   if (dialog.open) return false;
@@ -414,7 +414,7 @@ const virtualRosary = createVirtualRosary({
     fatima: state.progress?.fatima ?? state.fatima, completed,
     storageMessage: $('#storage-error').hidden ? '' : $('#storage-error').textContent,
   }),
-  start, next: nextPrayer, previous: previousPrayer, notify,
+  start, next: () => nextPrayer({ mysteryCards: true }), previous: () => previousPrayer({ mysteryCards: true }), notify,
   restart: () => $('#restart').click(),
 });
 readingCompanion.render();
