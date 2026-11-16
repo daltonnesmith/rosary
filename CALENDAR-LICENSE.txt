@@ -1,0 +1,63 @@
+Stillwater liturgical calendar source notice
+
+The bundled src/liturgical-data.js is generated from romcal and its
+UnitedStates_En calendar, both pinned to 3.0.0-dev.144 (MIT license).
+Source: https://github.com/romcal/romcal
+The normalization script retains daily celebrations in source precedence order,
+including optional observances, seasons, weeks, ranks and vestment colors.
+Both Sunday and Thursday Ascension variants are calculated by romcal.
+The generator adds the permitted optional Blessed Virgin Mary memorial on
+unimpeded Saturdays of Ordinary Time (General Norms for the Liturgical Year
+and the Calendar, no. 15), and includes the U.S. white vestment option for
+All Souls, as shown in the USCCB calendar. Privileged-weekday commemorations
+retain their weekday color in the display; an empty source color for such
+a commemoration must not be interpreted as "no Mass."
+Only the normalized static data is shipped to the browser. No calendar API is
+contacted, and the generator is not needed to build or run the checked-in app.
+
+Coverage: civil years 2024-2035, calculated using the bundled current rules.
+This is not an archival reconstruction of decrees in force in each past year,
+an official diocesan ordo, or a determination of holy days of obligation.
+Future decrees can change future calendars. Parish, diocesan, religious-order,
+dedication and patronal observances can differ. This is a daytime guide, not a
+complete listing of Masses or evening vigils. Holy Thursday and the Easter
+Vigil have explanatory notes in the app.
+
+Selected movable dates, national observances and recent additions were
+cross-checked against the USCCB's published 2026, 2027 and 2028 calendars:
+https://www.usccb.org/committees/divine-worship/liturgical-calendar
+https://www.usccb.org/resources/2026cal.pdf
+https://www.usccb.org/resources/2027cal.pdf
+https://www.usccb.org/resources/2028cal.pdf
+Those publications are references, not redistributed application content.
+
+To reproduce the checked-in dataset with Node.js 22+:
+  npm ci
+  npm run prepare:calendar
+  npm test
+Review updated official calendars before updating the pinned generator or
+extending coverage. Update this notice and the app cache for a data release.
+
+romcal license
+--------------
+MIT License
+
+Copyright (c) 2018 Julian Pereira
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -86,3 +86,67 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
   .reading-card .prayer-controls .primary { flex: 1; }
   .scripture-text { font-size: 19px; line-height: 1.85; }
 }
+
+[data-color="GREEN"] { --lit-color: #3e6e52; }
+[data-color="PURPLE"] { --lit-color: #795586; }
+[data-color="WHITE"] { --lit-color: #b39348; }
+[data-color="RED"] { --lit-color: #a64e46; }
+[data-color="ROSE"] { --lit-color: #b87085; }
+[data-color="BLACK"] { --lit-color: #383c39; }
+[data-color="NONE"] { --lit-color: #858b85; }
+[data-season="ADVENT"], [data-season="LENT"] { --lit-wash: #f0e9f1; }
+[data-season="CHRISTMAS_TIME"], [data-season="EASTER_TIME"] { --lit-wash: #fbf4df; }
+[data-season="ORDINARY_TIME"] { --lit-wash: #e8efe7; }
+[data-season="PASCHAL_TRIDUUM"] { --lit-wash: #e9e9e7; }
+.tabs button { min-width: 44px; }
+.lit-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(270px, 1fr); gap: 24px; align-items: start; }
+.lit-month-panel { padding: 22px; min-width: 0; }
+.lit-month-heading h2 { font-size: 24px; text-align: center; }
+.lit-controls { display: flex; align-items: end; gap: 14px; margin: 8px 0 18px; }
+.lit-controls>div { flex: 1; min-width: 0; }
+.lit-controls input { min-width: 0; }
+.lit-controls label { margin-top: 12px !important; }
+.lit-grid-help { font-size: 11px; }
+.lit-month { width: 100%; table-layout: fixed; border-spacing: 0; margin: 20px 0 14px; }
+.lit-month th { font-size: 10px; font-weight: 500; color: var(--muted); padding: 10px 0; }
+.lit-month td { padding: 2px; vertical-align: top; }
+.lit-day { width: 100%; min-width: 0; min-height: 112px; padding: 10px 6px; border: 2px solid transparent; background: var(--lit-wash); color: var(--ink); text-align: left; }
+.lit-day:hover { box-shadow: inset 0 0 0 1px var(--gold); }
+.lit-day[aria-pressed="true"] { border-color: var(--ink); }
+.lit-day[aria-current="date"] .lit-day-number>span:first-child { text-decoration: underline; text-underline-offset: 4px; font-weight: 800; }
+.lit-day-number { display: flex; justify-content: space-between; align-items: center; gap: 3px; font-size: 14px; }
+.lit-dot { display: inline-block; flex-shrink: 0; width: 9px; height: 9px; border: 1px solid #0002; border-radius: 50%; background: var(--lit-color); }
+.lit-day-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; overflow-wrap: anywhere; font-size: 10px; line-height: 1.5; margin-top: 10px; }
+.lit-day-color { display: none; }
+.lit-season { display: inline-block; padding: 8px 12px; border-radius: 6px; background: var(--lit-wash); font-size: 12px; margin: 0 0 12px; }
+.lit-details>h2 { font-size: 24px; }
+.lit-observance { padding: 17px 0 10px; border-top: 1px solid var(--line); }
+.lit-observance h3 { font: 20px/1.5 var(--serif); margin: 0 0 8px; overflow-wrap: anywhere; }
+.lit-observance .lit-dot { margin-right: 7px; }
+.lit-observance>p { margin: 8px 0; }
+.lit-day-note { padding: 15px; background: var(--soft); border-radius: 8px; }
+.lit-local { border-top: 1px solid var(--line); margin-top: 16px; }
+.lit-local select { font-size: 13px; }
+.lit-guide { margin: 28px 0 42px; }
+.lit-guide a { color: var(--ink); text-underline-offset: 3px; }
+.lit-season-key { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 20px; }
+.lit-season-key>span { background: var(--lit-wash); padding: 8px 12px; border-radius: 6px; font-size: 12px; }
+.lit-color-key { display: flex; flex-wrap: wrap; gap: 12px 24px; list-style: none; padding: 0; font-size: 12px; line-height: 1.7; margin: 20px 0 25px; }
+.lit-color-key li { display: flex; gap: 8px; align-items: center; }
+@media(max-width:850px) {
+  .lit-layout { grid-template-columns: minmax(0, 1fr); }
+  .lit-day { min-height: 100px; }
+}
+@media(max-width:650px) {
+  .tabs button { font-size: 11px; }
+  .lit-month-panel { margin-inline: -20px; padding-inline: 5px; border-inline: 0; border-radius: 0; }
+  .lit-month-heading, .lit-controls, .lit-grid-help { margin-inline: 15px; }
+  .lit-month-heading h2 { font-size: 22px; }
+  .lit-month td { padding: 1px 0; }
+  .lit-day { min-height: 70px; padding: 10px 5px; border-radius: 5px; }
+  .lit-day-number { font-size: 16px; gap: 1px; }
+  .lit-day .lit-dot { width: 6px; height: 6px; }
+  .lit-day-name { display: none; }
+  .lit-day-color { display: block; font-size: 9px; margin-top: 10px; text-align: center; }
+  .lit-local select { font-size: 16px; }
+}

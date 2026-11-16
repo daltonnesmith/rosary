@@ -6,7 +6,7 @@ import path from 'node:path';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const out = path.join(root, 'dist');
 for (const dir of ['', 'src', 'icons']) await mkdir(path.join(out, dir), { recursive: true });
-for (const file of ['index.html', 'manifest.webmanifest', 'sw.js', 'SCRIPTURE-LICENSE.txt', 'src/style.css', 'src/core.js', 'src/app.js', 'src/dates.js', 'src/reading.js', 'src/reading-ui.js', 'src/scripture.js', 'icons/icon.svg']) {
+for (const file of ['index.html', 'manifest.webmanifest', 'sw.js', 'SCRIPTURE-LICENSE.txt', 'CALENDAR-LICENSE.txt', 'src/style.css', 'src/core.js', 'src/app.js', 'src/dates.js', 'src/reading.js', 'src/reading-ui.js', 'src/scripture.js', 'src/liturgical.js', 'src/liturgical-ui.js', 'src/liturgical-data.js', 'icons/icon.svg']) {
   await copyFile(path.join(root, file), path.join(out, file));
 }
 function crc32(bytes) {

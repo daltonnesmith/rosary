@@ -13,10 +13,11 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 - Saves dated reflections, supports editing, and exports/imports validated JSON backups. Import merges rather than replacing your journal; conflicting notes are both preserved.
 - Installs as an offline-capable progressive web app (PWA), not a native App Store/Play Store package. Includes generated PNG icons (192, 512, and Apple 180 pixels), a maskable icon, a manifest, and an app-shell service worker.
 - Adds independent **Scripture & prayer** companions for the deuterocanon and all four Gospels, with 235 full chapter readings, Jesus Prayers, Marian prayers, per-book bars, and exact resumption. The traditional rosary is unchanged.
+- Adds a separate **Calendar** tab for U.S. Roman Catholic feasts and seasons, with color-coded months, daily observances, optional memorials, and Sunday/Thursday Ascension variants, available offline for 2024-2035.
 
 ## Run locally
 
-Requires **Node.js 22 or newer**. There are no package dependencies and no install step.
+Requires **Node.js 22 or newer**. There are no runtime dependencies. The checked-in datasets mean no install step is needed to build, test, or run the app. Pinned development-only packages are needed only to regenerate the liturgical dataset.
 
 ```powershell
 npm run build
@@ -35,7 +36,7 @@ npm test
 npm run build
 ```
 
-`check` runs JavaScript syntax checks; this dependency-free JavaScript project does not have a TypeScript compiler. Node's built-in test runner checks prayer ordering and all five decades, Fatima toggling, explicit completion, resumption, local dates in different time zones, daylight-saving/leap-year boundaries, streaks, corrupted and denied storage, validated backups, conflict-preserving import, and generated install assets. The build test also creates `dist`.
+`check` runs JavaScript syntax checks; this JavaScript project does not have a TypeScript compiler. Node's built-in test runner checks prayer ordering and all five decades, Fatima toggling, explicit completion, resumption, local dates in different time zones, daylight-saving/leap-year boundaries, streaks, corrupted and denied storage, validated backups, conflict-preserving import, generated install assets, and liturgical seasons, transfers, colors, commemorations and coverage. The build test also creates `dist`.
 
 The GitHub Actions **Check and build** workflow runs these commands and makes a `stillwater-site` artifact available to repository collaborators. It does **not** deploy or change repository visibility.
 
@@ -101,3 +102,15 @@ Readings are bundled locally from the **public-domain World English Bible, Catho
 The Greek additions are embedded in their full chapter context: Esther 1, 3, 4, 5, 8 and 10; Daniel 3, 13 and 14. These labels do not imply that the entire books of Esther and Daniel are included. Baruch includes the Letter of Jeremiah as chapter 6. Numbering and brackets follow this edition and can differ from another Bible. Empty source verse entries and footnotes are not included; nonempty verse text is unchanged.
 
 The journal calendar lists Scripture completions separately from rosaries. Its rosary streak and totals still count only traditional rosaries. Saved notes and exports are shared across the app; imports merge chapter completions and protect active positions.
+
+## U.S. liturgical calendar
+
+The separate **Calendar** tab shows daily national solemnities, feasts, memorials, optional memorials and privileged-weekday commemorations. Month backgrounds identify Advent, Christmas, Ordinary Time, Lent, the Paschal Triduum and Easter. A dot shows the primary celebration's vestment color, which can differ from its season. Text labels and full accessible date labels accompany the colors. Select any day for all its observances and color alternatives; use Today, the date picker, previous/next month, or arrow keys, Home/End and Page Up/Down.
+
+Most U.S. dioceses celebrate Ascension on Sunday; select **Thursday** if your diocese retains Thursday. The choice lasts for the current visit. Epiphany and Corpus Christi follow U.S. Sunday observance. The calendar never writes to personal storage, records prayer completion, or changes the journal's activity calendar.
+
+The bundled coverage is **2024-2035**, calculated using current rules, not a reconstruction of past decrees. Navigation cannot go outside this range. Future decrees require a data update. This is a national companion, **not an official diocesan ordo**: local patrons, church dedications, religious orders, obligations and evening liturgies can differ. Holy Thursday distinguishes the daytime weekday from the evening Mass of the Lord's Supper; Holy Saturday explains the nighttime Easter Vigil rather than assigning its white color to a nonexistent daytime Mass. Optional commemorations during privileged weekdays retain the weekday's color. Unimpeded Saturdays in Ordinary Time include the optional Blessed Virgin Mary memorial.
+
+`src/liturgical-data.js` contains 4,383 civil dates generated from the MIT-licensed **romcal 3.0.0-dev.144** engine and matching U.S. English calendar. Only static normalized data is shipped; there is no runtime calendar API or CDN request. The upstream v3 generator is a pinned development release, not represented as an official Church publication. Selected movable dates, national observances, recent Teresa of Calcutta/Newman additions, and U.S. color options were cross-checked against the [USCCB's 2026-2028 calendars](https://www.usccb.org/committees/divine-worship/liturgical-calendar). Source details, normalization notes and the MIT notice are in [CALENDAR-LICENSE.txt](CALENDAR-LICENSE.txt).
+
+To reproduce the dataset, run `npm ci` followed by `npm run prepare:calendar`. Normal builds never regenerate or download data. When refreshing the pinned engine/calendar pair or extending coverage, review official calendars, regenerate, run the checks, inspect transferred celebrations and optional commemorations, and increment the service-worker cache. `src/liturgical.js` contains pure navigation/display rules and `src/liturgical-ui.js` handles the independent calendar interface.

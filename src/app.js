@@ -1,6 +1,7 @@
 import { MYSTERIES, PRAYERS, emptyState, sequence, suggestedMystery, localDate, validDate, loadState, saveState, parseBackup, mergeBackup, stats, finishRosary, STORAGE_KEY } from './core.js';
 import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
+import { createLiturgicalCalendar } from './liturgical-ui.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -66,13 +67,14 @@ function humanDate(value, options = { month: 'long', day: 'numeric', year: 'nume
   return new Date(`${value}T12:00:00`).toLocaleDateString(undefined, options);
 }
 function showTab(tab) {
-  for (const name of ['pray', 'scripture', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
+  for (const name of ['pray', 'scripture', 'liturgical', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
   document.querySelectorAll('[data-tab]').forEach(button => {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
   if (tab === 'journal') renderJournal();
   if (tab === 'scripture') readingCompanion.render();
+  if (tab === 'liturgical') liturgicalCalendar.render();
 }
 document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => showTab(button.dataset.tab)));
 $('.brand').addEventListener('click', () => showTab('pray'));
@@ -337,7 +339,7 @@ window.addEventListener('storage', event => {
   }
 });
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) { renderPrayer(); if (!$('#journal').hidden) renderJournal(); if (!$('#scripture').hidden) readingCompanion.render(); }
+  if (!document.hidden) { renderPrayer(); if (!$('#journal').hidden) renderJournal(); if (!$('#scripture').hidden) readingCompanion.render(); if (!$('#liturgical').hidden) liturgicalCalendar.render(); }
 });
 window.addEventListener('beforeinstallprompt', event => {
   event.preventDefault();
@@ -380,6 +382,7 @@ if ('serviceWorker' in navigator) {
 } else $('#offline-status').textContent = 'This browser does not support offline app installation. You can use Stillwater online.';
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
+const liturgicalCalendar = createLiturgicalCalendar();
 readingCompanion.render();
 renderPrayer();
 renderJournal();

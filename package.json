@@ -1,14 +1,19 @@
 {
   "name": "stillwater-rosary",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "preview": "node scripts/serve.mjs dist",
-    "check": "node --check src/core.js && node --check src/app.js && node --check src/dates.js && node --check src/reading.js && node --check src/reading-ui.js && node --check src/scripture.js && node --check sw.js && node --check scripts/build.mjs && node --check scripts/serve.mjs && node --check scripts/prepare-scripture.mjs",
+    "check": "node --check src/core.js && node --check src/app.js && node --check src/dates.js && node --check src/reading.js && node --check src/reading-ui.js && node --check src/scripture.js && node --check src/liturgical.js && node --check src/liturgical-ui.js && node --check src/liturgical-data.js && node --check sw.js && node --check scripts/build.mjs && node --check scripts/serve.mjs && node --check scripts/prepare-scripture.mjs && node --check scripts/prepare-calendar.mjs",
+    "prepare:calendar": "node scripts/prepare-calendar.mjs",
     "test": "node --test"
   },
-  "engines": { "node": ">=22" }
+  "engines": { "node": ">=22" },
+  "devDependencies": {
+    "@romcal/calendar.united-states": "3.0.0-dev.144",
+    "romcal": "3.0.0-dev.144"
+  }
 }

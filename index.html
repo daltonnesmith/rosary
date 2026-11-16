@@ -22,7 +22,8 @@
       </header>
       <nav class="tabs" aria-label="Main navigation">
         <button data-tab="pray" aria-current="page">Rosary</button>
-        <button data-tab="scripture">Scripture & prayer</button>
+        <button data-tab="scripture" aria-label="Scripture and prayer">Scripture</button>
+        <button data-tab="liturgical">Calendar</button>
         <button data-tab="journal">Your journal</button>
         <button data-tab="about">Guidance</button>
       </nav>
@@ -97,6 +98,34 @@
             </article>
           </div>
           <div class="panel reading-source"><h2>Scripture, always within reach.</h2><p>The complete readings are bundled for offline use: the public-domain <a href="https://ebible.org/eng-web-c/" target="_blank" rel="noopener noreferrer">World English Bible, Catholic Edition</a>. Each chapter is divided at verse boundaries into five readings. Verse numbering follows this edition; footnotes and empty verse entries are not included. The Esther and Daniel collections include the Greek additions in their full chapter context. <a href="./SCRIPTURE-LICENSE.txt" target="_blank" rel="noopener">Source notice</a>.</p><p>Your exact reading, prayer, and bead are saved independently for each companion. Book bars count only chapters explicitly completed after the closing prayers, not chapters merely opened or skipped. Your journal backup includes both companions.</p></div>
+        </section>
+        <section id="liturgical" aria-labelledby="liturgical-heading" hidden>
+          <div class="intro"><p class="eyebrow">THE RHYTHM OF THE CHURCH</p><h1 id="liturgical-heading">A season for every prayer.</h1><p>Feasts, saints, and sacred seasons in the U.S. Roman Catholic calendar.</p></div>
+          <div class="lit-layout">
+            <article class="panel lit-month-panel">
+              <div class="calendar-heading lit-month-heading"><button id="lit-back" class="quiet" aria-label="Previous liturgical calendar month">←</button><h2 id="lit-month-title" aria-live="polite"></h2><button id="lit-next" class="quiet" aria-label="Next liturgical calendar month">→</button></div>
+              <div class="lit-controls"><div><label for="lit-date">Go to date</label><input id="lit-date" type="date" required></div><button id="lit-today" class="secondary">Today</button></div>
+              <p class="small muted lit-grid-help">Select a day for all its observances. The background shows the season; the dot shows the main celebration's color.</p>
+              <table class="lit-month" aria-labelledby="lit-month-title"><thead><tr><th scope="col" abbr="Sunday">Sun</th><th scope="col" abbr="Monday">Mon</th><th scope="col" abbr="Tuesday">Tue</th><th scope="col" abbr="Wednesday">Wed</th><th scope="col" abbr="Thursday">Thu</th><th scope="col" abbr="Friday">Fri</th><th scope="col" abbr="Saturday">Sat</th></tr></thead><tbody id="lit-days"></tbody></table>
+              <p class="small muted lit-grid-help">Keyboard: arrow keys move days or weeks; Page Up/Down changes month; Home/End moves within a week.</p>
+            </article>
+            <aside class="panel lit-details" aria-labelledby="lit-day-title">
+              <p id="lit-season" class="lit-season"></p><h2 id="lit-day-title"></h2>
+              <div id="lit-events" aria-live="polite" aria-atomic="true"></div>
+              <p id="lit-day-note" class="small lit-day-note" hidden></p>
+              <div class="lit-local"><label for="lit-ascension">Ascension in your diocese</label><select id="lit-ascension"><option value="sunday">Sunday (most U.S. dioceses)</option><option value="thursday">Thursday</option></select><p class="small muted">Check your parish's calendar. This choice lasts for this visit and never changes your prayer history.</p></div>
+            </aside>
+          </div>
+          <div class="panel lit-guide">
+            <h2>Color, with meaning.</h2>
+            <p class="small muted">Season backgrounds</p>
+            <div class="lit-season-key"><span data-season="ADVENT">Advent</span><span data-season="CHRISTMAS_TIME">Christmas</span><span data-season="ORDINARY_TIME">Ordinary Time</span><span data-season="LENT">Lent</span><span data-season="PASCHAL_TRIDUUM">Paschal Triduum</span><span data-season="EASTER_TIME">Easter</span></div>
+            <p class="small muted">Celebration colors can differ from the season, especially on saints' days.</p>
+            <ul class="lit-color-key"><li data-color="GREEN"><span class="lit-dot" aria-hidden="true"></span>Green: Ordinary Time</li><li data-color="PURPLE"><span class="lit-dot" aria-hidden="true"></span>Violet: Advent and Lent</li><li data-color="WHITE"><span class="lit-dot" aria-hidden="true"></span>White/gold: Christmas, Easter, and many feasts</li><li data-color="RED"><span class="lit-dot" aria-hidden="true"></span>Red: the Passion, Pentecost, and martyrs</li><li data-color="ROSE"><span class="lit-dot" aria-hidden="true"></span>Rose: optional on Gaudete and Laetare Sundays</li><li data-color="BLACK"><span class="lit-dot" aria-hidden="true"></span>Black: an option for All Souls</li><li data-color="NONE"><span class="lit-dot" aria-hidden="true"></span>No daytime Mass: Holy Saturday</li></ul>
+            <p class="small muted" id="lit-coverage"></p>
+            <p class="small muted">Includes national solemnities, feasts, memorials, and optional observances, not every saint in every local calendar. Evening liturgies can differ from the daytime guide; Holy Thursday and the Easter Vigil are explained on their dates. Diocesan patrons, church dedications, religious orders, and obligations require your local calendar.</p>
+            <p class="small muted">Calculated offline with <a href="https://github.com/romcal/romcal" target="_blank" rel="noopener noreferrer">romcal</a>; selected dates cross-checked against the <a href="https://www.usccb.org/committees/divine-worship/liturgical-calendar" target="_blank" rel="noopener noreferrer">USCCB calendars</a>. A companion, not an official ordo. <a href="./CALENDAR-LICENSE.txt" target="_blank" rel="noopener">Source and license</a>.</p>
+          </div>
         </section>
         <section id="journal" aria-labelledby="journal-heading" hidden>
           <div class="intro"><p class="eyebrow">A FAITHFUL RHYTHM</p><h1 id="journal-heading">One day at a time.</h1><p>Your prayers and reflections, kept only on this device.</p></div>
