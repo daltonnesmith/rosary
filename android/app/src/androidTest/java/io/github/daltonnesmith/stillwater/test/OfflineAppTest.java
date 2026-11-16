@@ -7,14 +7,19 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.*;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.app.UiAutomation;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
 import android.net.Uri;
 import android.os.SystemClock;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
+@SdkSuppress(minSdkVersion = 35)
 public class OfflineAppTest {
     private ActivityScenario<MainActivity> scenario;
 
@@ -55,13 +61,24 @@ public class OfflineAppTest {
 
     @Test
     public void firstLaunchOfflinePrayersCalendarJournalBackupsAndResumption() throws Exception {
+        UiAutomation automation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        automation.adoptShellPermissionIdentity(Manifest.permission.ACCESS_NETWORK_STATE);
+        try {
+            ConnectivityManager connectivity = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext().getSystemService(ConnectivityManager.class);
+            Network network = connectivity.getActiveNetwork();
+            // WebView's navigator.onLine does not reliably reflect Android connectivity.
+            assertNull("Emulator must be offline before first launch: " +
+                (network == null ? "none" : connectivity.getNetworkCapabilities(network)), network);
+        } finally {
+            automation.dropShellPermissionIdentity();
+        }
         try (ActivityScenario<MainActivity> activity = ActivityScenario.launch(MainActivity.class)) {
             scenario = activity;
             waitFor("document.querySelector('#prayer-title')?.textContent");
             assertEquals(Boolean.TRUE, evaluate("return document.documentElement.classList.contains('native-app');"));
             assertEquals(Boolean.TRUE, evaluate("return document.querySelector('#web-install-guidance').hidden;"));
             assertEquals(Boolean.TRUE, evaluate("return typeof Capacitor.Plugins.StillwaterBackup.save === 'function';"));
-            assertEquals(Boolean.TRUE, evaluate("return !navigator.onLine;"));
             assertEquals("Sign of the Cross", text("#prayer-title"));
             click("#next");
             click("#next");

@@ -55,6 +55,7 @@ jobs:
           disable-animations: true
           emulator-boot-timeout: 600
           script: |
+            adb shell cmd connectivity airplane-mode enable
             adb shell svc wifi disable
             adb shell svc data disable
             cd android && ./gradlew --no-daemon :app:assembleDebug :app:connectedDebugAndroidTest

@@ -63,7 +63,7 @@ Set-Location android
 .\gradlew.bat assembleDebug
 ```
 
-The result is `android\app\build\outputs\apk\debug\app-debug.apk`. The checked-in Gradle wrapper downloads its pinned Gradle distribution. Set `ANDROID_HOME` or Android Studio's local SDK configuration for a local build. On macOS/Linux use `./gradlew assembleDebug` inside `android`. The GitHub workflow supplies these tools when they are not installed locally. To rerun native integration checks on a connected test device/emulator, use `connectedDebugAndroidTest` after syncing.
+The result is `android\app\build\outputs\apk\debug\app-debug.apk`. The checked-in Gradle wrapper downloads its pinned Gradle distribution. Set `ANDROID_HOME` or Android Studio's local SDK configuration for a local build. On macOS/Linux use `./gradlew assembleDebug` inside `android`. The GitHub workflow supplies these tools when they are not installed locally. To rerun native integration checks, use a fresh Android 15 (API 35) or newer emulator, disable its network connections, and run `connectedDebugAndroidTest` after syncing. The test verifies Android's actual connectivity before the first launch, rather than relying on WebView's unreliable `navigator.onLine` flag.
 
 `capacitor.config.json` intentionally has no remote `server.url`. Native Android uses the installed assets, skips web service-worker registration, applies safe-area insets, and uses the same validated local journal format. Original launcher icons are generated from the same artwork as the web app. Never commit keystores, passwords, APK build outputs or copied assets; publish only the intended test APK and checksum. See `NATIVE-LICENSE.txt` and `APACHE-2.0.txt` for native dependency notices.
 
