@@ -110,10 +110,10 @@ function renderPrayer(focus = false) {
     const item = make('li');
     const details = make('details');
     const summary = make('summary');
-    const reference = make('p', mystery.reference, 'reading-reference');
-    const reflection = make('p', mystery.reflection, 'reflection');
+    const reference = make('p', mystery.citation, 'reading-reference');
+    const reflection = make('p', `Reflection: ${mystery.reflection}`, 'reflection');
     summary.append(make('span', String(i + 1).padStart(2, '0'), 'mystery-number'), make('span', mystery.title));
-    details.append(summary, make('p', mystery.reading, 'mystery-story'), reference, reflection);
+    details.append(summary, reference, make('p', mystery.scripture, 'mystery-story'), make('p', `Meditation: ${mystery.reading}`), reflection);
     details.open = expandedMysteries.has(i);
     item.append(details);
     if (step.decade === i + 1 && progress) item.setAttribute('aria-current', 'step');
@@ -127,9 +127,10 @@ function renderPrayer(focus = false) {
   const enteringDecade = step.decade && displayedDecade !== decadeKey;
   if (step.decade) {
     const mystery = set.mysteries[step.decade - 1];
-    $('#mystery-reading-text').textContent = mystery.reading;
-    $('#mystery-reading-reference').textContent = mystery.reference;
-    $('#mystery-reflection').textContent = mystery.reflection;
+    $('#mystery-reading-text').textContent = mystery.scripture;
+    $('#mystery-reading-reference').textContent = mystery.citation;
+    $('#mystery-commentary').textContent = `Meditation: ${mystery.reading}`;
+    $('#mystery-reflection').textContent = `Reflection: ${mystery.reflection}`;
     if (enteringDecade) $('#mystery-reading').open = true;
   }
   displayedDecade = decadeKey;

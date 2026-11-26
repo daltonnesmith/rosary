@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { READING_BOOKS } from '../src/scripture.js';
 import { MYSTERIES, PRAYERS, emptyState, sequence, suggestedMystery, localDate, previousDate, validDate, validateState, loadState, saveState, parseBackup, mergeBackup, stats, finishRosary, STORAGE_KEY } from '../src/core.js';
 
 const timestamp = '2026-11-16T18:00:00.000Z';
@@ -45,6 +46,19 @@ test('every guided decade supplies its written-out mystery and a devotional refl
 test('weekday defaults match the customary four-set calendar', () => {
   const expected = ['glorious', 'joyful', 'sorrowful', 'glorious', 'luminous', 'sorrowful', 'joyful'];
   for (let day = 0; day < 7; day++) assert.equal(suggestedMystery(new Date(2026, 10, 15 + day)), expected[day]);
+});
+test('Baptism quotes all five verses; Marian meditations are distinguished from direct accounts', () => {
+  const baptism = MYSTERIES.luminous.mysteries[0];
+  const matthew = READING_BOOKS.find(book => book.id === 'MAT').chapters.find(chapter => chapter.number === 3);
+  assert.equal(baptism.scripture, matthew.verses.filter(v => v.number >= 13 && v.number <= 17).map(v => v.text).join(' '));
+  assert.match(baptism.citation, /Matthew 3:13–17/);
+  for (const { mysteries } of Object.values(MYSTERIES)) {
+    for (const mystery of mysteries) {
+      assert.ok(mystery.scripture.trim());
+      assert.notEqual(mystery.scripture, mystery.reading);
+    }
+  }
+  for (const mystery of MYSTERIES.glorious.mysteries.slice(3)) assert.match(mystery.citation, /^Scripture for meditation:/);
 });
 test('completion is explicit, clears only progress, and cannot be repeated without a new rosary', () => {
   const state = { ...emptyState(), progress: progress(), notes: [note()] };

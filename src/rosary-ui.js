@@ -91,16 +91,18 @@ export function createVirtualRosary({ getContext, start, next, previous, notify,
     $('#virtual-prayer-title').textContent = context.completed ? 'A moment well spent.' : mysteryCard ? mystery.title : PRAYERS[step.prayer][0];
     $('#virtual-prayer-text').textContent = context.completed
       ? context.storageMessage ? 'Your rosary is complete in this tab, but could not be saved. Export a backup before closing.' : 'Your rosary is complete and recorded in your journal.'
-      : mysteryCard ? mystery.reading : PRAYERS[step.prayer][1];
+      : mysteryCard ? mystery.scripture : PRAYERS[step.prayer][1];
     $('#virtual-intention').textContent = context.completed ? 'Go gently into your day.' : mysteryCard ? `${MYSTERIES[context.set].name} · Mystery ${step.decade} of 5` : mystery?.title || step.intention || 'One bead. One prayer. No hurry.';
     $('#virtual-storage-error').hidden = !context.storageMessage;
     $('#virtual-storage-error').textContent = context.storageMessage;
     $('#virtual-feedback').hidden = $('#status').hidden;
     $('#virtual-feedback').textContent = $('#status').textContent;
     $('#virtual-mystery').hidden = !mysteryCard;
+    $('#virtual-mystery-reference').hidden = !mysteryCard;
     if (mysteryCard) {
-      $('#virtual-mystery-reference').textContent = mystery.reference;
-      $('#virtual-mystery-reflection').textContent = mystery.reflection;
+      $('#virtual-mystery-reference').textContent = mystery.citation;
+      $('#virtual-mystery-commentary').textContent = `Meditation: ${mystery.reading}`;
+      $('#virtual-mystery-reflection').textContent = `Reflection: ${mystery.reflection}`;
     }
     $('#rosary-track').replaceChildren(...indices.map(index => {
       const item = steps[index];

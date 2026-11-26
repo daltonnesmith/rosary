@@ -1,5 +1,6 @@
 import { localDate, validDate, previousDate, validTimestamp as stamp } from './dates.js';
 import { emptyReading, validateReading, mergeReading } from './reading.js';
+import { PASSAGES } from './mystery-passages.js';
 export { localDate, validDate, previousDate } from './dates.js';
 
 export const PRAYERS = {
@@ -56,6 +57,14 @@ export const MYSTERIES = {
   },
 };
 
+for (const [set, { mysteries }] of Object.entries(MYSTERIES)) {
+  mysteries.forEach((mystery, i) => {
+    const passage = PASSAGES[set][i];
+    mystery.scripture = passage.text;
+    const label = set === 'glorious' && i >= 3 ? 'Scripture for meditation' : 'Scripture';
+    mystery.citation = `${label}: ${passage.reference} · World English Bible, Catholic Edition`;
+  });
+}
 export const suggestedMystery = (date = new Date()) => ['glorious', 'joyful', 'sorrowful', 'glorious', 'luminous', 'sorrowful', 'joyful'][date.getDay()];
 export function sequence(set, fatima = true) {
   if (!Object.hasOwn(MYSTERIES, set)) throw new Error('Unknown mystery set.');
