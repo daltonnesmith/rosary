@@ -151,7 +151,7 @@ function renderPrayer(focus = false) {
   $('#next').textContent = completed ? 'Pray again →' : !progress ? 'Begin rosary →' : index === steps.length - 1 ? 'Complete rosary ✓' : 'Next prayer →';
   $('#restart').hidden = !progress;
   virtualRosary.render();
-  if (focus && !$('#guided-rosary').hidden) {
+  if (focus && !$('#guided-rosary').hidden && !$('#chapel-dialog').open) {
     const heading = enteringDecade ? $('#meditation') : $('#prayer-title');
     heading.focus({ preventScroll: true });
     const bounds = heading.getBoundingClientRect();
@@ -414,6 +414,41 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar();
+let chapel;
+$('#view-chapel').addEventListener('click', async () => {
+  const button = $('#view-chapel');
+  button.disabled = true;
+  try {
+    if (!chapel) {
+      const { createChapel } = await import('../chapel/chapel.js');
+      chapel = await createChapel($('#chapel-host'), {
+        context: () => ({
+          progress: state.progress, set: state.progress?.set ?? selectedSet,
+          fatima: state.progress?.fatima ?? state.fatima,
+          error: $('#storage-error').hidden ? '' : $('#storage-error').textContent,
+        }),
+        start,
+        move: direction => (direction > 0 ? nextPrayer : previousPrayer)({ mysteryCards: true }),
+        leave: finished => {
+          $('#chapel-dialog').close();
+          if (finished) {
+            selectedDay = completedDate;
+            displayedMonth = new Date(`${completedDate}T12:00:00`);
+            displayedMonth.setDate(1);
+            showTab('journal');
+          }
+        },
+      });
+    }
+    $('#chapel-dialog').showModal();
+    chapel.sync();
+  } catch (error) {
+    $('#chapel-dialog').close();
+    $('#chapel-host').replaceWith(Object.assign(document.createElement('div'), {id: 'chapel-host'}));
+    chapel = null;
+    notify(`The chapel could not open: ${error.message} Your saved place has not changed.`);
+  } finally { button.disabled = false; }
+});
 const virtualRosary = createVirtualRosary({
   getContext: () => ({
     progress: state.progress, set: state.progress?.set ?? selectedSet,

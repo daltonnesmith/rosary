@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 64" fill="none" stroke="#f8dea0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+<defs>
+  <!-- Each miniature fills the same lancet, so the leading stays still between decades. -->
+  <g id="frame"><path fill="#192e42" d="M4 61V31Q5 15 40 2q35 13 36 29v30Z"/><path fill="currentColor" opacity=".8" d="M9 57V32Q10 19 40 7q30 12 31 25v25Z"/><path stroke="#f5cc77" opacity=".45" d="M9 36 26 25 15 19m56 17L54 25l11-6M40 7v10M9 50l13 7m49-7-13 7"/></g>
+  <g id="star"><path fill="#ffdf8c" d="m40 12 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/></g>
+  <g id="jar"><path fill="#b07150" d="M-4-8h8l-1 4Q10 1 6 9H-6Q-10 1-3-4Z"/></g>
+  <g id="cup"><path fill="#e5af58" d="M29 28h22q-1 15-11 15T29 28Zm11 15v7m-8 2h16"/></g>
+  <g id="temple"><path fill="#ab835f" d="m18 30 22-13 22 13ZM20 51h40M25 33v14m10-14v14m10-14v14m10-14v14"/></g>
+  <g id="cross"><path fill="#c59466" d="M37 18h6v10h12v5H43v20h-6V33H25v-5h12Z"/></g>
+  <g id="flame"><path fill="#f6b75f" d="M0 9Q-10 6-5-2q3 2 4-7 10 9 6 15Z"/></g>
+</defs>
+<g id="joyful-1"><use href="#frame"/><path fill="#ffedc7" d="M39 51V32q-12 0-15-12 9 2 12 7l4-13 4 13q4-6 12-7-3 13-15 14v17m-2-7-10-5m12 2 9-6"/></g>
+<g id="joyful-2"><use href="#frame"/><g fill="#ecc198"><circle cx="32" cy="28" r="5"/><circle cx="47" cy="27" r="5"/><path d="m22 51 5-16 7-3 8 8-4 4-5-4-1 11Zm19 0 2-16 6-4 7 8 3 12Z"/></g></g>
+<g id="joyful-3"><use href="#frame"/><use href="#star"/><path fill="#c29961" d="m22 37 17 4 19-6-6 10H31Zm6 16 23-14m0 14L29 39"/><path fill="#fff1bc" d="M30 36q2-7 9-4l10 4-11 3Z"/></g>
+<g id="joyful-4"><use href="#frame"/><use href="#temple"/><path fill="#fff3c8" d="m36 42-7-7 8 2 3-4 3 4 7-2-7 9Z"/></g>
+<g id="joyful-5"><use href="#frame"/><use href="#temple"/><path fill="#335878" d="M24 40q8-4 16 1 8-5 16-1v12q-8-4-16 0-8-4-16 0Zm16 1v11"/></g>
+<g id="luminous-1"><use href="#frame"/><path fill="#fff2d3" d="M22 20q11 1 17 9l-3-14q10 4 13 13l7-1-5 5-7 2-9 6 1-7q-9-2-14-13Z"/><path stroke="#91ded8" d="M15 44q7-5 15 0t15 0t16 0M19 50q7-5 15 0t15 0t13 0"/></g>
+<g id="luminous-2"><use href="#frame"/><use href="#jar" transform="translate(25 40) scale(.8)"/><use href="#jar" transform="translate(40 37) scale(1.25)"/><use href="#jar" transform="translate(56 41) scale(.8)"/></g>
+<g id="luminous-3"><use href="#frame"/><path fill="#f7cd76" d="M40 52V27q-11-1-15-13 12 3 15 13 2-9 13-12-2 12-12 14m-1 9q-11 0-16-11 12 1 16 11m0 3q6-11 16-11-5 10-16 11Z"/><path d="m20 53 19-4 22 4"/></g>
+<g id="luminous-4"><use href="#frame"/><path fill="#91afb5" d="m13 51 16-18 6 7 10-18 22 29Z"/><use href="#star"/><path d="m26 20 5 5m23-5-5 5"/></g>
+<g id="luminous-5"><use href="#frame"/><use href="#cup"/><circle fill="#fff0ca" cx="40" cy="20" r="7"/><path stroke="#b38b50" d="M40 17v7m-3-4h6"/></g>
+<g id="sorrowful-1"><use href="#frame"/><use href="#cup"/><path fill="#91a783" d="M16 46q13-8 17-25m-6 15q-11 0-10-8 8 0 10 8Zm4-8q5-11 11-9-3 7-11 9Z"/></g>
+<g id="sorrowful-2"><use href="#frame"/><path fill="#b6a6ac" d="M30 20h20v5H30Zm4 5h12v23H34Zm-5 23h22v5H29Z"/><path stroke="#744559" d="m34 32 12 5-12 4"/></g>
+<g id="sorrowful-3"><use href="#frame"/><ellipse cx="40" cy="37" rx="19" ry="9" stroke-width="4"/><path d="m21 37-5-4m11 0-2-8m12 5 4-9m6 10 6-6m3 11 7-4m-6 11 3 5m-19-4-2 7m-9-9-5 4"/></g>
+<g id="sorrowful-4"><use href="#frame"/><path d="m15 54 50-13"/><use href="#cross" transform="rotate(30 40 35)"/></g>
+<g id="sorrowful-5"><use href="#frame"/><use href="#cross"/><path fill="#615378" d="M14 56q26-16 52 0Z"/><path d="M20 46V32m-5 5h10m34 8V31m-5 6h10"/></g>
+<g id="glorious-1"><use href="#frame"/><path fill="#a68163" d="M17 52q3-29 25-29 14 0 20 29Z"/><path fill="#253748" d="M29 52q1-18 10-18t10 18Z"/><circle fill="#ccb78a" cx="53" cy="46" r="8"/><path d="m31 21-3-5m13 3v-6m10 8 4-5"/></g>
+<g id="glorious-2"><use href="#frame"/><path fill="#c9dadd" d="M17 45q2-9 10-7 5-11 14-4 8-10 15 0 10 0 9 11Z"/><path d="M40 30V14m-7 9 7-9 7 9m-18 5 3-6m19 6-3-6"/></g>
+<g id="glorious-3"><use href="#frame"/><use href="#flame" transform="translate(40 29)"/><use href="#flame" transform="translate(25 42) scale(.75)"/><use href="#flame" transform="translate(55 42) scale(.75)"/></g>
+<g id="glorious-4"><use href="#frame"/><circle cx="40" cy="25" r="9"/><path fill="#82a6c2" d="M28 45q3-25 12-26 9 1 12 26l-12-4Z"/><path fill="#fff2d8" d="M17 52q1-9 11-7 5-7 12-2 8-6 13 1 8-2 11 8Z"/></g>
+<g id="glorious-5"><use href="#frame"/><path fill="#e5ba64" d="m21 29 12 6 7-15 7 15 12-6-5 17H26Zm5 20h28"/><circle fill="#a85d55" cx="40" cy="39" r="2"/></g>
+</svg>

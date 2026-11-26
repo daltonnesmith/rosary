@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Stillwater · The Chapel</title><link rel="stylesheet" href="chapel.css"></head>
+<body data-set="luminous">
+<svg class="glass" viewBox="0 0 320 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><pattern id="panes" width="80" height="100" patternUnits="userSpaceOnUse"><path d="M40 0 80 50 40 100 0 50Z" fill="none" stroke="currentColor"/><path d="M0 0 40 50 0 100M80 0 40 50 80 100" fill="none" stroke="currentColor" opacity=".4"/></pattern></defs>
+<rect width="320" height="560" fill="url(#panes)"/><g id="glass-border" fill="none" stroke="currentColor" stroke-width="1"><path fill="#8b5369" d="M0 0h32L10 50 0 44Zm0 100 20-48 10 50-30 46Zm0 100 30-48-10 50L0 244Z"/><path fill="#399b9a" d="M32 0h27L20 52Zm-2 102-10-50 30-16Zm0 50-10 50 32-24Z"/><path fill="#d4aa6b" d="m0 44 10 6-10 50Zm0 104 30-46v50Z"/></g><use href="#glass-border" transform="translate(320) scale(-1 1)"/><use href="#glass-border" transform="translate(0 560) scale(1 -1)"/><use href="#glass-border" transform="translate(320 560) scale(-1)"/><g fill="none" stroke="currentColor" stroke-width="2"><path d="M18 560V184Q18 80 160 12Q302 80 302 184V560ZM32 560V192Q32 92 160 27Q288 92 288 192V560"/><circle cx="160" cy="102" r="40"/><circle cx="160" cy="102" r="34"/></g>
+<g id="window-symbol" class="emblem" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round">
+<path class="luminous" d="M139 92q12 1 20 12-3-14-2-22 12 10 13 20l9-3-5 7-8 3-6 10-9 3 5-13q-10-3-17-17Z"/>
+<path class="joyful" d="M160 124v-22q-15-3-18-16 12 1 15 9l3-17 4 17q6-9 15-9-4 13-19 16m0 14-12-7m12 4 12-8"/>
+<path class="sorrowful" d="M147 122q21-21 26-40m-15 28q-13-1-13-12 11 1 13 12Zm8-12q-9-3-8-13 9 3 8 13Zm-10 16q10-13 19-11-4 12-19 11Z"/>
+<g class="glorious"><path d="M135 118q3-22 22-24 16-1 24 24Zm14 0q1-14 10-14 8 0 10 14M160 80v8m-12-4 4 7m21-7-4 7"/><circle cx="174" cy="114" r="7"/></g>
+</g></svg>
+<main><header><button id="exit">← Rosary</button><span>STILLWATER <b>✦</b> CHAPEL</span><svg class="seal" viewBox="132 74 56 56" aria-hidden="true"><circle cx="160" cy="102" r="26"/><use href="#window-symbol"/></svg></header>
+<svg id="lancet" viewBox="0 0 320 64" aria-hidden="true"><defs><g id="ribbon"><path fill="#46697d" d="m0 43 25-18 24 17 22-22 22 14 22-17 20 18v17H0Z"/><path fill="#bd965e" d="m0 43 25-18-10 23Zm49-1 22-22-9 26Zm44-8 22-17-10 20Z"/><path fill="none" d="M0 52q62-24 135 0M8 56h122"/></g></defs><use href="#ribbon"/><use href="#ribbon" transform="translate(320) scale(-1 1)"/><use id="scene" x="120"/></svg>
+<article><small id="phase"></small><h1 id="title"></h1><small id="cite"></small><div id="leaf"><p id="words"></p></div><footer><span id="page"></span><button id="whole">View whole rosary</button></footer></article>
+<section aria-label="Prayer controls"><canvas id="strand" aria-hidden="true"></canvas><button id="bead" aria-label="Tap next bead or continue reading"></button><nav><button id="back">← Back</button><button id="next"></button></nav></section>
+<p class="note" id="message" role="status"></p></main>
+<dialog><h2>The whole rosary</h2><canvas id="loop" aria-label="Rosary with five decades, a pendant and a cross"></canvas><label>Turn the rosary <input id="angle" type="range" min="-80" max="80" value="0"></label><button id="close">Return to reading</button></dialog>
+</body></html>

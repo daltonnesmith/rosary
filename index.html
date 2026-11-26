@@ -35,6 +35,7 @@
           <div class="rosary-view-switch" role="group" aria-label="Rosary presentation">
             <button id="view-guided" class="secondary" aria-pressed="true" aria-controls="guided-rosary">Guided prayers</button>
             <button id="view-virtual" class="secondary" aria-pressed="false" aria-controls="virtual-rosary">Virtual rosary</button>
+            <button id="view-chapel" class="primary" aria-haspopup="dialog">Stained-glass chapel</button>
           </div>
           <div class="prayer-layout">
             <aside class="mystery-panel">
@@ -185,5 +186,6 @@
     </div>
     <dialog id="confirm-dialog"><form method="dialog"><h2 id="confirm-title">Start again?</h2><p id="confirm-text"></p><div class="dialog-actions"><button value="cancel" class="secondary" autofocus>Keep my place</button><button value="confirm" class="primary">Start new rosary</button></div></form></dialog>
     <noscript><p class="notice error">Stillwater needs JavaScript to display prayers and save your journal. Enable JavaScript and reload.</p></noscript>
+    <dialog id="chapel-dialog" aria-label="Stained-glass chapel"><div id="chapel-host"></div></dialog>
   </body>
 </html>

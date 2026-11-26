@@ -208,3 +208,5 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
   .lit-day-color { display: block; font-size: 9px; margin-top: 10px; text-align: center; }
   .lit-local select { font-size: 16px; }
 }
+#chapel-dialog{margin:0;padding:0;border:0;border-radius:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:#192e42}
+.rosary-view-switch{flex-wrap:wrap}
