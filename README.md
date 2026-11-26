@@ -9,6 +9,7 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 - Includes all four sets of mysteries and weekday suggestions. Five decades each contain one Our Father, ten Hail Marys, and a Glory Be; the Fatima prayer is optional.
 - Writes out the story of each mystery (including the Annunciation and Visitation), with a scripture reference and a short reflection. Open **Read the five mysteries** to read ahead, or read the current mystery above its decade's prayers. These are original devotional retellings, not quotations from a modern Bible translation; the Assumption and Coronation are clearly identified as traditional meditations rather than narrated Gospel events.
 - In **Virtual rosary**, each mystery is its own reading card before that decade's Our Father, not a separate list above the prayer. After the Fatima prayer, **NEXT** opens the following mystery; with Fatima disabled, it follows the Glory Be. The first mystery follows the opening Glory Be. Reading cards save and resume just like prayers, and Back revisits them without skipping any prayer.
+- Virtual rosary uses a steady, viewport-sized reading panel: only the prayer scrolls, not the whole page. Next/Back reset that panel to the beginning of the new card without moving the page or the controls. The embossed Catholic medallions use layered light and shadow for depth, with no spinning or motion effects.
 - Remembers your exact place, including the mystery set and Fatima setting. Starting over changes only the unfinished rosary, never your notes or completed days.
 - Records a rosary only when you choose **Complete rosary** after the final prayer. Completion belongs to the local calendar day when you finish, even if you started before midnight.
 - Shows a monthly calendar, daily prayer history, total days, and a current streak. An unfinished current day does not break yesterday's streak.
@@ -31,6 +32,8 @@ Open the address printed by the server, `http://localhost:4173/rosary/`. The sam
 The local server listens only on your computer's loopback interface. A phone cannot install it from your PC's localhost address. Publish the contents of `dist` to an approved HTTPS host to install it on a phone.
 
 ## Checks
+
+The twenty mysteries, their order and weekday suggestions were checked against the [Vatican's Rosary guide](https://www.vatican.va/special/rosary/documents/misteri_en.html) and [USCCB's How to Pray the Rosary](https://www.usccb.org/how-to-pray-the-rosary) on November 26, 2026. Each decade announces the mystery, then offers an Our Father, ten Hail Marys and a Glory Be; Fatima is optional. "Holy Ghost" in the traditional prayers means the Holy Spirit. The Assumption and Coronation are Catholic teachings (see [Catechism 966](https://www.vatican.va/archive/ENG0015/__P2C.HTM)), not events directly narrated in the Gospels. The written-out stories and reflections remain original devotional retellings, not copied modern Bible passages. The weekday default follows the Vatican's general schedule; the user can choose another set, including seasonal Sunday customs.
 
 ```powershell
 npm run check

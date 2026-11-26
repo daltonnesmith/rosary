@@ -104,11 +104,17 @@ public class OfflineAppTest {
             assertEquals("Our Father", text("#virtual-prayer-title"));
             assertEquals(Boolean.TRUE, evaluate("return document.querySelectorAll('.touch-bead svg').length === 5 && [...document.querySelectorAll('.touch-bead svg')].every(icon => icon.getBoundingClientRect().width > 0);"));
             assertEquals("mary", evaluate("return document.querySelector('.touch-bead[data-state=next] .touch-bead-stone').dataset.symbol;"));
+            double pagePosition = ((Number) evaluate("return scrollY;")).doubleValue();
+            double controlPosition = ((Number) evaluate("return document.querySelector('#virtual-next').getBoundingClientRect().top;")).doubleValue();
+            evaluate("const reader=document.querySelector('#virtual-reader');reader.scrollTop=reader.scrollHeight;");
             evaluate("const later=document.querySelector('.touch-bead[data-step=\"4\"]');later.disabled=false;later.click();later.disabled=true;");
             assertEquals(2, ((Number) evaluate("return JSON.parse(localStorage.getItem('stillwater-v1')).progress.step;")).intValue());
             click(".touch-bead[data-state=next]");
             assertEquals("Hail Mary", text("#virtual-prayer-title"));
             assertEquals("1", text(".touch-bead[aria-current=step] .touch-bead-count"));
+            assertEquals(pagePosition, ((Number) evaluate("return scrollY;")).doubleValue(), 1.0);
+            assertEquals(controlPosition, ((Number) evaluate("return document.querySelector('#virtual-next').getBoundingClientRect().top;")).doubleValue(), 1.0);
+            assertEquals(0, ((Number) evaluate("return document.querySelector('#virtual-reader').scrollTop;")).intValue());
             assertEquals(Boolean.TRUE, evaluate("return !document.querySelector('dialog[open]') && JSON.parse(localStorage.getItem('stillwater-v1')).progress.step === 3;"));
             click("#virtual-back");
             for (int i = 0; i < 5; i++) click(".touch-bead[data-state=next]");

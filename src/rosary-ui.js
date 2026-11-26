@@ -38,15 +38,15 @@ export function createVirtualRosary({ getContext, start, next, previous, notify,
       ? steps.findIndex(step => step.step === context.progress.step && step.stage === context.progress.stage) : 0;
     return { steps, current };
   }
-  function focusPrayer() {
-    $('#virtual-rosary').scrollIntoView({ block: 'start' });
+  function focusPrayer(resetReading = true) {
+    if (resetReading) $('#virtual-reader').scrollTop = 0;
     $('#virtual-prayer-title').focus({ preventScroll: true });
   }
   function tap(index) {
     const context = getContext();
     const { steps, current } = position(context);
     if (context.progress && current === index) {
-      focusPrayer();
+      focusPrayer(false);
       return;
     }
     if (context.completed || !canTapRosaryStep(context.progress ? current : null, index, steps.length)) {
@@ -95,6 +95,8 @@ export function createVirtualRosary({ getContext, start, next, previous, notify,
     $('#virtual-intention').textContent = context.completed ? 'Go gently into your day.' : mysteryCard ? `${MYSTERIES[context.set].name} · Mystery ${step.decade} of 5` : mystery?.title || step.intention || 'One bead. One prayer. No hurry.';
     $('#virtual-storage-error').hidden = !context.storageMessage;
     $('#virtual-storage-error').textContent = context.storageMessage;
+    $('#virtual-feedback').hidden = $('#status').hidden;
+    $('#virtual-feedback').textContent = $('#status').textContent;
     $('#virtual-mystery').hidden = !mysteryCard;
     if (mysteryCard) {
       $('#virtual-mystery-reference').textContent = mystery.reference;
@@ -145,11 +147,15 @@ export function createVirtualRosary({ getContext, start, next, previous, notify,
       const virtual = name === 'virtual';
       $('#guided-rosary').hidden = virtual;
       $('#virtual-rosary').hidden = !virtual;
+      document.body.classList.toggle('virtual-mode', virtual);
       $('#mystery-browser').hidden = virtual;
       $('#view-guided').setAttribute('aria-pressed', String(!virtual));
       $('#view-virtual').setAttribute('aria-pressed', String(virtual));
       render();
-      if (virtual) focusPrayer();
+      if (virtual) {
+        $('#virtual-rosary').scrollIntoView({ block: 'start', behavior: 'instant' });
+        focusPrayer();
+      }
     });
   }
   $('#virtual-next').addEventListener('click', advance);

@@ -75,3 +75,22 @@ test('guided navigation retains its original prayer positions and clears a pendi
   assert.equal(previous.stage, undefined);
   assert.equal(progress.stage, 'mystery');
 });
+
+test('every virtual decade announces the Catholic mystery in the Vatican order before its ten Hail Marys', () => {
+  const catholicOrder = {
+    joyful: ['The Annunciation', 'The Visitation', 'The Nativity', 'The Presentation in the Temple', 'The Finding of Jesus in the Temple'],
+    luminous: ['The Baptism of Jesus in the Jordan', 'The Wedding at Cana', 'The Proclamation of the Kingdom of God', 'The Transfiguration', 'The Institution of the Eucharist'],
+    sorrowful: ['The Agony in the Garden', 'The Scourging at the Pillar', 'The Crowning with Thorns', 'The Carrying of the Cross', 'The Crucifixion'],
+    glorious: ['The Resurrection', 'The Ascension', 'The Descent of the Holy Spirit', 'The Assumption of Mary', 'The Coronation of Mary'],
+  };
+  for (const [set, titles] of Object.entries(catholicOrder)) {
+    const cards = virtualRosarySteps(set, true);
+    assert.deepEqual(cards.filter(card => card.stage === 'mystery').map(card => MYSTERIES[set].mysteries[card.decade - 1].title), titles);
+    for (let decade = 1; decade <= 5; decade++) {
+      const decadeCards = cards.filter(card => card.decade === decade);
+      assert.equal(decadeCards[0].stage, 'mystery');
+      assert.equal(decadeCards[1].prayer, 'father');
+      assert.equal(decadeCards.filter(card => card.prayer === 'mary').length, 10);
+    }
+  }
+});

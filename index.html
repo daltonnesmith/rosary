@@ -70,20 +70,24 @@
               <p class="keyboard-hint small muted">Use ← and → to move between prayers.</p>
             </article>
             <article id="virtual-rosary" class="panel virtual-card" aria-labelledby="virtual-heading" hidden>
-              <p id="virtual-heading" class="eyebrow">YOUR FINGERTIP ROSARY</p>
-              <p id="virtual-intention" class="meditation"></p>
-              <h2 id="virtual-prayer-title" tabindex="-1" aria-live="polite"></h2>
-              <div id="virtual-storage-error" class="notice error" role="alert" hidden></div>
-              <p id="virtual-prayer-text" class="prayer-text"></p>
-              <div id="virtual-mystery" class="virtual-mystery-reading" hidden><p id="virtual-mystery-reference" class="reading-reference"></p><p id="virtual-mystery-reflection" class="reflection"></p><p class="small muted">An original devotional retelling, not a verbatim Bible translation.</p></div>
+              <div id="virtual-reader" class="virtual-reader" tabindex="0" role="region" aria-labelledby="virtual-prayer-title" aria-describedby="virtual-reading-help">
+                <p id="virtual-heading" class="eyebrow">YOUR FINGERTIP ROSARY</p>
+                <p id="virtual-intention" class="meditation"></p>
+                <h2 id="virtual-prayer-title" tabindex="-1" aria-live="polite"></h2>
+                <div id="virtual-storage-error" class="notice error" role="alert" hidden></div>
+                <p id="virtual-prayer-text" class="prayer-text"></p>
+                <div id="virtual-mystery" class="virtual-mystery-reading" hidden><p id="virtual-mystery-reference" class="reading-reference"></p><p id="virtual-mystery-reflection" class="reflection"></p><p class="small muted">An original devotional retelling, not a verbatim Bible translation. <a href="https://www.vatican.va/special/rosary/documents/misteri_en.html" target="_blank" rel="noopener noreferrer">Catholic mystery guide</a>.</p></div>
+                <div id="virtual-feedback" class="notice" role="status" hidden></div>
+              </div>
               <div class="touch-rosary-dock">
+                <p id="virtual-reading-help" class="small muted">Scroll within the prayer to read more. The beads stay in place.</p>
                 <div class="touch-progress"><span id="virtual-phase"></span><span id="virtual-count"></span></div>
                 <progress id="virtual-progress" max="100" value="0" aria-label="Fingertip rosary progress"></progress>
                 <div id="rosary-track" class="rosary-track" role="group" aria-label="Rosary beads: tap only the next bead to move forward"></div>
                 <p id="virtual-hint" class="small muted"></p>
                 <div class="prayer-controls"><button id="virtual-back" class="secondary">Back</button><button id="virtual-next" class="primary">Begin rosary</button></div>
               </div>
-              <button id="virtual-restart" class="text-button" hidden>Start a new rosary</button>
+              <div class="virtual-restart-row"><button id="virtual-restart" class="text-button" hidden>Start a new rosary</button></div>
             </article>
           </div>
           <div class="gentle-footer"><span aria-hidden="true">✧</span> Let this be a little sanctuary in your day.</div>

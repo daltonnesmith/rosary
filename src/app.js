@@ -33,6 +33,10 @@ function storageError(message) {
 function notify(message) {
   $('#status').textContent = message;
   $('#status').hidden = false;
+  if (!$('#pray').hidden && !$('#virtual-rosary').hidden) {
+    $('#virtual-feedback').textContent = message;
+    $('#virtual-feedback').hidden = false;
+  }
 }
 try {
   state = loadState({ getItem(key) {
@@ -70,6 +74,7 @@ function humanDate(value, options = { month: 'long', day: 'numeric', year: 'nume
 }
 function showTab(tab) {
   for (const name of ['pray', 'scripture', 'liturgical', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
+  document.body.classList.toggle('virtual-mode', tab === 'pray' && !$('#virtual-rosary').hidden);
   document.querySelectorAll('[data-tab]').forEach(button => {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
