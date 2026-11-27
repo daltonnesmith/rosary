@@ -178,3 +178,27 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 #lent-planner,#fast-history{border-top:1px solid var(--line);margin-top:1rem;padding-top:.45rem}
 #lent-planner summary,#fast-history summary{cursor:pointer;padding:.65rem 0}
 #lent-plan-form{display:grid;gap:.45rem}#lent-plan-text{width:100%;min-width:0}
+
+/* Each section takes its color from the same muted chapel palette. */
+#pray{--wash:#e0eae0;--accent:#375848}
+#scripture{--wash:#f3e2d9;--accent:#784336}
+#liturgical{--wash:#eae2ee;--accent:#65446b}
+#journal{--wash:#e0eaf0;--accent:#385769}
+#profile{--wash:#f1e4ce;--accent:#75532c}
+#about{--wash:#e0eae8;--accent:#365b59}
+section>.intro{margin:18px auto 24px;padding:clamp(20px,3vw,34px) 18px;border-radius:16px;background:linear-gradient(112deg,var(--wash),var(--card) 55%,var(--wash));border-block:1px solid var(--line)}
+.intro h1,.intro .eyebrow{color:var(--accent)}
+.intro::after{content:"";display:block;width:52px;height:2px;background:var(--accent);opacity:.55;margin:16px auto 0}
+#profile>.intro,#profile>.profile-study,#profile>.profile-fold{max-width:720px;margin-inline:auto}
+#profile>.profile-study{margin-bottom:14px}
+#profile>.profile-fold{--fold-ink:#3b5d58;--fold-wash:#e5efea;margin-block:0 12px;border:1px solid var(--line);border-radius:14px;padding:0 clamp(14px,3vw,24px);background:var(--card)}
+#profile>#fast-history{--fold-ink:#65466a;--fold-wash:#eee4ed}
+#profile>.profile-awards{--fold-ink:#795428;--fold-wash:#f5e9d1}
+#profile>#award-catalog{--fold-ink:#405977;--fold-wash:#e3eaf3}
+#profile>.profile-fold>summary{display:flex;align-items:center;gap:12px;min-height:64px;margin-inline:calc(-1 * clamp(14px,3vw,24px));padding:10px clamp(14px,3vw,24px);border-radius:inherit;color:var(--fold-ink);background:linear-gradient(105deg,var(--fold-wash),var(--card));font:20px/1.3 var(--serif);cursor:pointer;list-style:none}
+.profile-fold>summary::-webkit-details-marker{display:none}
+.profile-fold>summary svg{width:32px;height:32px;flex-shrink:0;padding:5px;border:1px solid currentColor;border-radius:50%;fill:currentColor;stroke:currentColor}
+.profile-fold>summary::after{content:"";width:8px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);margin-inline:auto 3px}
+.profile-fold[open]>summary::after{transform:rotate(225deg)}
+.profile-fold>summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.profile-fold[open]{padding-bottom:12px!important}.profile-fold .profile-controls{padding:0 0 4px}

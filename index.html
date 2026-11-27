@@ -176,7 +176,7 @@
           <div class="backup panel"><div><h2>Keep a little safekeeping.</h2><p class="muted">Browser storage can be cleared. Back up your journal regularly.</p></div><div class="backup-actions"><button id="export" class="secondary">Export backup</button><label class="secondary file-label">Import backup<input id="import" type="file" accept=".json,application/json"></label></div></div>
         </section>
         <section id="profile" aria-labelledby="profile-heading" hidden>
-          <div class="intro"><p class="eyebrow">PROFILE · REWARD PREVIEW</p><h1 id="profile-heading">My Little Chapel</h1><p>Try every reward. Nothing here earns points or changes your journal.</p></div>
+          <div class="intro"><p class="eyebrow">YOUR PROFILE</p><h1 id="profile-heading">My Little Chapel</h1><p>Your chapel, your fasts, and the medals you’ve earned along the way.</p></div>
           <article class="profile-study panel">
             <div id="profile-window" data-scene="dawn">
               <img id="profile-painting" alt="" hidden>
@@ -184,6 +184,8 @@
               <h2 id="profile-name">Little Pilgrim</h2>
               <canvas id="profile-strand" aria-label="Sample strand of devotional beads"></canvas>
             </div>
+          </article>
+          <details class="profile-fold" id="appearance-fold"><summary><svg aria-hidden="true" viewBox="0 0 40 40"><use href="./icons/awards.svg#beads"></use></svg>Chapel appearance</summary>
             <div class="profile-controls">
               <label for="profile-scene">Preview a background</label><select id="profile-scene"></select>
               <p id="profile-unlock" class="small muted"></p>
@@ -194,12 +196,13 @@
               <label for="profile-finish">Bead finish</label><select id="profile-finish"><option value="enamel">Jordan blue enamel</option><option value="wood">Olivewood &amp; brass</option><option value="pearl">Pearl &amp; gold</option></select>
               <button type="button" class="secondary" id="profile-equip">Equip background &amp; beads</button><p id="profile-equip-status" role="status" class="small"></p>
             </div>
-          </article>
-          <details class="panel" id="fast-history"><summary>Fasting history</summary>
+          </details>
+          <details class="profile-fold" id="fast-history"><summary><svg aria-hidden="true" viewBox="0 0 40 40"><use href="./icons/awards.svg#olive"></use></svg>Fasting history</summary>
             <p class="small muted">Past fasts, newest first. Open a record to see your intention and the days you marked.</p>
             <div id="fast-history-list"></div>
           </details>
-          <article class="panel profile-awards"><h2>Your earned awards</h2><p id="profile-award-note" class="small muted"></p><ul id="profile-awards"></ul><details id="award-catalog" open><summary>Review all awards</summary><ul id="profile-catalog"></ul></details></article>
+          <details class="profile-fold profile-awards"><summary><svg aria-hidden="true" viewBox="0 0 40 40"><use href="./icons/awards.svg#shell"></use></svg>Your earned awards</summary><p id="profile-award-note" class="small muted"></p><ul id="profile-awards"></ul></details>
+          <details class="profile-fold profile-awards" id="award-catalog"><summary><svg aria-hidden="true" viewBox="0 0 40 40"><use href="./icons/awards.svg#jerusalem"></use></svg>All awards</summary><ul id="profile-catalog"></ul></details>
         </section>
         <section id="about" aria-labelledby="about-heading" hidden>
           <div class="intro"><p class="eyebrow">ALWAYS WITH YOU</p><h1 id="about-heading">A small, sacred space.</h1><p>No account. No noise. Just a little room for prayer.</p></div>

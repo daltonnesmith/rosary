@@ -164,3 +164,4 @@ To reproduce the dataset, run `npm ci` followed by `npm run prepare:calendar`. N
 Personal fasts have independent **Start date** and **End date** fields; both default to the selected calendar day. During Lent, the violet seasonal card shows the year’s medal and seven progress marks.
 
 On today's calendar, **Prepare for Lent** lets you save or revise the next Lent's intention before Ash Wednesday. It becomes available for check-ins when the season starts on your device's local calendar; browsing ahead never unlocks it. **Profile → Fasting history** lists ended fasts, intentions and the specific days marked, including fasts with no check-ins.
+On **Profile**, the chapel artwork stays visible above four collapsible sections: appearance, fasting history, earned awards, and the full award catalog.
