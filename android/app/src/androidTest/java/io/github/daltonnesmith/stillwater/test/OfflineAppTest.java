@@ -1,10 +1,7 @@
 package io.github.daltonnesmith.stillwater.test;
 
-import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
-import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.*;
 
 import android.Manifest;
@@ -137,7 +134,10 @@ public class OfflineAppTest {
                 intending(hasAction(Intent.ACTION_CREATE_DOCUMENT)).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null));
                 click("#export");
                 waitFor("document.querySelector('#status').textContent.includes('Backup cancelled')");
-                intended(allOf(hasAction(Intent.ACTION_CREATE_DOCUMENT), hasType("application/json")));
+                // Verify the recorded request, not the WebView's window focus after cancellation.
+                assertEquals(1L, Intents.getIntents().stream().filter(intent ->
+                    Intent.ACTION_CREATE_DOCUMENT.equals(intent.getAction()) &&
+                    "application/json".equals(intent.getType())).count());
             } finally { Intents.release(); }
             Uri backup = Uri.parse("content://io.github.daltonnesmith.stillwater.test.backup-test/backup.json");
             Intents.init();
