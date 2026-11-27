@@ -21,12 +21,19 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   let ascension = 'sunday';
   const input = $('#lit-date');
   const preview = $('#season-preview');
+  const designTest = $('#test-design');
+  designTest.hidden = !['localhost','localhost.','127.0.0.1','[::1]'].includes(location.hostname);
+  designTest.addEventListener('click', () => {
+    preview.value = document.body.dataset.appearance === 'ADVENT' ? 'ORDINARY_TIME' : 'ADVENT';
+    applyAppearance();
+  });
   for (const [id,label] of Object.entries(SEASONS)) preview.add(new Option(label,id));
   function applyAppearance() {
     const today = localDate();
     const automatic = preview.value === 'auto';
     const season = automatic ? liturgicalDay(today)?.season : preview.value;
     document.body.dataset.appearance = season ?? 'default';
+    designTest.textContent = `Test design: ${season === 'ADVENT' ? 'Ordinary Time' : 'Advent'} →`;
     $('#advent-banner').hidden = season !== 'ADVENT';
     if (season === 'ADVENT') {
       let date = automatic ? today : selected;
