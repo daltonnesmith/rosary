@@ -24,6 +24,17 @@ function sync(position = 0) {
   const ctx = controls.context();
   set = ctx.set;
   wrapper.dataset.set = set;
+  const art=controls.getArtwork();
+  const banner=$('chapel-art');
+  banner.setAttribute('aria-label',art.name);
+  const photo=banner.querySelector('image'), illustration=banner.querySelector('use');
+  if (art.photo) {
+    photo.setAttribute('href',new URL(art.photo,import.meta.url).href);
+    illustration.removeAttribute('href');
+  } else {
+    photo.removeAttribute('href');
+    illustration.setAttribute('href',new URL(`../icons/profile-windows.svg#${art.symbol}`,import.meta.url).href);
+  }
   steps = virtualRosarySteps(set, ctx.fatima);
   index = ctx.progress ? steps.findIndex(s=>s.step===ctx.progress.step && s.stage===ctx.progress.stage) : 0;
   render(position);

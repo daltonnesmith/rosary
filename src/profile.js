@@ -22,6 +22,7 @@ const rewards = [
 const symbols = { shell:'Pilgrim’s Shell', beads:'Holy Rosary', lily:'Annunciation Lily', heart:'Sacred Heart', keys:'Keys of Saint Peter', candle:'Paschal Candle', lamp:'Sanctuary Lamp', 'chi-rho':'Chi-Rho', roses:'Marian Roses', jerusalem:'Jerusalem Cross' };
 Object.assign(symbols, { rose:'Golden Rose', fish:'Ichthys', harp:'David’s Harp', anchor:'Anchor of Hope', vine:'True Vine', chalice:'Eucharistic Chalice', olive:'Olive Branch', dove:'Dove of Peace', star:'Star of the Sea' });
 const gospelNames = {MAT:'Matthew · Winged Man',MAR:'Mark · Winged Lion',LUK:'Luke · Winged Ox',JOH:'John · Eagle'};
+Object.assign(symbols,{mass:'Bread of Life', confession:'Reconciliation',lent:'Lenten Journey'});
 const finishes = {wood:['Olivewood & brass','beads'],pearl:['Pearl & gold','chi-rho'],MAT:['Burnished copper','MAT'],MAR:['Emerald','MAR'],LUK:['Amethyst','LUK'],JOH:['Sapphire','JOH'],jerusalem:['Jerusalem gold','jerusalem']};
 for (const id of ['rose','fish','harp','anchor','vine','chalice','olive','dove','star']) finishes[id] = [`${symbols[id]} enamel`,id];
 const sceneKeys = ['','beads','candle','heart','lamp','chi-rho','roses'];
@@ -33,7 +34,8 @@ function medal(badge) {
   icon.setAttribute('aria-hidden','true');
   icon.setAttribute('viewBox','0 0 40 40');
   const use = document.createElementNS(icon.namespaceURI,'use');
-  use.setAttribute('href',`./icons/awards.svg#${badge.symbol}`);
+  const artwork = {mass:'chalice', confession:'dove', lent:'olive'}[badge.symbol] ?? badge.symbol;
+  use.setAttribute('href',`./icons/awards.svg#${artwork}`);
   icon.append(use);
   const name = document.createElement('strong'), rule = document.createElement('span'), status = document.createElement('small');
   name.textContent = symbols[badge.symbol] ?? gospelNames[badge.symbol];
@@ -41,7 +43,7 @@ function medal(badge) {
   status.textContent = badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`;
   const unlock = document.createElement('small');
   const finish = Object.values(finishes).find(([,key])=>key===badge.symbol);
-  unlock.textContent = finish ? `Beads: ${finish[0]}` : 'Reward: profile background';
+  unlock.textContent = finish ? `Beads: ${finish[0]}` : ['mass','confession','lent'].includes(badge.symbol) ? 'Private calendar milestone' : 'Reward: profile background';
   if (badge.children) {
     const details=document.createElement('details'), summary=document.createElement('summary'), list=document.createElement('ul');
     summary.append(icon,name,rule,status,unlock,document.createTextNode('View Gospel medals'));
@@ -96,7 +98,7 @@ export function createProfilePreview(getState) {
   function render() {
     if (!strand.clientWidth) return;
     const state = getState();
-    const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed);
+    const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed,state.checkins);
     const total = points / POINTS_PER_ROSARY;
     const previewLocked = byId('preview-locked').checked;
     const unlocked = new Set(badges.flatMap(b=>[b,...(b.children??[])]).filter(b=>b.earned).map(b=>b.symbol));
@@ -157,5 +159,8 @@ export function createProfilePreview(getState) {
   };
   votive.addEventListener('click', () => { lit = !lit; render(); });
   new ResizeObserver(render).observe(strand);
-  return {render, getFinish:()=>equipped.finish};
+  return {render, getFinish:()=>equipped.finish, getArtwork:()=>{
+    const p=paintings.find(p=>p.id===equipped.scene);
+    return p ? {photo:`../icons/${p.id}.jpg`,name:p.name} : {symbol:equipped.scene,name:rewards.find(r=>r[0]===equipped.scene)[1]};
+  }};
 }

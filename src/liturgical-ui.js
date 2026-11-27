@@ -14,7 +14,7 @@ const colorText = (event, day) => {
   return colors.length ? `${colors.map(color => COLORS[color]).join(' / ')}${event.optional && !event.colors.length ? ' (weekday color)' : ''}` : 'No daytime Mass';
 };
 
-export function createLiturgicalCalendar() {
+export function createLiturgicalCalendar({getChecks,toggle}) {
   let selected = localDate();
   selected = selected < FIRST_DAY ? FIRST_DAY : selected > LAST_DAY ? LAST_DAY : selected;
   let ascension = 'sunday';
@@ -36,6 +36,8 @@ export function createLiturgicalCalendar() {
   }
   function render() {
     const today = localDate();
+    const checks=getChecks();
+    const markedDates=new Set(checks.map(c=>c.date));
     const month = selected.slice(0, 7);
     const first = `${month}-01`;
     const count = Number(moveDay(moveMonth(first, 1), -1).slice(8));
@@ -73,9 +75,27 @@ export function createLiturgicalCalendar() {
       dot.setAttribute('aria-hidden', 'true');
       heading.append(make('span', String(number)), dot);
       button.append(heading, make('span', event.name, 'lit-day-name'), make('span', COLORS[color] ?? 'No Mass', 'lit-day-color'));
+      if(markedDates.has(date)){
+        heading.append(make('span','✓','lit-check-mark'));
+        button.setAttribute('aria-label',`${button.getAttribute('aria-label')} Personal check-in recorded.`);
+      }
       td.append(button);
     }
     const day = liturgicalDay(selected, ascension);
+    const isLent=day.season==='LENT';
+    const challenge=$('#lent-challenge');
+    challenge.hidden=!isLent;
+    if(isLent){
+      const count=checks.filter(c=>c.kind==='lent' && c.date.slice(0,4)===selected.slice(0,4) && c.date<=today).length;
+      $('#lent-heading').textContent=day.celebrations[0].id==='ash_wednesday'?'Ash Wednesday · Begin the Lenten Journey':'Lenten Journey';
+      $('#lent-count').textContent=`${Math.min(7,count)} of 7 prayer days this Lent. Set aside a moment for prayer today; the days need not be consecutive.`;
+    }
+    for(const button of document.querySelectorAll('[data-checkin]')){
+      const marked=checks.some(c=>c.date===selected && c.kind===button.dataset.checkin);
+      button.disabled=selected>today;
+      button.setAttribute('aria-pressed',String(marked));
+      button.textContent=`${marked?'✓ ':''}${button.dataset.label}`;
+    }
     $('#lit-day-title').textContent = format(selected, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const season = $('#lit-season');
     season.dataset.season = day.season;
@@ -100,6 +120,11 @@ export function createLiturgicalCalendar() {
   $('#lit-back').addEventListener('click', () => choose(moveMonth(selected, -1)));
   $('#lit-next').addEventListener('click', () => choose(moveMonth(selected, 1)));
   $('#lit-today').addEventListener('click', () => choose(localDate()));
+  for(const button of document.querySelectorAll('[data-checkin]')) button.addEventListener('click',()=>{
+    if(selected>localDate() || (button.dataset.checkin==='lent' && liturgicalDay(selected,ascension).season!=='LENT')) return;
+    toggle(selected,button.dataset.checkin);
+    render();
+  });
   input.addEventListener('input', () => input.setCustomValidity(''));
   input.addEventListener('change', () => choose(input.value));
   $('#lit-ascension').addEventListener('change', event => { ascension = event.target.value; render(); });

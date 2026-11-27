@@ -116,6 +116,11 @@
             <aside class="panel lit-details" aria-labelledby="lit-day-title">
               <p id="lit-season" class="lit-season"></p><h2 id="lit-day-title"></h2>
               <div id="lit-events" aria-live="polite" aria-atomic="true"></div>
+              <section class="lit-checkins"><h3>Private check-ins</h3><p class="small muted">For the selected date. Tap again to undo. Only the date and activity are stored in your journal backup; no confession details.</p>
+                <button class="secondary" data-checkin="mass" data-label="Attended Mass">Attended Mass</button>
+                <button class="secondary" data-checkin="confession" data-label="Went to Confession">Went to Confession</button>
+                <section id="lent-challenge" hidden><h3 id="lent-heading"></h3><p id="lent-count" class="small"></p><button class="secondary" data-checkin="lent" data-label="Prayed today for Lent">Prayed today for Lent</button></section>
+              </section>
               <p id="lit-day-note" class="small lit-day-note" hidden></p>
               <div class="lit-local"><label for="lit-ascension">Ascension in your diocese</label><select id="lit-ascension"><option value="sunday">Sunday (most U.S. dioceses)</option><option value="thursday">Thursday</option></select><p class="small muted">Check your parish's calendar. This choice lasts for this visit and never changes your prayer history.</p></div>
             </aside>

@@ -246,7 +246,7 @@ document.addEventListener('keydown', event => {
 
 function renderJournal() {
   const summary = stats(state.completions);
-  const {points, badges} = prayerMilestones(state.completions, localDate(), state.reading.gospels.completed);
+  const {points, badges} = prayerMilestones(state.completions, localDate(), state.reading.gospels.completed,state.checkins);
   $('#achievement-summary').textContent = `${points} points · ${badges.filter(b => b.earned).length} of ${badges.length} milestones earned`;
   $('#achievement-list').replaceChildren(...badges.map(badge => {
     const item = make('li');
@@ -440,7 +440,15 @@ if (isAndroidApp()) {
 } else $('#offline-status').textContent = 'This browser does not support offline app installation. You can use Stillwater online.';
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
-const liturgicalCalendar = createLiturgicalCalendar();
+const liturgicalCalendar = createLiturgicalCalendar({
+  getChecks:()=>state.checkins,
+  toggle:(date,kind)=>{
+    const exists=state.checkins.some(c=>c.date===date && c.kind===kind);
+    const checkins=exists ? state.checkins.filter(c=>c.date!==date || c.kind!==kind) : [...state.checkins,{date,kind}];
+    const saved=commit({...state,checkins});
+    notify(saved ? (exists?'Calendar check-in removed.':'Calendar check-in saved.') : 'Check-in changed in this tab only. Export a backup before closing.');
+  },
+});
 const profile = createProfilePreview(() => state);
 let chapel;
 $('#view-chapel').addEventListener('click', async () => {
@@ -451,6 +459,7 @@ $('#view-chapel').addEventListener('click', async () => {
       const { createChapel } = await import('../chapel/chapel.js');
       chapel = await createChapel($('#chapel-host'), {
         getFinish: profile.getFinish,
+        getArtwork: profile.getArtwork,
         context: () => ({
           progress: state.progress, set: state.progress?.set ?? selectedSet,
           fatima: state.progress?.fatima ?? state.fatima,

@@ -1,4 +1,4 @@
-const CACHE = 'stillwater-shell-v26';
+const CACHE = 'stillwater-shell-v27';
 // Profile artwork and the tester are local, just like the prayer windows.
 const FILES = ['./', './index.html', './src/style.css', './src/app.js', './src/core.js', './src/dates.js', './src/platform.js', './src/rosary-ui.js', './src/reading.js', './src/reading-ui.js', './src/scripture.js', './src/liturgical.js', './src/liturgical-ui.js', './src/liturgical-data.js', './SCRIPTURE-LICENSE.txt', './CALENDAR-LICENSE.txt', './NATIVE-LICENSE.txt', './APACHE-2.0.txt', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 FILES.push('./src/profile.js', './icons/profile-windows.svg', './src/mystery-passages.js', './chapel/chapel.html', './chapel/chapel.css', './chapel/chapel.js', './chapel/medals.js', './chapel/windows.svg');

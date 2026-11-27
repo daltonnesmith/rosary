@@ -3,6 +3,19 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { READING_BOOKS } from '../src/scripture.js';
 import { prayerMilestones } from '../src/core.js';
+test('check-ins survive backup merge once and Lenten awards require seven days in a single Lent', () => {
+  const state=emptyState();
+  state.checkins=[{kind:'mass',date:'2026-02-18'},{kind:'confession',date:'2026-02-18'},{kind:'lent',date:'2025-03-05'},
+    ...Array.from({length:6},(_,i)=>({kind:'lent',date:`2026-02-${18+i}`}))];
+  const restored=mergeBackup(state,parseBackup(JSON.stringify(state)));
+  assert.deepEqual(restored.checkins,state.checkins);
+  const awards=()=>prayerMilestones([], '2026-12-31', [], restored.checkins);
+  assert.equal(awards().badges.find(b=>b.symbol==='lent').earned,false);
+  restored.checkins.push({kind:'lent',date:'2026-02-24'});
+  for(const id of ['mass','confession','lent']) assert.ok(awards().badges.find(b=>b.symbol===id).earned);
+  assert.equal(awards().points,0);
+  assert.throws(()=>parseBackup(JSON.stringify({...state,checkins:[{kind:'lent',date:'2026-12-25'}]})));
+});
 test('post-30 medals distinguish a 40-day run from 50 total rosaries', () => {
   const days = Array.from({length:39}, (_,i) => ({date:new Date(Date.UTC(2026,0,i+1)).toISOString().slice(0,10)}));
   const earned = (rows,id) => prayerMilestones(rows,'2026-03-01').badges.find(b=>b.symbol===id).earned;

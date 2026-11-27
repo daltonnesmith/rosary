@@ -4,6 +4,8 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 
 ## What it does
 
+Equipped profile artwork also appears behind the chapel reader, while the decade’s stained-glass window remains visible. In **Calendar**, select a past or current date to record or undo Mass and Confession check-ins. Lenten dates, starting on Ash Wednesday, offer a seven-day prayer challenge. These private milestones do not earn rosary points; JSON backups include the check-in dates and activities.
+
 For local testing, open the app on localhost with `?testEquip=1`. **Try background & beads** applies even unearned styles in that tab until reload, without saving preferences or granting awards.
 
 In the Profile award catalog, expand **Chi-Rho · A year of prayer** to see cumulative prayer-day milestones in order. Multiple rosaries on one date count as one day here, and breaks do not reset the count.
