@@ -170,3 +170,22 @@ export function finishRosary(state, now = new Date(), createId = () => crypto.ra
   result.progress = null;
   return result;
 }
+
+export const POINTS_PER_ROSARY = 10;
+export function prayerMilestones(completions, today = localDate()) {
+  const entries = completions.filter(item => item.date <= today);
+  const days = [...new Set(entries.map(item => item.date))].sort();
+  let last, run = 0, longest = 0;
+  for (const day of days) {
+    run = last === previousDate(day) ? run + 1 : 1;
+    longest = Math.max(longest, run);
+    last = day;
+  }
+  const badges = [];
+  const add = (name, count, goal) => badges.push({ name, progress: Math.min(count, goal), goal, earned: count >= goal });
+  add('First complete rosary', entries.length, 1);
+  for (const goal of [5, 7, 30, 365]) add(`${goal} rosaries in total`, entries.length, goal);
+  for (const goal of [7, 30]) add(`${goal} days in a row`, longest, goal);
+  add('A year of prayer · 365 prayer days', days.length, 365);
+  return { points: entries.length * POINTS_PER_ROSARY, badges };
+}

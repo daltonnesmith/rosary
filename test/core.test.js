@@ -2,6 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { READING_BOOKS } from '../src/scripture.js';
+import { prayerMilestones } from '../src/core.js';
+
+test('lifetime totals count repeat rosaries while streaks count consecutive local days', () => {
+  const entries = Array.from({length:30}, () => ({date:'2024-02-23'}));
+  const earned = history => prayerMilestones(history, '2024-04-01').badges.filter(b => b.earned).map(b => b.name);
+  assert.ok(earned(entries).includes('30 rosaries in total'));
+  assert.ok(!earned(entries).includes('7 days in a row'));
+  for (const day of ['2024-03-01','2024-02-29','2024-02-28','2024-02-27','2024-02-26','2024-02-25','2024-02-24']) entries.push({date:day});
+  assert.ok(earned(entries).includes('7 days in a row'));
+  assert.equal(prayerMilestones(entries,'2024-02-23').points,300);
+});
+test('a year of prayer can be earned across gaps independently of a 30-day streak', () => {
+  const entries = Array.from({length:365}, (_,i) => ({date:new Date(Date.UTC(2024,0,1+2*i)).toISOString().slice(0,10)}));
+  const awards = prayerMilestones(entries,'2026-01-01');
+  assert.equal(awards.points,3650);
+  assert.ok(awards.badges.find(b => b.name.startsWith('A year')).earned);
+  assert.ok(!awards.badges.find(b => b.name==='30 days in a row').earned);
+});
 import { MYSTERIES, PRAYERS, emptyState, sequence, suggestedMystery, localDate, previousDate, validDate, validateState, loadState, saveState, parseBackup, mergeBackup, stats, finishRosary, STORAGE_KEY } from '../src/core.js';
 
 const timestamp = '2026-11-16T18:00:00.000Z';

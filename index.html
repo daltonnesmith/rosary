@@ -133,6 +133,10 @@
         <section id="journal" aria-labelledby="journal-heading" hidden>
           <div class="intro"><p class="eyebrow">A FAITHFUL RHYTHM</p><h1 id="journal-heading">One day at a time.</h1><p>Your prayers and reflections, kept only on this device.</p></div>
           <div class="stats" id="stats"></div>
+          <details class="panel achievements"><summary><strong>Prayer milestones</strong> · <span id="achievement-summary"></span></summary>
+            <p class="small muted">Each complete rosary earns 10 points. Lifetime totals can grow at any pace. Streak awards count consecutive prayer days and stay earned after a break.</p>
+            <ul id="achievement-list"></ul>
+          </details>
           <div class="journal-layout">
             <article class="panel"><div class="calendar-heading"><button id="month-back" class="quiet" aria-label="Previous month">←</button><h2 id="month-title"></h2><button id="month-next" class="quiet" aria-label="Next month">→</button></div><p class="small muted">Gold marks a completed rosary or Scripture chapter. A dot means a note. The statistics above count traditional rosaries only.</p><div id="calendar" class="calendar" aria-label="Prayer calendar"></div><div id="day-history" class="day-history"></div></article>
             <article class="panel"><p class="eyebrow">INTENTIONS & REFLECTIONS</p><h2>A place for your thoughts.</h2><form id="note-form"><label for="note-date">Date</label><input id="note-date" type="date" required><label for="note-text">Your note <span class="muted">(optional)</span></label><textarea id="note-text" rows="5" maxlength="10000" placeholder="An intention, a gratitude, something to carry with you…" required></textarea><div class="note-actions"><button class="primary" type="submit">Save note</button><button id="cancel-edit" class="quiet" type="button" hidden>Cancel edit</button></div></form><div id="notes-list"></div></article>
@@ -168,6 +172,7 @@
       <form id="finished-form">
         <h2 id="finished-title">Rosary completed</h2>
         <p id="finished-status"></p>
+        <p id="finished-awards" class="small"></p>
         <label for="finished-note">Journal note (optional)</label>
         <textarea id="finished-note" rows="3" maxlength="10000" placeholder="What would you like to remember?"></textarea>
         <div class="dialog-actions"><button class="primary" type="submit" autofocus>Done</button></div>

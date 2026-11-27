@@ -2,6 +2,7 @@ import { MYSTERIES, PRAYERS, emptyState, sequence, moveRosaryProgress, suggested
 import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
 import { createLiturgicalCalendar } from './liturgical-ui.js';
+import { prayerMilestones, POINTS_PER_ROSARY } from './core.js';
 import { isAndroidApp, saveAndroidBackup } from './platform.js';
 
 const $ = selector => document.querySelector(selector);
@@ -161,7 +162,12 @@ function nextPrayer(options = {}) {
   const last = sequence(state.progress.set, state.progress.fatima).length - 1;
   if (state.progress.step === last) {
     const now = new Date();
+    const day = localDate(now);
+    const before = prayerMilestones(state.completions, day);
     const saved = commit(finishRosary(state, now));
+    const after = prayerMilestones(state.completions, day);
+    const earned = after.badges.filter((badge, i) => badge.earned && !before.badges[i].earned);
+    $('#finished-awards').textContent = `+${POINTS_PER_ROSARY} points · ${after.points} total.${earned.length ? ` Newly earned: ${earned.map(b => b.name).join('; ')}.` : ''}`;
     completed = true;
     completionSaved = saved;
     completedDate = localDate(now);
@@ -238,6 +244,13 @@ document.addEventListener('keydown', event => {
 
 function renderJournal() {
   const summary = stats(state.completions);
+  const {points, badges} = prayerMilestones(state.completions);
+  $('#achievement-summary').textContent = `${points} points · ${badges.filter(b => b.earned).length} of ${badges.length} milestones earned`;
+  $('#achievement-list').replaceChildren(...badges.map(badge => {
+    const item = make('li');
+    item.append(make('span', badge.name), make('strong', badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`));
+    return item;
+  }));
   $('#stats').replaceChildren(...[[summary.streak, 'day current streak'], [summary.days, 'days of prayer'], [summary.today ? 'Yes' : 'Not yet', 'prayed today']].map(([value, label]) => {
     const card = make('div', undefined, 'stat');
     card.append(make('strong', String(value)), make('span', label));

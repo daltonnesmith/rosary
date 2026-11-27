@@ -155,3 +155,4 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 }
 #chapel-dialog{margin:0;padding:0;border:0;border-radius:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:#192e42}
 .rosary-view-switch{flex-wrap:wrap}
+.achievements{margin-bottom:24px}.achievements summary{cursor:pointer;min-height:44px;align-content:center}.achievements ul{list-style:none;margin:0;padding:0}.achievements li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}.achievements li strong{white-space:nowrap;color:var(--ink)}
