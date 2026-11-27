@@ -20,17 +20,37 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   selected = selected < FIRST_DAY ? FIRST_DAY : selected > LAST_DAY ? LAST_DAY : selected;
   let ascension = 'sunday';
   const input = $('#lit-date');
-  const kind = $('#fast-kind'), end = $('#fast-end'), intention = $('#fast-intention');
+  const kind = $('#fast-kind'), start = $('#fast-start'), end = $('#fast-end'), intention = $('#fast-intention');
+  const prettyDate = date => format(date, {month:'short', day:'numeric', year:'numeric'});
+  start.min = FIRST_DAY;
+  start.max = end.max = LAST_DAY;
+  start.addEventListener('input', () => { end.min = start.value || FIRST_DAY; });
+  $('#lent-choose').addEventListener('click', () => {
+    kind.value = 'lent';
+    kind.dispatchEvent(new Event('change'));
+    intention.focus();
+  });
   let formDate;
   function showRule() {
     const personal = kind.value === 'personal';
     $('#fast-range').hidden = !personal;
-    end.required = personal;
-    end.disabled = !personal;
-    $('#fast-rule').textContent = personal ? `Starts ${selected}. Earn Small Offering on your first recorded day, and A Week of Offerings after seven distinct days.` :
+    start.required = end.required = personal;
+    start.disabled = end.disabled = !personal;
+    $('#fast-rule').textContent = personal ? 'Choose any start and end dates. Your first recorded day earns Small Offering; seven distinct days earn A Week of Offerings.' :
       kind.value === 'lent' ? 'Seven recorded days this Lent earn the yearly medal. They need not be consecutive.' : 'Record this observance once to earn its medal for the year.';
   }
   function renderFasts(fasts, plans, today) {
+    const lent = plans.find(p => p.kind === 'lent' && includesDay(p, selected));
+    $('#lent-feature').hidden = !lent;
+    if (lent) {
+      const joined = fasts.filter(f => f.kind === 'lent' && f.start === lent.start);
+      const count = Math.min(7, new Set(joined.flatMap(f=>f.days.filter(d=>d<=today))).size);
+      $('#lent-fast-title').textContent = fastName(lent);
+      $('#lent-fast-dates').textContent = `${format(lent.start,{month:'long',day:'numeric'})} – ${format(lent.end,{month:'long',day:'numeric'})}`;
+      $('#lent-fast-progress').textContent = count === 7 ? 'Seven days kept · yearly medal earned' : `${count} of 7 days toward your Lent medal`;
+      $('#lent-stones').replaceChildren(...Array.from({length:7},(_,i)=>make('span','',i<count?'kept':'')));
+      $('#lent-choose').hidden = joined.length > 0;
+    }
     const list = $('#fast-active');
     list.replaceChildren();
     for (const f of fasts.filter(f => includesDay(f, selected))) {
@@ -47,9 +67,10 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
           recorded ? 'Fasting check-in removed.' : 'Fasting check-in saved.');
         render();
       });
-      card.append(make('strong', fastName(f)));
-      if (f.intention) card.append(make('p', f.intention));
-      card.append(make('p', `${f.start} – ${f.end} · ${f.days.filter(d=>d<=today).length} days recorded`, 'small muted'), button);
+      const daysKept = f.days.filter(d=>d<=today).length;
+      card.append(make('strong', f.kind === 'personal' && f.intention ? f.intention : fastName(f)));
+      if (f.intention) card.append(make('p', f.kind === 'personal' ? 'Personal fast' : f.intention, 'small muted'));
+      card.append(make('p', `${prettyDate(f.start)}${f.end === f.start ? '' : ` – ${prettyDate(f.end)}`} · ${daysKept} ${daysKept === 1 ? 'day' : 'days'} recorded`, 'small muted'), button);
       list.append(card);
     }
     const available = plans.filter(p => includesDay(p, selected) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
@@ -57,10 +78,8 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     const previousKind = kind.value;
     kind.replaceChildren(...options.map(p => new Option(fastName(p), p.kind)));
     if (formDate === selected && options.some(p=>p.kind===previousKind)) kind.value = previousKind;
-    end.min = selected;
-    end.max = LAST_DAY;
     if (formDate !== selected) {
-      end.value = selected;
+      start.value = end.min = end.value = selected;
       intention.value = '';
       formDate = selected;
     }
@@ -71,7 +90,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   $('#fast-form').addEventListener('input', () => intention.setCustomValidity(''));
   $('#fast-form').addEventListener('submit', event => {
     event.preventDefault();
-    const plan = kind.value === 'personal' ? {kind:'personal', start:selected, end:end.value} :
+    const plan = kind.value === 'personal' ? {kind:'personal', start:start.value, end:end.value} :
       annualFasts(selected.slice(0,4)).find(p => p.kind === kind.value && includesDay(p, selected));
     if (!plan) return;
     const fast = {...plan, intention:intention.value.trim(), days:[]};
@@ -82,7 +101,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     }
     saveFasts([...getFasts(), fast], 'Fast joined. No days marked yet.');
     formDate = undefined;
-    render();
+    choose(includesDay(fast, selected) ? selected : fast.start);
   });
   input.min = FIRST_DAY;
   input.max = LAST_DAY;

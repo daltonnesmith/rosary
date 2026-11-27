@@ -164,3 +164,14 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 .lit-checkins .secondary[aria-pressed=true]{background:var(--ink);color:var(--card)}.lit-check-mark{font-size:11px;color:var(--ink)}
 .reading-settings>summary{cursor:pointer;min-height:44px;align-content:center;font:19px var(--serif)}.reading-card{border-top:4px solid #784b46;text-align:left;background:#fffbf0}.reading-card #reading-title{font-family:Georgia,serif;text-align:left;margin-bottom:16px}.reading-card #reading-reference{text-align:left;margin:12px 0}.reading-card #pause-label{border-top:1px solid var(--line);padding-top:16px;color:#784b46}.reading-card #reading-prayer{font:italic 18px/1.55 Georgia,serif;margin:8px 0 20px}
 #fast-form{display:grid;gap:.45rem;margin-top:1rem}#fast-form input,#fast-form select{width:100%;min-width:0}#fast-form p,.fast-entry p{margin:.25rem 0}.fast-entry{margin:.75rem 0;padding:.75rem;border-inline-start:3px solid #aa905f;background:#faf6eb;overflow-wrap:anywhere}.lit-fast-mark{color:#7a5735}
+#fasting{border-top:1px solid var(--line);margin-top:1.5rem;padding-top:1.25rem}
+#lent-feature:not([hidden]){display:grid;grid-template-columns:3.5rem 1fr;gap:.85rem;align-items:center;margin:1rem 0;padding:1.2rem;border-radius:14px;border:1px solid #76546c;background:radial-gradient(ellipse at top right,#76566f,transparent 65%),#412f47;color:#fff4df;box-shadow:inset 0 0 0 4px #ffffff0c}
+#lent-feature p{margin:.16rem 0;color:#f0dfd6;font-size:.85rem}
+#lent-feature .lent-kicker{color:#f5d399;font-size:.65rem;letter-spacing:.18em;font-weight:700}
+#lent-feature h4{margin:0;color:#fff3dc;font:normal 1.8rem Georgia,serif}
+.lent-seal{aspect-ratio:1;display:grid;place-items:center;border:3px double #cda86e;border-radius:50%;background:#faf0d9;color:#654929}
+.lent-seal svg{width:76%;height:76%}.lent-path,#lent-choose{grid-column:1/-1}
+#lent-stones{display:flex;gap:.4rem;margin-bottom:.5rem}#lent-stones span{flex:1;height:6px;border:1px solid #d5bba2;border-radius:4px}#lent-stones .kept{background:#f3cc82}
+#lent-choose{justify-self:start;background:#f6e5c4;color:#442f45;border:0;border-radius:8px;padding:.65rem .95rem;min-height:44px}
+#fast-range:not([hidden]){display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.6rem),1fr));gap:.6rem}#fast-range>div{min-width:0}
+#fasting .fast-entry{border-radius:0 10px 10px 0;background:linear-gradient(110deg,#f3ebda,#fcf8f0)}

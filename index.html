@@ -123,15 +123,21 @@
               </section>
               <p id="lit-day-note" class="small lit-day-note" hidden></p>
               <section class="lit-checkins" id="fasting">
-                <p class="eyebrow">PERSONAL PRACTICE</p><h3>Fasting</h3>
-                <p class="small muted">Choose something to set aside, such as evening scrolling. These voluntary practices are not a measure of faith. Joining never checks off a day.</p>
+                <p class="eyebrow">PRAYER &amp; SELF-DENIAL</p><h3>Fasting</h3>
+                <p class="small muted">Set something aside to make room for prayer. Each day is yours to record.</p>
+                <article id="lent-feature" hidden>
+                  <div class="lent-seal" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="./icons/awards.svg#olive"/></svg></div>
+                  <div><p class="lent-kicker">SEASONAL FAST</p><h4 id="lent-fast-title"></h4><p id="lent-fast-dates"></p></div>
+                  <div class="lent-path"><div id="lent-stones" aria-hidden="true"></div><p id="lent-fast-progress"></p></div>
+                  <button type="button" id="lent-choose">Choose this fast →</button>
+                </article>
                 <div id="fast-active"></div>
                 <form id="fast-form">
                   <label for="fast-kind">Choose a fast</label><select id="fast-kind"></select>
                   <p id="fast-rule" class="small muted"></p>
                   <label for="fast-intention">What are you setting aside? (optional)</label>
                   <input id="fast-intention" type="text" maxlength="160" placeholder="Evening scrolling">
-                  <div id="fast-range"><label for="fast-end">Last day of personal fast</label><input id="fast-end" type="date"></div>
+                  <div id="fast-range"><div><label for="fast-start">Start date</label><input id="fast-start" type="date"></div><div><label for="fast-end">End date</label><input id="fast-end" type="date"></div></div>
                   <button class="secondary" type="submit">Join fast</button>
                 </form>
               </section>
