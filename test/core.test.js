@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { READING_BOOKS } from '../src/scripture.js';
 import { prayerMilestones } from '../src/core.js';
+test('post-30 medals distinguish a 40-day run from 50 total rosaries', () => {
+  const days = Array.from({length:39}, (_,i) => ({date:new Date(Date.UTC(2026,0,i+1)).toISOString().slice(0,10)}));
+  const earned = (rows,id) => prayerMilestones(rows,'2026-03-01').badges.find(b=>b.symbol===id).earned;
+  const repeated = [...days, ...Array(10).fill(days[0])];
+  assert.equal(earned(repeated,'olive'),false);
+  assert.equal(earned(repeated,'rose'),false);
+  assert.equal(earned([...repeated,days[0]],'rose'),true);
+  assert.equal(earned([...repeated,days[0]],'olive'),false);
+  assert.equal(earned([...days,{date:'2026-02-09'}],'olive'),true);
+});
 test('Full Bouquet needs all four distinct sets, not four completions of one set', () => {
   const earned = sets => prayerMilestones(sets.map(mystery => ({mystery,date:'2026-01-01'})), '2026-01-01').badges.find(b => b.name.startsWith('Full Bouquet')).earned;
   assert.equal(earned(['joyful','luminous','sorrowful','joyful']), false);

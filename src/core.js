@@ -184,8 +184,8 @@ export function prayerMilestones(completions, today = localDate(), gospelChapter
   const badges = [];
   const add = (symbol, name, count, goal) => badges.push({ symbol, name, progress: Math.min(count, goal), goal, earned: count >= goal });
   add('shell', 'First complete rosary', entries.length, 1);
-  for (const [goal,symbol] of [[5,'beads'],[7,'lily'],[30,'heart'],[365,'keys']]) add(symbol, `${goal} rosaries in total`, entries.length, goal);
-  for (const [goal,symbol] of [[7,'candle'],[30,'lamp']]) add(symbol, `${goal} days in a row`, longest, goal);
+  for (const [goal,symbol] of [[5,'beads'],[7,'lily'],[30,'heart'],[50,'rose'],[100,'fish'],[150,'harp'],[200,'anchor'],[250,'vine'],[300,'chalice'],[365,'keys']]) add(symbol, `${goal} rosaries in total`, entries.length, goal);
+  for (const [goal,symbol] of [[7,'candle'],[30,'lamp'],[40,'olive'],[60,'dove'],[90,'star']]) add(symbol, `${goal} days in a row`, longest, goal);
   add('chi-rho', 'A year of prayer · 365 prayer days', days.length, 365);
   add('roses', 'Full Bouquet · all four mystery sets', new Set(entries.map(item => item.mystery).filter(set => Object.hasOwn(MYSTERIES, set))).size, 4);
   const chapters = new Set(gospelChapters.filter(c => c.date <= today).map(c => `${c.book}:${c.chapter}`));

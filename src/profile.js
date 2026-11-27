@@ -20,6 +20,7 @@ const rewards = [
 ];
 
 const symbols = { shell:'Pilgrim’s Shell', beads:'Holy Rosary', lily:'Annunciation Lily', heart:'Sacred Heart', keys:'Keys of Saint Peter', candle:'Paschal Candle', lamp:'Sanctuary Lamp', 'chi-rho':'Chi-Rho', roses:'Marian Roses', jerusalem:'Jerusalem Cross' };
+Object.assign(symbols, { rose:'Golden Rose', fish:'Ichthys', harp:'David’s Harp', anchor:'Anchor of Hope', vine:'True Vine', chalice:'Eucharistic Chalice', olive:'Olive Branch', dove:'Dove of Peace', star:'Star of the Sea' });
 function medal(badge) {
   const item = document.createElement('li');
   item.className = 'award-medal';
