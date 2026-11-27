@@ -20,7 +20,6 @@ const looks = {
   EASTER_SUNDAY: ['Easter Sunday','Christ is risen!','Alleluia, alleluia.','tomb'],
   EASTER_TIME: ['Easter season','Fifty days of Easter joy','Walk in the light of the Resurrection.','lily'],
 };
-const cycle = Object.keys(looks);
 const colorText = (event, day) => {
   const colors = celebrationColors(event, day);
   return colors.length ? `${colors.map(color => COLORS[color]).join(' / ')}${event.optional && !event.colors.length ? ' (weekday color)' : ''}` : 'No daytime Mass';
@@ -32,19 +31,12 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   let ascension = 'sunday';
   const input = $('#lit-date');
   const preview = $('#season-preview');
-  const designTest = $('#test-design');
-  designTest.hidden = !['localhost','localhost.','127.0.0.1','[::1]'].includes(location.hostname);
-  designTest.addEventListener('click', () => {
-    preview.value = cycle[(cycle.indexOf(document.body.dataset.appearance)+1)%cycle.length];
-    applyAppearance();
-  });
   for (const [id,[label]] of Object.entries(looks)) preview.add(new Option(label,id));
   function applyAppearance() {
     const today = localDate();
     const automatic = preview.value === 'auto';
     const season = automatic ? appearanceForDate(today) : preview.value;
     document.body.dataset.appearance = season;
-    designTest.textContent = `Test design: ${looks[cycle[(cycle.indexOf(season)+1)%cycle.length]][0]} →`;
     const [label,title,reflection,motif] = looks[season];
     $('#feast-banner').hidden = !motif;
     if (motif) {

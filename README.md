@@ -8,7 +8,6 @@ Collectible art decorates the Profile card only; the chapel keeps the stained-gl
 
 **Calendar → Fasting:** Select a date to join a personal fast with an end date, or choose Lent, Ash Wednesday, or Good Friday when offered. A diamond marks the start of a built-in fast. Optionally name what you are setting aside. Tap **I kept this fast** on each day you choose to record; tap again to undo. Seven distinct days during one Lent earn that year's Lent medal. Ash Wednesday and Good Friday each have a one-day annual medal; personal fasts earn medals at one and seven distinct days. These are voluntary devotional milestones, separate from the Lenten prayer challenge and from Church fasting obligations. Intentions and dates stay on your device and are included in exported journal backups.
 
-For local testing, open the app on localhost with `?testEquip=1`. **Try background & beads** applies even unearned styles in that tab until reload, without saving preferences or granting awards.
 
 In the Profile award catalog, expand **Chi-Rho · A year of prayer** to see cumulative prayer-day milestones in order. Multiple rosaries on one date count as one day here, and breaks do not reset the count.
 
@@ -169,7 +168,7 @@ On Calendar, expand **Fasting** directly below the month to manage the selected 
 In the fasting panel, existing fasts and their check-ins appear first. Use **Plan a personal fast → Save fast** for your own practice; seasonal fasts have their own actions when available.
 **Calendar → Seasonal appearance** follows your local date. Ordinary Time keeps the original look. Advent counts down to Christmas with one more candle lit each Sunday; Lent, the Paschal Triduum, Christmas season, and Easter season each have their own palette and illustration. Christmas Eve, Christmas Day, and Easter Sunday take visual precedence on those dates without changing the liturgical calendar or any saved records.
 
-In the localhost preview, **Test design** cycles through all nine looks without leaving your current tab. The Calendar dropdown lets you jump directly to a design; choose **Automatic** or reload to follow today's date again.
+The Calendar dropdown lets you jump directly to a design; choose **Automatic** or reload to follow today's date again.
 Seasonal headers use compact, bundled artwork: Advent greenery surrounds the weekly candles, Christmas bells and gold branches mark the Nativity season, and the Triduum crucifix gives way to the Easter sunrise and lilies. The illustrations are decorative and never cover the prayer text.
 Seasonal colors also carry into the active tab and action buttons, including prayer navigation. Ordinary Time keeps the original button styling.
 In the chapel, a gold ring marks the current bead on the strand and on the whole-rosary view. The separate **TAP** cue advances to the next prayer.

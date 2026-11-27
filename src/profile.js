@@ -103,12 +103,6 @@ export function createProfilePreview(getState) {
   let lit = false;
   let equipped = {scene:'dawn',finish:'enamel'};
   const storageKey = 'stillwater-profile-style';
-  const testEquip = ['localhost','127.0.0.1','[::1]'].includes(location.hostname)
-    && new URLSearchParams(location.search).get('testEquip') === '1';
-  if (testEquip) {
-    byId('equip').textContent = 'Try background & beads';
-    byId('preview-locked').parentElement.lastChild.textContent = ' Preview locked rewards (try on in this tab)';
-  }
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
     if (saved && [...scene.options].some(o=>o.value===saved.scene) && [...finish.options].some(o=>o.value===saved.finish)) {
@@ -159,7 +153,7 @@ export function createProfilePreview(getState) {
       for (const d of list.querySelectorAll('details')) d.open=openSymbols.has(d.parentElement.dataset.symbol);
     }
     byId('award-note').textContent = earned.length ? `${points} points from your recorded rosaries.` : 'Your first award appears here when you complete a rosary. Trying a background doesn’t earn an award.';
-    byId('equip').disabled = !testEquip && (scene.selectedOptions[0].dataset.unlocked!=='true' || finish.selectedOptions[0].dataset.unlocked!=='true');
+    byId('equip').disabled = scene.selectedOptions[0].dataset.unlocked!=='true' || finish.selectedOptions[0].dataset.unlocked!=='true';
     votive.hidden = id !== 'alcove';
     votive.setAttribute('aria-pressed', String(lit));
     votive.textContent = lit ? 'Extinguish the votive' : 'Light a votive';
@@ -170,11 +164,6 @@ export function createProfilePreview(getState) {
     render();
     if(byId('equip').disabled)return;
     const style={scene:scene.value,finish:finish.value};
-    if (testEquip) {
-      equipped=style;
-      byId('equip-status').textContent='Trying this look until reload. Your saved appearance and awards are unchanged.';
-      return;
-    }
     try {localStorage.setItem(storageKey,JSON.stringify(style));equipped=style;byId('equip-status').textContent='Profile background and chapel beads saved on this device.';}
     catch {byId('equip-status').textContent='Could not save your appearance on this device.';}
   };
