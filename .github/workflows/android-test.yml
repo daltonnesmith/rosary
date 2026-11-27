@@ -56,10 +56,15 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_5
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -skin 720x1280
+          emulator-options: -no-window -gpu swiftshader -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none -skin 720x1280
+          ram-size: 2048M
+          heap-size: 256M
           disable-animations: true
           emulator-boot-timeout: 600
           script: |
+            adb shell input keyevent KEYCODE_WAKEUP
+            adb shell wm dismiss-keyguard
+            adb shell svc power stayon true
             adb shell cmd connectivity airplane-mode enable
             adb shell svc wifi disable
             adb shell svc data disable
