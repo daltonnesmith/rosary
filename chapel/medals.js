@@ -61,7 +61,7 @@ function currentRing(c,x,y,r) {
   c.lineWidth=5;c.strokeStyle='#40301f';c.stroke();
   c.lineWidth=2.8;c.strokeStyle='#fff0a8';c.stroke();
 }
-export function drawStrand(canvas,index,set,offset,steps,previewFinish,showTap=!previewFinish) {
+export function drawStrand(canvas,index,set,offset,steps,previewFinish,highlightCurrent=!previewFinish) {
   const {c,w,h}=surface(canvas), r=Math.min(34,h*.33);
   const link=c.createLinearGradient(0,h*.47-4,0,h*.47+4);
   link.addColorStop(0,'#644329');link.addColorStop(.3,'#ffdf94');link.addColorStop(.65,'#a07644');link.addColorStop(1,'#463229');
@@ -70,10 +70,10 @@ export function drawStrand(canvas,index,set,offset,steps,previewFinish,showTap=!
     const x=i*11+(offset*w*.24)%22;c.beginPath();c.ellipse(x,h*.47,7,i%2?1.8:4,i%2?-.15:.15,0,tau);c.stroke();
   }
   for(let i=-3;i<=3;i++) {
-    const x=w*(.5+(i+offset)*.24), next=i===1;
+    const x=w*(.5+(i+offset)*.24);
     const s=steps[index+i];if(!s)continue;
     const motif=s.stage==='mystery'?windowMotif[set]:({mary:'mary',queen:'mary',glory:'dove',fatima:'heart'})[s.prayer]||'crucifix';
-    const current=i===0 && showTap;
+    const current=i===0 && highlightCurrent;
     if(current){
       const glow=c.createRadialGradient(x,h*.47,0,x,h*.47,r*1.55);
       glow.addColorStop(0,'#ffdf7280');glow.addColorStop(1,'#ffdf7200');
@@ -82,7 +82,6 @@ export function drawStrand(canvas,index,set,offset,steps,previewFinish,showTap=!
     const tone = finishColors[previewFinish] ?? tones[set];
     medal(c,x,h*.47,r*(current?1.08:.88),Math.sin((index+i)*1.7)*.32+offset*.6,tone,motif);
     if(current)currentRing(c,x,h*.47,r*1.22);
-    if(next && showTap){c.fillStyle='#fff2d3';c.font='bold 10px system-ui';c.textAlign='center';c.fillText('TAP',x,h-1);}
   }
 }
 export function drawLoop(canvas,angle,s,set) {

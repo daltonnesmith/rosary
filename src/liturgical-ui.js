@@ -141,7 +141,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     for (const f of fasts.filter(f => includesDay(f, selected) && !(f.kind === 'lent' && f.start > today))) {
       const card = make('article', undefined, 'fast-entry');
       const recorded = f.days.includes(selected);
-      const button = make('button', recorded ? '✓ Kept this fast · undo' : selected === today ? 'I kept this fast today' : 'I kept this fast', 'secondary');
+      const button = make('button', recorded ? 'Undo check-in' : selected === today ? 'I kept this fast today' : 'I kept this fast', 'secondary');
       button.type = 'button';
       button.disabled = selected > today;
       button.setAttribute('aria-pressed', String(recorded));
@@ -153,8 +153,9 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
         render();
       });
       const daysKept = f.days.filter(d=>d<=today).length;
-      card.append(make('strong', f.kind === 'personal' && f.intention ? f.intention : fastName(f)));
-      if (f.intention) card.append(make('p', f.kind === 'personal' ? 'Personal fast' : f.intention, 'small muted'));
+      card.append(make('strong', f.intention || fastName(f)));
+      card.append(make('p', `${prettyDate(selected)} · ${recorded ? 'Recorded' : selected > today ? 'Scheduled' : 'Not recorded'}`));
+      if (f.intention) card.append(make('p', fastName(f), 'small muted'));
       card.append(make('p', `${prettyDate(f.start)}${f.end === f.start ? '' : ` – ${prettyDate(f.end)}`} · ${daysKept} ${daysKept === 1 ? 'day' : 'days'} recorded`, 'small muted'), button);
       list.append(card);
     }

@@ -15,3 +15,4 @@ main{grid-template-rows:auto clamp(44px,8svh,76px) minmax(0,1fr) auto auto}heade
 @media(max-height:680px){header{margin-bottom:0}main{gap:4px}#leaf{margin-top:6px}}
 nav button:first-child{background-color:var(--season-dark,var(--night))}
 nav button:last-child{background-color:var(--metal,#efd49a);color:var(--season-dark,#443726)}
+#bead{left:0;width:100%}

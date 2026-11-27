@@ -266,3 +266,10 @@ body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) .tabs [aria-current
 }
 body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) :is(.primary,.secondary):not(:disabled):hover{box-shadow:inset 0 -3px var(--season-mid),0 2px 6px #30213024}
 body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) :is(.primary,.secondary):focus-visible{outline:3px solid var(--season-dark);outline-offset:3px}
+#prayer-home{border:1px solid var(--line);overflow:hidden;padding:0 0 12px}
+#prayer-home #advent-banner,#prayer-home #feast-banner{margin:0;border-radius:0;text-align:left}
+#prayer-home .eyebrow{margin:16px 0 0}#prayer-home h1{margin:6px 12px 14px}
+#prayer-home>p:last-child{margin:2px 0 0}#prayer-home::after{display:none}
+#view-chapel{max-width:calc(100% - 24px)}
+#fast-active:not(:empty){margin-top:1rem}
+#pray .prayer-layout:has(#guided-rosary[hidden]){display:block;max-width:760px;margin-inline:auto}

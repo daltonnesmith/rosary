@@ -93,10 +93,12 @@ public class OfflineAppTest {
             assertEquals(Boolean.TRUE, evaluate("return document.querySelector('#web-install-guidance').hidden;"));
             assertEquals(Boolean.TRUE, evaluate("return typeof Capacitor.Plugins.StillwaterBackup.save === 'function';"));
             assertEquals("Sign of the Cross", text("#prayer-title"));
-            click("#next");
+            click("#switch-view");
+            click("#view-chapel");
             click("#next");
             click("#next");
             assertEquals("Our Father", text("#prayer-title"));
+            click("#switch-view");
             click("#view-chapel");
             String chapel = "document.querySelector('#chapel-host').shadowRoot";
             waitFor(chapel + "?.getElementById('title')?.textContent === 'Our Father'");

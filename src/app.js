@@ -70,6 +70,8 @@ function humanDate(value, options = { month: 'long', day: 'numeric', year: 'nume
   return new Date(`${value}T12:00:00`).toLocaleDateString(undefined, options);
 }
 function showTab(tab) {
+  const slot = $(tab === 'pray' ? '#prayer-season' : '#season-slot');
+  slot.append($('#advent-banner'), $('#feast-banner'));
   for (const name of ['pray', 'scripture', 'liturgical', 'journal', 'profile', 'about']) $(`#${name}`).hidden = name !== tab;
   document.querySelectorAll('[data-tab]').forEach(button => {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
@@ -89,6 +91,10 @@ Object.entries(MYSTERIES).forEach(([key, set]) => {
   option.value = key;
   $('#mystery').append(option);
 });
+let prayerView = 'chapel', guidedOpen = false;
+try { if (localStorage.getItem('stillwater-prayer-view') === 'guided') prayerView = 'guided'; }
+catch { notify('Your prayer view preference is available for this visit only.'); }
+$('#prayer-season').append($('#advent-banner'), $('#feast-banner'));
 function renderPrayer(focus = false) {
   const progress = state.progress;
   const setKey = progress?.set ?? selectedSet;
@@ -97,6 +103,12 @@ function renderPrayer(focus = false) {
   const steps = sequence(setKey, fatima);
   const index = progress?.step ?? 0;
   const step = steps[index];
+  const place = step.decade ? `Decade ${step.decade} · ${step.bead ? `bead ${step.bead}` : progress?.stage === 'mystery' ? 'mystery' : PRAYERS[step.prayer][0]}` : PRAYERS[step.prayer][0];
+  $('#welcome-heading').textContent = `${set.name} mysteries`;
+  $('#view-chapel').textContent = progress ? `Resume rosary · ${place}` : 'Begin rosary';
+  $('#current-view').textContent = prayerView === 'chapel' ? 'Stained-glass chapel' : 'Guided prayers';
+  $('#view-chapel').setAttribute('aria-haspopup',prayerView === 'chapel' ? 'dialog' : 'false');
+  $('#guided-rosary').hidden = !(guidedOpen && prayerView === 'guided' && progress);
   const percent = completed ? 100 : progress ? Math.round(index / steps.length * 100) : 0;
   $('#today-label').textContent = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
   $('#mystery').value = setKey;
@@ -237,7 +249,7 @@ $('#fatima').addEventListener('change', async event => {
   renderPrayer();
 });
 document.addEventListener('keydown', event => {
-  if ($('#pray').hidden || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+  if ($('#pray').hidden || $('#guided-rosary').hidden || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(event.target.tagName) || event.target.isContentEditable) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
     event.preventDefault();
     $(event.key === 'ArrowRight' ? '#next' : '#previous').click();
@@ -453,7 +465,21 @@ const liturgicalCalendar = createLiturgicalCalendar({
 });
 const profile = createProfilePreview(() => state);
 let chapel;
+$('#switch-view').addEventListener('click', () => {
+  prayerView = prayerView === 'chapel' ? 'guided' : 'chapel';
+  guidedOpen = false;
+  try { localStorage.setItem('stillwater-prayer-view',prayerView); }
+  catch { notify('View switched for this visit only. Your prayer record is unchanged.'); }
+  renderPrayer();
+});
 $('#view-chapel').addEventListener('click', async () => {
+  if (prayerView === 'guided') {
+    guidedOpen = true;
+    if (!state.progress) start(); else renderPrayer(true);
+    $('#prayer-title').focus();
+    $('#prayer-title').scrollIntoView({block:'center'});
+    return;
+  }
   const button = $('#view-chapel');
   button.disabled = true;
   try {
@@ -472,6 +498,7 @@ $('#view-chapel').addEventListener('click', async () => {
       });
     }
     $('#chapel-dialog').showModal();
+    if (!state.progress) start();
     chapel.sync();
   } catch (error) {
     $('#chapel-dialog').close();

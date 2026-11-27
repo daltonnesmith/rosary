@@ -28,6 +28,7 @@
         <button data-tab="profile">Profile</button>
         <button data-tab="about">Guidance</button>
       </nav>
+      <div id="season-slot"></div>
       <aside id="advent-banner" aria-label="Advent countdown" hidden>
         <div><p class="advent-caption" id="advent-caption"></p><strong id="advent-countdown"></strong><p id="advent-week"></p></div>
         <div class="advent-candles" aria-hidden="true"><i></i><i></i><i></i><i></i>
@@ -61,10 +62,12 @@
       <div id="status" class="notice" role="status" hidden></div>
       <main>
         <section id="pray" aria-labelledby="welcome-heading">
-          <div class="intro"><p class="eyebrow" id="today-label"></p><h1 id="welcome-heading">Make room for stillness.</h1><p>A bead. A prayer. A moment with God.</p></div>
-          <div class="rosary-view-switch" role="group" aria-label="Rosary presentation">
-            <button id="view-chapel" class="primary" aria-haspopup="dialog">Stained-glass chapel</button>
-          </div>
+          <header class="intro" id="prayer-home">
+            <div id="prayer-season"></div>
+            <p class="eyebrow" id="today-label"></p><h1 id="welcome-heading">The Holy Rosary</h1>
+            <button id="view-chapel" class="primary">Begin rosary</button>
+            <p><span id="current-view"></span> · <button class="text-button" id="switch-view">Switch view</button></p>
+          </header>
           <div class="prayer-layout">
             <aside class="mystery-panel">
               <p class="eyebrow">YOUR CONTEMPLATION</p>
@@ -76,9 +79,10 @@
               <ol id="mystery-list" class="mystery-list"></ol>
               </details>
               <label class="check"><input id="fatima" type="checkbox"> Include the Fatima prayer</label>
+              <button id="restart" class="text-button" hidden>Start a new rosary</button>
               <p class="small muted">Your place is saved on this device. Take all the time you need.</p>
             </aside>
-            <article id="guided-rosary" class="prayer-card">
+            <article id="guided-rosary" class="prayer-card" hidden>
               <div class="card-top"><span id="phase" class="eyebrow"></span><span id="step-count" class="small muted"></span></div>
               <div id="beads" class="beads" aria-hidden="true"></div>
               <p id="meditation" class="meditation" tabindex="-1"></p>
@@ -95,7 +99,6 @@
               <div class="progress-label"><span id="progress-label"></span><span id="progress-percent"></span></div>
               <progress id="progress" max="100" value="0" aria-label="Rosary progress"></progress>
               <div class="prayer-controls"><button id="previous" class="secondary">← Back</button><button id="next" class="primary">Begin prayer →</button></div>
-              <button id="restart" class="text-button">Start a new rosary</button>
               <p class="keyboard-hint small muted">Use ← and → to move between prayers.</p>
             </article>
           </div>
@@ -147,10 +150,10 @@
               <p class="small muted"><span class="fast-swatch" aria-hidden="true"></span> A gold half marks a day in your fasting plan, not a completed fast.</p>
               <p class="small muted lit-grid-help">Keyboard: arrow keys move days or weeks; Page Up/Down changes month; Home/End moves within a week.</p>
             </article>
+              <div id="fast-active" aria-label="Fasts for the selected date"></div>
               <details class="panel lit-checkins" id="fasting">
                 <summary>Fasting <span id="fast-summary-date"></span></summary>
                 <p class="small muted">Set something aside to make room for prayer. Each day is yours to record.</p>
-                <div id="fast-active"></div>
                 <article id="lent-feature" hidden>
                   <div class="lent-seal" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="./icons/awards.svg#olive"/></svg></div>
                   <div><p class="lent-kicker">SEASONAL FAST</p><h4 id="lent-fast-title"></h4><p id="lent-fast-dates"></p></div>
