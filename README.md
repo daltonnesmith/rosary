@@ -4,6 +4,8 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 
 ## What it does
 
+**Profile → My Little Chapel** is a local reward tester. Mix seven illustrated backgrounds and titles with three bead finishes; the candlelit alcove also has a votive to light. Preview choices last until reload and do not record completions, unlock awards, or change the prayer chapel.
+
 - Guides you through the full traditional English rosary, with the complete prayer text on every step, Back/Next controls, current mystery, bead count, and progress.
 - Open **Stained-glass chapel** to pray with dimensional beads and artwork for each decade. Close the chapel to return to guided prayers at the same saved bead.
 - Includes all four sets of mysteries and weekday suggestions. Five decades each contain one Our Father, ten Hail Marys, and a Glory Be; the Fatima prayer is optional.

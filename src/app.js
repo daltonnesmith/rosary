@@ -3,6 +3,7 @@ import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
 import { createLiturgicalCalendar } from './liturgical-ui.js';
 import { prayerMilestones, POINTS_PER_ROSARY } from './core.js';
+import { createProfilePreview } from './profile.js';
 import { isAndroidApp, saveAndroidBackup } from './platform.js';
 
 const $ = selector => document.querySelector(selector);
@@ -69,12 +70,13 @@ function humanDate(value, options = { month: 'long', day: 'numeric', year: 'nume
   return new Date(`${value}T12:00:00`).toLocaleDateString(undefined, options);
 }
 function showTab(tab) {
-  for (const name of ['pray', 'scripture', 'liturgical', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
+  for (const name of ['pray', 'scripture', 'liturgical', 'journal', 'profile', 'about']) $(`#${name}`).hidden = name !== tab;
   document.querySelectorAll('[data-tab]').forEach(button => {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
   if (tab === 'journal') renderJournal();
+  if (tab === 'profile') renderProfile();
   if (tab === 'scripture') readingCompanion.render();
   if (tab === 'liturgical') liturgicalCalendar.render();
 }
@@ -439,6 +441,7 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar();
+const renderProfile = createProfilePreview();
 let chapel;
 $('#view-chapel').addEventListener('click', async () => {
   const button = $('#view-chapel');

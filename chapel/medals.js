@@ -55,7 +55,7 @@ function medal(c,x,y,r,yaw,tone,mark) {
     crest(c,r,mark); c.restore();
   }
 }
-export function drawStrand(canvas,index,set,offset,steps) {
+export function drawStrand(canvas,index,set,offset,steps,previewFinish) {
   const {c,w,h}=surface(canvas), r=Math.min(34,h*.33);
   const link=c.createLinearGradient(0,h*.47-4,0,h*.47+4);
   link.addColorStop(0,'#644329');link.addColorStop(.3,'#ffdf94');link.addColorStop(.65,'#a07644');link.addColorStop(1,'#463229');
@@ -72,8 +72,9 @@ export function drawStrand(canvas,index,set,offset,steps) {
       glow.addColorStop(0,'#ffdf7280');glow.addColorStop(1,'#ffdf7200');
       c.fillStyle=glow;c.fillRect(x-r*1.55,h*.47-r*1.55,r*3.1,r*3.1);
     }
-    medal(c,x,h*.47,r*(next?1.06:.88),Math.sin((index+i)*1.7)*.32+offset*.6,tones[set],motif);
-    if(next){c.fillStyle='#fff2d3';c.font='bold 10px system-ui';c.textAlign='center';c.fillText('TAP',x,h-1);}
+    const tone = previewFinish === 'wood' ? [145,93,52] : previewFinish === 'pearl' ? [228,216,202] : tones[set];
+    medal(c,x,h*.47,r*(next?1.06:.88),Math.sin((index+i)*1.7)*.32+offset*.6,tone,motif);
+    if(next && !previewFinish){c.fillStyle='#fff2d3';c.font='bold 10px system-ui';c.textAlign='center';c.fillText('TAP',x,h-1);}
   }
 }
 export function drawLoop(canvas,angle,s,set) {

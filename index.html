@@ -25,6 +25,7 @@
         <button data-tab="scripture" aria-label="Scripture and prayer">Scripture</button>
         <button data-tab="liturgical">Calendar</button>
         <button data-tab="journal">Your journal</button>
+        <button data-tab="profile">Profile</button>
         <button data-tab="about">Guidance</button>
       </nav>
       <div id="storage-error" class="notice error" role="alert" hidden></div>
@@ -142,6 +143,23 @@
             <article class="panel"><p class="eyebrow">INTENTIONS & REFLECTIONS</p><h2>A place for your thoughts.</h2><form id="note-form"><label for="note-date">Date</label><input id="note-date" type="date" required><label for="note-text">Your note <span class="muted">(optional)</span></label><textarea id="note-text" rows="5" maxlength="10000" placeholder="An intention, a gratitude, something to carry with you…" required></textarea><div class="note-actions"><button class="primary" type="submit">Save note</button><button id="cancel-edit" class="quiet" type="button" hidden>Cancel edit</button></div></form><div id="notes-list"></div></article>
           </div>
           <div class="backup panel"><div><h2>Keep a little safekeeping.</h2><p class="muted">Browser storage can be cleared. Back up your journal regularly.</p></div><div class="backup-actions"><button id="export" class="secondary">Export backup</button><label class="secondary file-label">Import backup<input id="import" type="file" accept=".json,application/json"></label></div></div>
+        </section>
+        <section id="profile" aria-labelledby="profile-heading" hidden>
+          <div class="intro"><p class="eyebrow">PROFILE · REWARD PREVIEW</p><h1 id="profile-heading">My Little Chapel</h1><p>Try every reward. Nothing here earns points or changes your journal.</p></div>
+          <article class="profile-study panel">
+            <div id="profile-window" data-scene="dawn">
+              <svg viewBox="0 0 240 140" aria-hidden="true"><use id="profile-art" href="./icons/profile-windows.svg#dawn"></use></svg>
+              <h2 id="profile-name">Little Pilgrim</h2>
+              <canvas id="profile-strand" aria-label="Sample strand of devotional beads"></canvas>
+            </div>
+            <div class="profile-controls">
+              <label for="profile-scene">Preview a background</label><select id="profile-scene"></select>
+              <p id="profile-unlock" class="small muted"></p>
+              <button id="profile-votive" class="secondary" hidden>Light a votive</button>
+              <label for="profile-title">Display title</label><select id="profile-title"></select>
+              <label for="profile-finish">Bead finish</label><select id="profile-finish"><option value="enamel">Jordan blue enamel</option><option value="wood">Olivewood &amp; brass</option><option value="pearl">Pearl &amp; gold</option></select>
+            </div>
+          </article>
         </section>
         <section id="about" aria-labelledby="about-heading" hidden>
           <div class="intro"><p class="eyebrow">ALWAYS WITH YOU</p><h1 id="about-heading">A small, sacred space.</h1><p>No account. No noise. Just a little room for prayer.</p></div>
