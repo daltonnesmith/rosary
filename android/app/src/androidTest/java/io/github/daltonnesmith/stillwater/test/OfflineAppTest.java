@@ -114,12 +114,11 @@ public class OfflineAppTest {
             assertEquals("Our Father", text("#prayer-title"));
             click("[data-tab=scripture]");
             click("#reading-next");
-            click("#reading-next");
-            assertTrue(text("#reading-verses").contains("Tobit"));
+            assertTrue(text("#reading-title").startsWith("Tobit 1:"));
             evaluate("document.querySelector('#reading-plan').value='gospels';document.querySelector('#reading-plan').dispatchEvent(new Event('change'));");
             click("#reading-next");
-            for (int i = 0; i < 4; i++) click("#reading-next");
-            assertEquals("Hail Mary", text("#reading-title"));
+            click("#reading-next");
+            assertEquals("Passage 3 of 5", text("#reading-step-count"));
             click("[data-tab=liturgical]");
             evaluate("const d=document.querySelector('#lit-date');d.value='2026-02-18';d.dispatchEvent(new Event('change'));");
             assertTrue(text("#lit-events").contains("Ash Wednesday"));
@@ -147,8 +146,8 @@ public class OfflineAppTest {
                 assertEquals(2, saved.getInt("version"));
                 assertEquals("Synthetic Android backup test.", saved.getJSONArray("notes").getJSONObject(0).getString("text"));
                 assertEquals(2, saved.getJSONObject("progress").getInt("step"));
-                assertEquals(1, saved.getJSONObject("reading").getJSONObject("deuterocanon").getJSONObject("progress").getInt("step"));
-                assertEquals(4, saved.getJSONObject("reading").getJSONObject("gospels").getJSONObject("progress").getInt("step"));
+                assertEquals(14, saved.getJSONObject("reading").getJSONObject("deuterocanon").getJSONObject("progress").getInt("step"));
+                assertEquals(27, saved.getJSONObject("reading").getJSONObject("gospels").getJSONObject("progress").getInt("step"));
             }
             String before = (String) evaluate("return localStorage.getItem('stillwater-v1');");
             Intents.init();

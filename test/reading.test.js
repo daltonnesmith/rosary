@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 import { READING_BOOKS, PLANS, emptyReading, booksFor, chapterFor, firstPosition, readingSequence, splitChapter, validateReading, nextPosition, finishChapter, mergeReading } from '../src/reading.js';
 import { emptyState, validateState, mergeBackup, parseBackup, localDate } from '../src/core.js';
 import { SCRIPTURE_SOURCE } from '../src/scripture.js';
-import { selectBook } from '../src/reading.js';
+import { selectBook, passageSteps, passageIndex } from '../src/reading.js';
+test('old reading and bead positions resume at their passage without changing the chapter', () => {
+  for (const [step,part] of [[0,0],[13,0],[14,1],[30,2],[52,3],[53,4],[67,4]]) assert.equal(passageIndex(step),part);
+  assert.deepEqual(passageSteps.map(passageIndex),[0,1,2,3,4]);
+});
 import { prayerMilestones } from '../src/core.js';
 
 test('Jerusalem Cross requires every chapter in each Gospel, not four chapter records', () => {

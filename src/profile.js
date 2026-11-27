@@ -159,8 +159,5 @@ export function createProfilePreview(getState) {
   };
   votive.addEventListener('click', () => { lit = !lit; render(); });
   new ResizeObserver(render).observe(strand);
-  return {render, getFinish:()=>equipped.finish, getArtwork:()=>{
-    const p=paintings.find(p=>p.id===equipped.scene);
-    return p ? {photo:`../icons/${p.id}.jpg`,name:p.name} : {symbol:equipped.scene,name:rewards.find(r=>r[0]===equipped.scene)[1]};
-  }};
+  return {render, getFinish:()=>equipped.finish};
 }

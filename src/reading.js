@@ -31,6 +31,11 @@ export function splitChapter(verses) {
   if (!Array.isArray(verses) || verses.length < 5) throw new Error('A chapter needs at least five verses for this plan.');
   return Array.from({ length: 5 }, (_, i) => verses.slice(Math.floor(i * verses.length / 5), Math.floor((i + 1) * verses.length / 5)));
 }
+// These anchors keep saved 68-step bookmarks compatible without rewriting journals.
+export const passageSteps = [1, 14, 27, 40, 67];
+export function passageIndex(step) {
+  return Math.min(4, Math.max(0, Math.floor((step - 1) / 13)));
+}
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 function validPosition(value, plan) {
   return record(value) && booksFor(plan).some(book => book.id === value.book && book.chapters.some(chapter => chapter.number === value.chapter));

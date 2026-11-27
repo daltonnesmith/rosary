@@ -1,5 +1,5 @@
 import { PRAYERS } from './core.js';
-import { PLANS, READING_BOOKS, COMPANION_PRAYERS, booksFor, chapterFor, firstPosition, readingSequence, splitChapter, finishChapter, selectBook } from './reading.js';
+import { READING_BOOKS, COMPANION_PRAYERS, booksFor, chapterFor, firstPosition, passageSteps, passageIndex, splitChapter, finishChapter, selectBook } from './reading.js';
 
 export function createReadingCompanion({ getState, commit, notify, confirmChange }) {
   const $ = selector => document.querySelector(selector);
@@ -10,7 +10,7 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     return node;
   };
   let completion = null;
-  let reviewKey = '';
+  const pauses = [COMPANION_PRAYERS.jesus, PRAYERS.father, COMPANION_PRAYERS.jesus, PRAYERS.glory, PRAYERS.cross];
   const save = reading => commit({ ...getState(), reading });
   const setPlanData = (reading, plan, data) => ({ ...reading, [plan]: { ...reading[plan], ...data } });
   function verseNodes(verses) {
@@ -27,13 +27,11 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     const position = data.progress ?? data.next ?? firstPosition(plan);
     const book = READING_BOOKS.find(item => item.id === position.book);
     const chapter = chapterFor(position.book, position.chapter);
-    const steps = readingSequence(plan);
-    const index = data.progress?.step ?? 0;
-    const step = steps[index];
+    const index = passageIndex(data.progress?.step ?? 0);
     const done = completion?.plan === plan;
-    const part = step.decade ? splitChapter(chapter.verses)[step.decade - 1] : [];
+    const part = splitChapter(chapter.verses)[index];
     $('#reading-plan').value = plan;
-    $('#reading-description').textContent = PLANS[plan].description;
+    $('#reading-description').textContent = 'Choose a chapter, or pick up where you left off.';
     $('#reading-book').replaceChildren(...READING_BOOKS.map(item => {
       const option = make('option', item.name);
       option.value = item.id;
@@ -66,43 +64,32 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
       const bar = make('progress');
       bar.max = item.chapters.length;
       const partial = mark?.step !== undefined && !group.completed.some(e => e.book === item.id && e.chapter === mark.chapter);
-      bar.value = count + (partial ? mark.step / readingSequence(item.plan).length : 0);
+      bar.value = count + (partial ? passageIndex(mark.step) / passageSteps.length : 0);
       bar.setAttribute('aria-label', `${item.name} reading progress`);
       row.append(label, bar);
-      if (mark?.step !== undefined) row.append(make('small', `Resume chapter ${mark.chapter} · step ${mark.step + 1}`));
+      if (mark?.step !== undefined) row.append(make('small', `Resume chapter ${mark.chapter} · passage ${passageIndex(mark.step) + 1}`));
       return row;
     }));
-    $('#reading-phase').textContent = done ? 'CHAPTER COMPLETE' : step.decade ? `Decade ${step.decade} of 5` : index === 0 ? 'BEGIN IN PEACE' : 'CLOSING PRAYERS';
-    $('#reading-step-count').textContent = done ? 'Well done' : `Step ${index + 1} of ${steps.length}`;
-    $('#reading-reference').textContent = done ? `${completion.bookName} ${completion.chapter}` : `${book.name} ${chapter.number}${part.length ? `:${part[0].number}–${part.at(-1).number}` : ''}`;
-    $('#reading-verses').hidden = step.prayer !== 'reading' || done;
-    $('#reading-prayer').hidden = step.prayer === 'reading' && !done;
+    $('#reading-phase').textContent = done ? 'CHAPTER COMPLETE' : 'THE DAILY CHAPTER';
+    $('#reading-step-count').textContent = done ? 'Complete' : `Passage ${index + 1} of 5`;
+    $('#reading-reference').textContent = done ? `${completion.bookName} ${completion.chapter}` : `World English Bible · Catholic Edition`;
+    $('#reading-verses').hidden = done;
     $('#reading-verses').replaceChildren(...verseNodes(part));
     if (done) {
       $('#reading-title').textContent = 'A little further in the Word.';
       $('#reading-prayer').textContent = completion.saved ? 'Your chapter and prayers are saved. Rest here, or continue when you are ready.' : 'Your chapter and prayers are complete in this tab, but could not be saved. Export a journal backup before closing.';
-    } else if (step.prayer === 'reading') {
-      $('#reading-title').textContent = `Reading ${step.decade} of 5`;
-      $('#reading-prayer').textContent = '';
     } else {
-      const prayer = COMPANION_PRAYERS[step.prayer] ?? PRAYERS[step.prayer];
-      $('#reading-title').textContent = prayer[0];
-      $('#reading-prayer').textContent = prayer[1];
+      $('#reading-title').textContent = `${book.name} ${chapter.number}:${part[0].number}–${part.at(-1).number}`;
+      $('#reading-prayer').textContent = pauses[index][1];
     }
-    $('#reading-review').hidden = !step.decade || step.prayer === 'reading' || done;
-    const key = `${plan}-${book.id}-${chapter.number}-${step.decade}`;
-    if (reviewKey !== key) $('#reading-review').open = false;
-    reviewKey = key;
-    $('#reading-review-verses').replaceChildren(...verseNodes(part));
-    $('#reading-beads').hidden = !step.bead || done;
-    $('#reading-beads').replaceChildren(...Array.from({ length: 10 }, (_, i) => make('span', '', `bead${step.bead === i + 1 ? ' active' : ''}${step.bead > i + 1 ? ' passed' : ''}`)));
-    const percent = done ? 100 : data.progress ? Math.round(index / steps.length * 100) : 0;
+    $('#pause-label').textContent = done ? 'IN GRATITUDE' : `PAUSE FOR PRAYER · ${pauses[index][0]}`;
+    const percent = done ? 100 : index * 20;
     $('#reading-progress').value = percent;
-    $('#reading-progress-label').textContent = done ? 'Chapter and prayers completed' : step.bead ? `Prayer bead ${step.bead} of 10` : step.prayer === 'reading' ? 'Read at your own pace' : 'One prayer at a time';
+    $('#reading-progress-label').textContent = done ? 'Chapter completed' : 'Chapter progress';
     $('#reading-percent').textContent = `${percent}%`;
     $('#reading-back').disabled = !data.progress || index === 0;
     $('#reading-next').disabled = !data.progress && !data.next;
-    $('#reading-next').textContent = !data.progress && !data.next ? 'Plan complete ✓' : done ? data.progress ? `Resume ${book.name} ${chapter.number} →` : 'Continue to next chapter →' : !data.progress ? 'Begin chapter →' : index === steps.length - 1 ? 'Complete chapter ✓' : step.prayer === 'reading' ? 'I’ve read this →' : 'Next prayer →';
+    $('#reading-next').textContent = !data.progress && !data.next ? 'Plan complete ✓' : done ? 'Continue reading →' : index === 4 ? 'Complete chapter ✓' : 'Next passage →';
     if (focus) {
       const heading = $('#reading-title');
       heading.focus({ preventScroll: true });
@@ -133,7 +120,7 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     const reading = getState().reading;
     const plan = reading.selectedPlan;
     const data = reading[plan];
-    if (completion && data.progress) {
+    if (completion) {
       completion = null;
       render(true);
       return;
@@ -141,21 +128,21 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     if (!data.progress) {
       if (!data.next) return;
       completion = null;
-      save(setPlanData(reading, plan, { progress: { ...data.next, step: 0 } }));
-    } else if (data.progress.step === readingSequence(plan).length - 1) {
+      save(setPlanData(reading, plan, { progress: { ...data.next, step: passageSteps[1] } }));
+    } else if (passageIndex(data.progress.step) === 4) {
       const bookName = READING_BOOKS.find(book => book.id === data.progress.book).name;
-      const next = finishChapter(reading, plan);
+      const next = finishChapter(setPlanData(reading,plan,{progress:{...data.progress,step:passageSteps[4]}}), plan);
       const saved = save(next);
       completion = { plan, bookName, chapter: data.progress.chapter, saved };
       notify(saved ? `${bookName} ${data.progress.chapter} completed and saved. Your rosary history is unchanged.` : 'Chapter completed only in this tab. Export a journal backup before closing.');
-    } else save(setPlanData(reading, plan, { progress: { ...data.progress, step: data.progress.step + 1 } }));
+    } else save(setPlanData(reading, plan, { progress: { ...data.progress, step: passageSteps[passageIndex(data.progress.step)+1] } }));
     render(true);
   });
   $('#reading-back').addEventListener('click', () => {
     const reading = getState().reading;
     const plan = reading.selectedPlan;
-    if (!reading[plan].progress || reading[plan].progress.step === 0) return;
-    save(setPlanData(reading, plan, { progress: { ...reading[plan].progress, step: reading[plan].progress.step - 1 } }));
+    if (!reading[plan].progress || !passageIndex(reading[plan].progress.step)) return;
+    save(setPlanData(reading, plan, { progress: { ...reading[plan].progress, step: passageSteps[passageIndex(reading[plan].progress.step)-1] } }));
     render(true);
   });
   $('#reading-change').addEventListener('click', async () => {

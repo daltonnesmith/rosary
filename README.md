@@ -4,7 +4,7 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 
 ## What it does
 
-Equipped profile artwork also appears behind the chapel reader, while the decade’s stained-glass window remains visible. In **Calendar**, select a past or current date to record or undo Mass and Confession check-ins. Lenten dates, starting on Ash Wednesday, offer a seven-day prayer challenge. These private milestones do not earn rosary points; JSON backups include the check-in dates and activities.
+Collectible art decorates the Profile card only; the chapel keeps the stained-glass window for each decade and your equipped beads. In **Calendar**, select a past or current date to record or undo Mass and Confession check-ins. Lenten dates, starting on Ash Wednesday, offer a seven-day prayer challenge. These private milestones do not earn rosary points; JSON backups include the check-in dates and activities.
 
 For local testing, open the app on localhost with `?testEquip=1`. **Try background & beads** applies even unearned styles in that tab until reload, without saving preferences or granting awards.
 
@@ -28,7 +28,7 @@ The museum backgrounds unlock at 1, 5, 7, 30, and 365 completed rosaries, respec
 - **Your journal → Prayer milestones** awards 10 points per completed traditional rosary. Lifetime awards (1, 5, 7, 30, 50, 100, 150, 200, 250, 300, and 365 rosaries), streak awards (7, 30, 40, 60, and 90 consecutive local days), and a year of prayer (365 distinct days, breaks allowed) are calculated from your journal, including restored history. Multiple rosaries on one day earn points separately but count as one prayer day.
 - Saves dated reflections, supports editing, and exports/imports validated JSON backups. Import merges rather than replacing your journal; conflicting notes are both preserved.
 - Installs as an offline-capable progressive web app (PWA), with a separate Android test APK wrapper for direct installation. Neither is a published App Store/Play Store listing. Includes generated PNG icons (192, 512, and Apple 180 pixels), a maskable icon, a manifest, and an app-shell service worker.
-- Adds independent **Scripture & prayer** companions for the deuterocanon and all four Gospels, with 235 full chapter readings, Jesus Prayers, Marian prayers, per-book bars, and exact resumption. The traditional rosary is unchanged.
+- **The Daily Chapter** offers 235 complete chapters from the deuterocanon and all four Gospels, with quiet prayer pauses, book progress bars, and saved passages. The traditional rosary is unchanged.
 - Adds a separate **Calendar** tab for U.S. Roman Catholic feasts and seasons, with color-coded months, daily observances, optional memorials, and Sunday/Thursday Ascension variants, available offline for 2024-2035.
 
 ## Run locally
@@ -133,12 +133,12 @@ For app-shell releases, increment `CACHE` in `sw.js` whenever cached files chang
 
 ## Scripture & prayer companions
 
-These are personal reading devotions inspired by the rosary, not replacements for the traditional mysteries. Use **Your book plan** or **Choose a book by progress** to switch among all 13 books without losing your chapter or prayer bead. Each book’s bar includes unfinished prayer steps, but only explicitly completed chapters count as finished. Book bookmarks are included in journal backups.
+Use **Books & bookmarks** to switch among 13 books without losing your passage. Old bead bookmarks open at the corresponding passage of the same chapter. Completed chapters and Gospel medals are unchanged.
 
-Each complete chapter is divided at verse boundaries into five nonempty readings. After the opening Sign of the Cross, each decade begins with its reading and an Our Father, followed by ten prayer beads and a Glory Be. The closing prayer and Sign of the Cross come before the explicit **Complete chapter** action.
+Each complete chapter is divided at verse boundaries into five passages. Each page pairs the text with a prayer; use **Next passage** four times, then **Complete chapter**. A chapter a day is a suggested rhythm, not a lock or deadline.
 
-- **Deuterocanon:** ten Jesus Prayers per decade: "Lord Jesus Christ, Son of God, have mercy on me, a sinner." The closing prayer is Saint Michael. Reading order: Tobit, Judith, Esther additions, 1 Maccabees, 2 Maccabees, Wisdom, Sirach, Baruch, Daniel additions. This is 146 chapter readings.
-- **Gospels:** Matthew, Mark, Luke, John, comprising all 89 chapters. Each decade alternates five Jesus Prayers with five Hail Marys; the closing prayer is the Memorare.
+- **Deuterocanon:** Tobit, Judith, Esther additions, 1 Maccabees, 2 Maccabees, Wisdom, Sirach, Baruch, Daniel additions (146 chapters).
+- **Gospels:** Matthew, Mark, Luke, John (89 chapters).
 
 Start at any book/chapter without falsely crediting skipped chapters. Each book has a completion bar. Only finishing the chapter and its prayers records completion; rereading does not double-count it. At a book boundary the companion advances to the next unread chapter, returning to earlier gaps before declaring the entire plan complete. Switching companions preserves both places. **Choose another chapter** asks before clearing only that companion's unfinished place.
 

@@ -459,7 +459,6 @@ $('#view-chapel').addEventListener('click', async () => {
       const { createChapel } = await import('../chapel/chapel.js');
       chapel = await createChapel($('#chapel-host'), {
         getFinish: profile.getFinish,
-        getArtwork: profile.getArtwork,
         context: () => ({
           progress: state.progress, set: state.progress?.set ?? selectedSet,
           fatima: state.progress?.fatima ?? state.fatima,
