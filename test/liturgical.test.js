@@ -2,7 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { LITURGICAL_DAYS, THURSDAY_OVERRIDES } from '../src/liturgical-data.js';
-import { adventAppearance } from '../src/liturgical.js';
+import { adventAppearance, appearanceForDate } from '../src/liturgical.js';
+test('feast designs take precedence on their day only, including movable Easter', () => {
+  for (const [date,expected] of [
+    ['2026-12-23','ADVENT'],['2026-12-24','CHRISTMAS_EVE'],['2026-12-25','CHRISTMAS_DAY'],['2026-12-26','CHRISTMAS_TIME'],
+    ['2026-04-04','PASCHAL_TRIDUUM'],['2026-04-05','EASTER_SUNDAY'],['2026-04-06','EASTER_TIME'],['2027-03-28','EASTER_SUNDAY'],
+    ['2026-02-18','LENT'],['2026-11-27','ORDINARY_TIME']
+  ]) assert.equal(appearanceForDate(date),expected,date);
+});
 test('Advent countdown follows the four Sundays and stops at Christmas', () => {
   assert.equal(adventAppearance('2026-11-28'),null);
   for(const [date,week,remaining] of [['2026-11-29',1,26],['2026-12-06',2,19],['2026-12-13',3,12],['2026-12-24',4,1]]) {

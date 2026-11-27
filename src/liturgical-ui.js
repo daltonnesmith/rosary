@@ -1,6 +1,6 @@
 import { localDate } from './dates.js';
 import { annualFasts, fastKey, fastName, includesDay, canJoinSeason, nextLent } from './fasting.js';
-import { CALENDAR_SOURCE, FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote, adventAppearance } from './liturgical.js';
+import { CALENDAR_SOURCE, FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote, adventAppearance, appearanceForDate } from './liturgical.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -10,6 +10,17 @@ const make = (tag, text, className) => {
   return element;
 };
 const format = (date, options) => new Date(`${date}T12:00:00Z`).toLocaleDateString(undefined, { ...options, timeZone: 'UTC' });
+const looks = {
+  ORDINARY_TIME: [SEASONS.ORDINARY_TIME], ADVENT: [SEASONS.ADVENT],
+  CHRISTMAS_EVE: ['Christmas Eve','A light over Bethlehem','One day until Christmas','star'],
+  CHRISTMAS_DAY: ['Christmas Day','Christ is born','Glory to God in the highest.','manger'],
+  CHRISTMAS_TIME: ['Christmas season','The light of the world','Carry the joy of the Nativity into these days.','lantern'],
+  LENT: ['Lent','Into the quiet','Make room for prayer, fasting, and almsgiving.','desert'],
+  PASCHAL_TRIDUUM: ['Paschal Triduum','The three holy days','Keep watch in prayer.','crosses'],
+  EASTER_SUNDAY: ['Easter Sunday','Christ is risen!','Alleluia, alleluia.','tomb'],
+  EASTER_TIME: ['Easter season','Fifty days of Easter joy','Walk in the light of the Resurrection.','lily'],
+};
+const cycle = Object.keys(looks);
 const colorText = (event, day) => {
   const colors = celebrationColors(event, day);
   return colors.length ? `${colors.map(color => COLORS[color]).join(' / ')}${event.optional && !event.colors.length ? ' (weekday color)' : ''}` : 'No daytime Mass';
@@ -24,16 +35,24 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   const designTest = $('#test-design');
   designTest.hidden = !['localhost','localhost.','127.0.0.1','[::1]'].includes(location.hostname);
   designTest.addEventListener('click', () => {
-    preview.value = document.body.dataset.appearance === 'ADVENT' ? 'ORDINARY_TIME' : 'ADVENT';
+    preview.value = cycle[(cycle.indexOf(document.body.dataset.appearance)+1)%cycle.length];
     applyAppearance();
   });
-  for (const [id,label] of Object.entries(SEASONS)) preview.add(new Option(label,id));
+  for (const [id,[label]] of Object.entries(looks)) preview.add(new Option(label,id));
   function applyAppearance() {
     const today = localDate();
     const automatic = preview.value === 'auto';
-    const season = automatic ? liturgicalDay(today)?.season : preview.value;
-    document.body.dataset.appearance = season ?? 'default';
-    designTest.textContent = `Test design: ${season === 'ADVENT' ? 'Ordinary Time' : 'Advent'} →`;
+    const season = automatic ? appearanceForDate(today) : preview.value;
+    document.body.dataset.appearance = season;
+    designTest.textContent = `Test design: ${looks[cycle[(cycle.indexOf(season)+1)%cycle.length]][0]} →`;
+    const [label,title,reflection,motif] = looks[season];
+    $('#feast-banner').hidden = !motif;
+    if (motif) {
+      $('#feast-label').textContent = automatic ? label : `${label} · preview`;
+      $('#feast-title').textContent = title;
+      $('#feast-reflection').textContent = reflection;
+      $('#feast-motif').setAttribute('href',`#motif-${motif}`);
+    }
     $('#advent-banner').hidden = season !== 'ADVENT';
     if (season === 'ADVENT') {
       let date = automatic ? today : selected;
@@ -49,7 +68,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     }
     $('#season-note').textContent = automatic ? 'Follows your local date. Choose a season to preview its appearance.' :
       season === 'ADVENT' ? 'Appearance preview only. Select an Advent date below to see its candles and countdown.' :
-      season === 'ORDINARY_TIME' ? 'Previewing the usual Stillwater appearance.' : `${SEASONS[season]} uses the usual appearance for now; its design is still to come.`;
+      `Previewing ${label}. Your calendar and records are unchanged.`;
   }
   preview.addEventListener('change',applyAppearance);
   let midnightTimer;

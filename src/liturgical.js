@@ -43,6 +43,14 @@ export function adventAppearance(date) {
   const christmas = `${date.slice(0,4)}-12-25`;
   return { week: day.week, remaining: (Date.parse(christmas) - Date.parse(date)) / 86400000 };
 }
+export function appearanceForDate(date) {
+  const day = liturgicalDay(date);
+  if (!day) return 'ORDINARY_TIME';
+  if (date.endsWith('-12-24')) return 'CHRISTMAS_EVE';
+  if (date.endsWith('-12-25')) return 'CHRISTMAS_DAY';
+  if (day.celebrations[0].id === 'easter_sunday') return 'EASTER_SUNDAY';
+  return day.season;
+}
 export function observanceLabel(event, day) {
   if (event.optional && !event.colors.length) return 'Optional commemoration';
   if (event.id === 'commemoration_of_all_the_faithful_departed') return 'Commemoration';
