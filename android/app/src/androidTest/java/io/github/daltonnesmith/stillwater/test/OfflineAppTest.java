@@ -103,6 +103,12 @@ public class OfflineAppTest {
             click("#view-chapel");
             String chapel = "document.querySelector('#chapel-host').shadowRoot";
             waitFor(chapel + "?.getElementById('title')?.textContent === 'Our Father'");
+            // Smaller screens paginate the prayer before offering the next bead.
+            int pages = 0;
+            while (Boolean.TRUE.equals(evaluate("return " + chapel + ".getElementById('next').textContent.startsWith('Continue reading');"))) {
+                assertTrue("Prayer pagination must reach the next bead", ++pages < 100);
+                evaluate(chapel + ".getElementById('next').click();");
+            }
             evaluate(chapel + ".getElementById('next').click();");
             waitFor(chapel + ".getElementById('title').textContent === 'Hail Mary'");
             scenario.recreate();
