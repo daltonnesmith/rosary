@@ -78,12 +78,12 @@
               <label for="reading-plan">Your companion</label>
               <select id="reading-plan"><option value="deuterocanon">The deuterocanon</option><option value="gospels">The four Gospels</option></select>
               <p id="reading-description" class="small muted"></p>
-              <label for="reading-book">Book</label><select id="reading-book"></select>
+              <label for="reading-book">Your book plan</label><select id="reading-book"></select>
+              <details class="book-progress-details"><summary>Choose a book by progress</summary><div id="reading-books"></div></details>
               <label for="reading-chapter">Chapter</label><select id="reading-chapter"></select>
               <p id="reading-book-note" class="small muted"></p>
               <button id="reading-change" class="text-button" hidden>Choose another chapter</button>
               <div class="reading-overall"><p id="reading-total" class="small"></p><progress id="reading-total-bar" max="100" value="0" aria-label="Reading plan completion"></progress></div>
-              <details class="book-progress-details"><summary>Your book progress</summary><div id="reading-books"></div></details>
               <p class="small muted">Missing a day never skips a chapter. You can start at any book or chapter; choosing a place does not mark earlier chapters complete.</p>
             </aside>
             <article class="prayer-card reading-card">
@@ -100,7 +100,7 @@
               <p class="small muted reading-personal-note">A personal Scripture devotion inspired by the rosary, separate from its traditional mysteries.</p>
             </article>
           </div>
-          <div class="panel reading-source"><h2>Scripture, always within reach.</h2><p>The complete readings are bundled for offline use: the public-domain <a href="https://ebible.org/eng-web-c/" target="_blank" rel="noopener noreferrer">World English Bible, Catholic Edition</a>. Each chapter is divided at verse boundaries into five readings. Verse numbering follows this edition; footnotes and empty verse entries are not included. The Esther and Daniel collections include the Greek additions in their full chapter context. <a href="./SCRIPTURE-LICENSE.txt" target="_blank" rel="noopener">Source notice</a>.</p><p>Your exact reading, prayer, and bead are saved independently for each companion. Book bars count only chapters explicitly completed after the closing prayers, not chapters merely opened or skipped. Your journal backup includes both companions.</p></div>
+          <div class="panel reading-source"><h2>Scripture, always within reach.</h2><p>The complete readings are bundled for offline use: the public-domain <a href="https://ebible.org/eng-web-c/" target="_blank" rel="noopener noreferrer">World English Bible, Catholic Edition</a>. Each chapter is divided at verse boundaries into five readings. Verse numbering follows this edition; footnotes and empty verse entries are not included. The Esther and Daniel collections include the Greek additions in their full chapter context. <a href="./SCRIPTURE-LICENSE.txt" target="_blank" rel="noopener">Source notice</a>.</p><p>Switch books at any time. Each book remembers your chapter and prayer bead. Bars show partial progress; only finishing the closing prayers and tapping Complete chapter counts a chapter as complete. Your journal backup includes your book bookmarks.</p></div>
         </section>
         <section id="liturgical" aria-labelledby="liturgical-heading" hidden>
           <div class="intro"><p class="eyebrow">THE RHYTHM OF THE CHURCH</p><h1 id="liturgical-heading">A season for every prayer.</h1><p>Feasts, saints, and sacred seasons in the U.S. Roman Catholic calendar.</p></div>

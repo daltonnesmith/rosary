@@ -59,7 +59,8 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 .reading-sidebar>label:first-child { margin-top: 0; }
 .reading-overall { border-top: 1px solid var(--line); padding-top: 8px; margin: 22px 0; }
 .book-progress-details>summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-size: 13px; }
-.book-progress-row { margin: 16px 0 20px; }
+.book-progress-row { display:grid; gap:7px; width:100%; margin:6px 0; padding:10px; text-align:left; color:var(--ink); background:var(--card); border:1px solid var(--line); }
+.book-progress-row[aria-pressed=true] { border-color:var(--gold); }
 .book-progress-row>p { font-size: 12px; line-height: 1.7; margin: 0 0 8px; }
 .reading-card>#reading-reference { margin: 28px 0 22px; }
 .scripture-text { text-align: left; font: 19px/1.9 var(--serif); overflow-wrap: anywhere; }
@@ -81,9 +82,7 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
   .scripture-layout { display: flex; }
   .reading-sidebar { width: 100%; padding: 22px; }
   .reading-sidebar>p.small { margin: 12px 0; }
-  .reading-sidebar.reading-active label[for="reading-book"],
   .reading-sidebar.reading-active label[for="reading-chapter"],
-  .reading-sidebar.reading-active #reading-book,
   .reading-sidebar.reading-active #reading-chapter { display: none; }
   .reading-overall { margin: 18px 0 8px; }
   .reading-card .prayer-controls { flex-wrap: wrap; }

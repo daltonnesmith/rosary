@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { READING_BOOKS, PLANS, emptyReading, booksFor, chapterFor, firstPosition, readingSequence, splitChapter, validateReading, nextPosition, finishChapter, mergeReading } from '../src/reading.js';
 import { emptyState, validateState, mergeBackup, parseBackup, localDate } from '../src/core.js';
 import { SCRIPTURE_SOURCE } from '../src/scripture.js';
+import { selectBook } from '../src/reading.js';
 
 const now = new Date(2026, 10, 17, 0, 5);
 const stamp = now.toISOString();
@@ -13,6 +14,20 @@ function underway(plan = 'deuterocanon', book = 'TOB', chapter = 1, step = 0) {
   reading[plan].progress = { book, chapter, step };
   return reading;
 }
+test('switching books across and within collections restores individual beads after backup', () => {
+  let r = underway('gospels', 'MAR', 3, 31);
+  r = selectBook(r, 'LUK');
+  r.gospels.progress = {book:'LUK', chapter:1, step:4};
+  r = selectBook(r, 'TOB');
+  r.deuterocanon.progress = {book:'TOB', chapter:1, step:12};
+  r = mergeReading(emptyReading(), parseBackup(JSON.stringify({...emptyState(), reading:r})).reading);
+  assert.equal(selectBook(r, 'MAR').gospels.progress.step, 31);
+  assert.equal(selectBook(r, 'LUK').gospels.progress.step, 4);
+  assert.equal(selectBook(r, 'TOB').deuterocanon.progress.step, 12);
+  assert.equal(r.gospels.completed.length, 0);
+  r.gospels.bookmarks.MAR.step = 68;
+  assert.throws(() => validateReading(r), /Invalid Scripture/);
+});
 test('bundled modern public-domain readings contain every selected book and Gospel in order', () => {
   assert.deepEqual(booksFor('deuterocanon').map(book => book.id), ['TOB', 'JDT', 'ESG', '1MA', '2MA', 'WIS', 'SIR', 'BAR', 'DNG']);
   assert.deepEqual(booksFor('gospels').map(book => book.id), ['MAT', 'MAR', 'LUK', 'JOH']);
@@ -118,7 +133,7 @@ test('opening a later book never implies that earlier chapters have been complet
   const reading = underway('gospels', 'JOH', 21, 67);
   const result = finishChapter(reading, 'gospels', now);
   assert.equal(result.gospels.completed.length, 1);
-  assert.deepEqual(result.gospels.next, firstPosition('gospels'));
+  assert.deepEqual(result.gospels.next, {book:'JOH', chapter:1});
   assert.deepEqual(firstPosition('deuterocanon'), { book: 'TOB', chapter: 1 });
 });
 test('only completing every actual chapter finishes a plan, including when chapters were read out of order', () => {

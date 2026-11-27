@@ -1,5 +1,5 @@
 import { PRAYERS } from './core.js';
-import { PLANS, READING_BOOKS, COMPANION_PRAYERS, booksFor, chapterFor, firstPosition, readingSequence, splitChapter, finishChapter } from './reading.js';
+import { PLANS, READING_BOOKS, COMPANION_PRAYERS, booksFor, chapterFor, firstPosition, readingSequence, splitChapter, finishChapter, selectBook } from './reading.js';
 
 export function createReadingCompanion({ getState, commit, notify, confirmChange }) {
   const $ = selector => document.querySelector(selector);
@@ -34,7 +34,7 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     const part = step.decade ? splitChapter(chapter.verses)[step.decade - 1] : [];
     $('#reading-plan').value = plan;
     $('#reading-description').textContent = PLANS[plan].description;
-    $('#reading-book').replaceChildren(...booksFor(plan).map(item => {
+    $('#reading-book').replaceChildren(...READING_BOOKS.map(item => {
       const option = make('option', item.name);
       option.value = item.id;
       return option;
@@ -47,7 +47,6 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
       return option;
     }));
     $('#reading-chapter').value = String(chapter.number);
-    $('#reading-book').disabled = !!data.progress;
     $('#reading-chapter').disabled = !!data.progress;
     $('.reading-sidebar').classList.toggle('reading-active', !!data.progress);
     $('#reading-change').hidden = !data.progress;
@@ -55,15 +54,22 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     const total = booksFor(plan).reduce((sum, item) => sum + item.chapters.length, 0);
     $('#reading-total').textContent = `${data.completed.length} of ${total} chapters complete`;
     $('#reading-total-bar').value = data.completed.length / total * 100;
-    $('#reading-books').replaceChildren(...booksFor(plan).map(item => {
-      const count = data.completed.filter(entry => entry.book === item.id).length;
-      const row = make('div', undefined, 'book-progress-row');
-      const label = make('p', `${item.name} · ${count}/${item.chapters.length}${count === item.chapters.length ? ' · complete' : ''}`);
+    $('#reading-books').replaceChildren(...READING_BOOKS.map(item => {
+      const group = reading[item.plan];
+      const mark = group.progress?.book === item.id ? group.progress : group.bookmarks[item.id];
+      const count = group.completed.filter(entry => entry.book === item.id).length;
+      const row = make('button', undefined, 'book-progress-row');
+      row.type = 'button';
+      row.setAttribute('aria-pressed', String(item.id === book.id));
+      row.addEventListener('click', () => chooseBook(item.id));
+      const label = make('span', `${item.name} · ${count}/${item.chapters.length} chapters complete`);
       const bar = make('progress');
       bar.max = item.chapters.length;
-      bar.value = count;
-      bar.setAttribute('aria-label', `${item.name}: ${count} of ${item.chapters.length} chapters completed`);
+      const partial = mark?.step !== undefined && !group.completed.some(e => e.book === item.id && e.chapter === mark.chapter);
+      bar.value = count + (partial ? mark.step / readingSequence(item.plan).length : 0);
+      bar.setAttribute('aria-label', `${item.name} reading progress`);
       row.append(label, bar);
+      if (mark?.step !== undefined) row.append(make('small', `Resume chapter ${mark.chapter} · step ${mark.step + 1}`));
       return row;
     }));
     $('#reading-phase').textContent = done ? 'CHAPTER COMPLETE' : step.decade ? `Decade ${step.decade} of 5` : index === 0 ? 'BEGIN IN PEACE' : 'CLOSING PRAYERS';
@@ -96,7 +102,7 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     $('#reading-percent').textContent = `${percent}%`;
     $('#reading-back').disabled = !data.progress || index === 0;
     $('#reading-next').disabled = !data.progress && !data.next;
-    $('#reading-next').textContent = !data.progress && !data.next ? 'Plan complete ✓' : done ? 'Continue to next chapter →' : !data.progress ? 'Begin chapter →' : index === steps.length - 1 ? 'Complete chapter ✓' : step.prayer === 'reading' ? 'I’ve read this →' : 'Next prayer →';
+    $('#reading-next').textContent = !data.progress && !data.next ? 'Plan complete ✓' : done ? data.progress ? `Resume ${book.name} ${chapter.number} →` : 'Continue to next chapter →' : !data.progress ? 'Begin chapter →' : index === steps.length - 1 ? 'Complete chapter ✓' : step.prayer === 'reading' ? 'I’ve read this →' : 'Next prayer →';
     if (focus) {
       const heading = $('#reading-title');
       heading.focus({ preventScroll: true });
@@ -109,15 +115,13 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     save({ ...reading, selectedPlan: event.target.value });
     render();
   });
-  $('#reading-book').addEventListener('change', event => {
-    const reading = getState().reading;
-    const plan = reading.selectedPlan;
-    const book = booksFor(plan).find(item => item.id === event.target.value);
-    const chapter = book.chapters.find(item => !reading[plan].completed.some(entry => entry.book === book.id && entry.chapter === item.number)) ?? book.chapters[0];
+  function chooseBook(id) {
     completion = null;
-    save(setPlanData(reading, plan, { next: { book: book.id, chapter: chapter.number } }));
+    save(selectBook(getState().reading, id));
+    $('.book-progress-details').open = false;
     render();
-  });
+  }
+  $('#reading-book').addEventListener('change', event => chooseBook(event.target.value));
   $('#reading-chapter').addEventListener('change', event => {
     const reading = getState().reading;
     const plan = reading.selectedPlan;
@@ -129,6 +133,11 @@ export function createReadingCompanion({ getState, commit, notify, confirmChange
     const reading = getState().reading;
     const plan = reading.selectedPlan;
     const data = reading[plan];
+    if (completion && data.progress) {
+      completion = null;
+      render(true);
+      return;
+    }
     if (!data.progress) {
       if (!data.next) return;
       completion = null;

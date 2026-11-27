@@ -14,7 +14,7 @@ export const COMPANION_PRAYERS = {
 export const booksFor = plan => READING_BOOKS.filter(book => book.plan === plan);
 export const chapterFor = (book, chapter) => READING_BOOKS.find(item => item.id === book)?.chapters.find(item => item.number === chapter);
 export const firstPosition = plan => ({ book: booksFor(plan)[0].id, chapter: booksFor(plan)[0].chapters[0].number });
-const emptyPlan = plan => ({ next: firstPosition(plan), progress: null, completed: [] });
+const emptyPlan = plan => ({ next: firstPosition(plan), progress: null, completed: [], bookmarks: {} });
 export const emptyReading = () => ({ selectedPlan: 'deuterocanon', deuterocanon: emptyPlan('deuterocanon'), gospels: emptyPlan('gospels') });
 export function readingSequence(plan) {
   if (!Object.hasOwn(PLANS, plan)) throw new Error('Unknown reading plan.');
@@ -49,12 +49,36 @@ export function validateReading(value) {
     });
     if (new Set(completed.map(item => `${item.book}:${item.chapter}`)).size !== completed.length) invalid();
     if (data.next === null && completed.length !== booksFor(plan).reduce((sum, book) => sum + book.chapters.length, 0)) invalid();
+    const bookmarks = {};
+    if (data.bookmarks !== undefined) {
+      if (!record(data.bookmarks)) invalid();
+      for (const [id, mark] of Object.entries(data.bookmarks)) {
+        if (!validPosition(mark, plan) || mark.book !== id || id === (data.progress ?? data.next)?.book ||
+          (mark.step !== undefined && (!Number.isInteger(mark.step) || mark.step < 0 || mark.step >= readingSequence(plan).length))) invalid();
+        bookmarks[id] = { book: id, chapter: mark.chapter, ...(mark.step === undefined ? {} : {step: mark.step}) };
+      }
+    }
     result[plan] = {
       next: data.next && { book: data.next.book, chapter: data.next.chapter },
       progress: data.progress && { book: data.progress.book, chapter: data.progress.chapter, step: data.progress.step },
-      completed,
+      completed, bookmarks,
     };
   }
+  return result;
+}
+export function selectBook(reading, id) {
+    const book = READING_BOOKS.find(b => b.id === id);
+    if (!book) throw new Error('Unknown reading book.');
+    const result = validateReading(reading);
+    result.selectedPlan = book.plan;
+    const data = result[book.plan], active = data.progress ?? data.next;
+    if (active?.book === id) return result;
+    if (active) data.bookmarks[active.book] = active;
+    const mark = data.bookmarks[id];
+    delete data.bookmarks[id];
+    const firstUnread = book.chapters.find(c => !data.completed.some(e => e.book === id && e.chapter === c.number));
+    data.next = {book:id, chapter:mark?.chapter ?? firstUnread?.number ?? book.chapters[0].number};
+    data.progress = mark?.step === undefined ? null : mark;
   return result;
 }
 export function nextPosition(position, plan) {
@@ -71,8 +95,15 @@ export function finishChapter(reading, plan, now = new Date()) {
   if (!data.completed.some(item => item.book === book && item.chapter === chapter)) data.completed.push({ book, chapter, date: localDate(now), completedAt: now.toISOString() });
   let next = nextPosition(data.progress, plan);
   while (next && data.completed.some(item => item.book === next.book && item.chapter === next.chapter)) next = nextPosition(next, plan);
-  data.next = next ?? booksFor(plan).flatMap(book => book.chapters.map(item => ({ book: book.id, chapter: item.number }))).find(position => !data.completed.some(item => item.book === position.book && item.chapter === position.chapter)) ?? null;
+  const unreadHere = READING_BOOKS.find(item => item.id === book).chapters.find(c => !data.completed.some(e => e.book === book && e.chapter === c.number));
+  data.next = next?.book === book ? next : unreadHere ? {book, chapter:unreadHere.number} : next ?? booksFor(plan).flatMap(book => book.chapters.map(item => ({ book: book.id, chapter: item.number }))).find(position => !data.completed.some(item => item.book === position.book && item.chapter === position.chapter)) ?? null;
   data.progress = null;
+  if (data.next && data.bookmarks[data.next.book]) {
+    const mark = data.bookmarks[data.next.book];
+    delete data.bookmarks[mark.book];
+    data.next = {book:mark.book, chapter:mark.chapter};
+    data.progress = mark.step === undefined ? null : mark;
+  }
   return result;
 }
 export function mergeReading(current, incoming) {
@@ -82,11 +113,16 @@ export function mergeReading(current, incoming) {
   for (const plan of Object.keys(PLANS)) {
     const data = result[plan];
     for (const item of backup[plan].completed) if (!data.completed.some(existing => existing.book === item.book && existing.chapter === item.chapter)) data.completed.push(item);
-    if (!data.progress && backup[plan].progress) {
+    const prior = data.progress ?? data.next;
+    if (!data.progress && backup[plan].progress && !data.bookmarks[backup[plan].progress.book]) {
       data.progress = backup[plan].progress;
       data.next = backup[plan].next;
-    } else if (!data.progress && current[plan].completed.length === 0 && current[plan].next?.book === firstPosition(plan).book && current[plan].next?.chapter === 1) {
+    } else if (!data.progress && !Object.keys(data.bookmarks).length && current[plan].completed.length === 0 && current[plan].next?.book === firstPosition(plan).book && current[plan].next?.chapter === 1) {
       data.next = backup[plan].next;
+    }
+    const active = (data.progress ?? data.next)?.book;
+    for (const mark of [backup[plan].progress ?? backup[plan].next, ...Object.values(backup[plan].bookmarks), prior]) {
+      if (mark && mark.book !== active && !data.bookmarks[mark.book]) data.bookmarks[mark.book] = mark;
     }
   }
   return validateReading(result);

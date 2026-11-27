@@ -120,7 +120,7 @@ For app-shell releases, increment `CACHE` in `sw.js` whenever cached files chang
 
 ## Scripture & prayer companions
 
-These are personal reading devotions inspired by the rosary, not replacements for the traditional mysteries. Both companions have independent bookmarks and completed-chapter records. There is no date-based lock or automatic advancement: missing a day keeps your place, and you may continue with another chapter whenever you wish.
+These are personal reading devotions inspired by the rosary, not replacements for the traditional mysteries. Use **Your book plan** or **Choose a book by progress** to switch among all 13 books without losing your chapter or prayer bead. Each book’s bar includes unfinished prayer steps, but only explicitly completed chapters count as finished. Book bookmarks are included in journal backups.
 
 Each complete chapter is divided at verse boundaries into five nonempty readings. After the opening Sign of the Cross, each decade begins with its reading and an Our Father, followed by ten prayer beads and a Glory Be. The closing prayer and Sign of the Cross come before the explicit **Complete chapter** action.
 
