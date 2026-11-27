@@ -3,7 +3,6 @@ import { createReadingCompanion } from './reading-ui.js';
 import { READING_BOOKS } from './reading.js';
 import { createLiturgicalCalendar } from './liturgical-ui.js';
 import { isAndroidApp, saveAndroidBackup } from './platform.js';
-import { createVirtualRosary } from './rosary-ui.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -33,10 +32,6 @@ function storageError(message) {
 function notify(message) {
   $('#status').textContent = message;
   $('#status').hidden = false;
-  if (!$('#pray').hidden && !$('#virtual-rosary').hidden) {
-    $('#virtual-feedback').textContent = message;
-    $('#virtual-feedback').hidden = false;
-  }
 }
 try {
   state = loadState({ getItem(key) {
@@ -74,7 +69,6 @@ function humanDate(value, options = { month: 'long', day: 'numeric', year: 'nume
 }
 function showTab(tab) {
   for (const name of ['pray', 'scripture', 'liturgical', 'journal', 'about']) $(`#${name}`).hidden = name !== tab;
-  document.body.classList.toggle('virtual-mode', tab === 'pray' && !$('#virtual-rosary').hidden);
   document.querySelectorAll('[data-tab]').forEach(button => {
     if (button.dataset.tab === tab) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
@@ -150,7 +144,6 @@ function renderPrayer(focus = false) {
   $('#previous').disabled = !progress || index === 0;
   $('#next').textContent = completed ? 'Pray again →' : !progress ? 'Begin rosary →' : index === steps.length - 1 ? 'Complete rosary ✓' : 'Next prayer →';
   $('#restart').hidden = !progress;
-  virtualRosary.render();
   if (focus && !$('#guided-rosary').hidden && !$('#chapel-dialog').open) {
     const heading = enteringDecade ? $('#meditation') : $('#prayer-title');
     heading.focus({ preventScroll: true });
@@ -218,8 +211,7 @@ document.addEventListener('keydown', event => {
   if ($('#pray').hidden || document.querySelector('dialog[open]') || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(event.target.tagName) || event.target.isContentEditable) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
     event.preventDefault();
-    if ($('#virtual-rosary').hidden) $(event.key === 'ArrowRight' ? '#next' : '#previous').click();
-    else virtualRosary[event.key === 'ArrowRight' ? 'advance' : 'back']();
+    $(event.key === 'ArrowRight' ? '#next' : '#previous').click();
   }
 });
 
@@ -360,7 +352,6 @@ window.addEventListener('storage', event => {
   if (event.key === STORAGE_KEY || event.key === null) {
     canWrite = false;
     storageError('Your saved data changed in another tab. This tab will not overwrite it. Export any unsaved activity, then reload before continuing.');
-    virtualRosary.render();
   }
 });
 document.addEventListener('visibilitychange', () => {
@@ -448,15 +439,6 @@ $('#view-chapel').addEventListener('click', async () => {
     chapel = null;
     notify(`The chapel could not open: ${error.message} Your saved place has not changed.`);
   } finally { button.disabled = false; }
-});
-const virtualRosary = createVirtualRosary({
-  getContext: () => ({
-    progress: state.progress, set: state.progress?.set ?? selectedSet,
-    fatima: state.progress?.fatima ?? state.fatima, completed,
-    storageMessage: $('#storage-error').hidden ? '' : $('#storage-error').textContent,
-  }),
-  start, next: () => nextPrayer({ mysteryCards: true }), previous: () => previousPrayer({ mysteryCards: true }), notify,
-  restart: () => $('#restart').click(),
 });
 readingCompanion.render();
 renderPrayer();

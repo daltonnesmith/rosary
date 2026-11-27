@@ -54,60 +54,6 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 @media(prefers-reduced-motion:no-preference){button{transition:background .15s,box-shadow .15s}.prayer-card{animation:arrive .4s ease-out}@keyframes arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}}
 
 .rosary-view-switch { display: flex; justify-content: center; gap: 8px; margin: 0 0 26px; }
-.rosary-view-switch [aria-pressed="true"] { background: var(--ink); color: var(--card); border-color: var(--ink); }
-.virtual-mode #status, .virtual-mode #storage-error { display: none; }
-.virtual-card { display: flex; flex-direction: column; width: 100%; min-width: 0; height: min(780px, calc(100svh - 24px)); min-height: 440px; text-align: center; scroll-margin-top: 12px; padding: 20px 24px 0; overflow-anchor: none; }
-.virtual-reader { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; scroll-behavior: auto; padding: 8px 8px 16px; text-align: left; }
-.virtual-reader:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 6px; }
-.virtual-reader>h2 { font-size: 30px; line-height: 1.25; margin: 8px 0 24px; }
-#virtual-prayer-title:focus { outline: none; }
-.virtual-card .prayer-text { min-height: 0; margin: 0 0 24px; font-size: 21px; line-height: 1.8; }
-.virtual-reader>.eyebrow { margin: 0 0 12px; }
-.virtual-reader>.meditation { margin-bottom: 12px; }
-.virtual-mystery-reading { margin-bottom: 24px; }
-.virtual-mystery-reading .reflection { padding-top: 16px; border-top: 1px solid var(--line); font: italic 17px/1.8 var(--serif); }
-.touch-rosary-dock { flex: none; background: var(--card); border-top: 1px solid var(--line); padding: 8px 0 0; }
-#virtual-reading-help { font-size: 10px; line-height: 1.5; margin: 0 0 8px; }
-.touch-progress { display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 28px; font-size: 10px; color: var(--gold); margin-bottom: 8px; }
-.rosary-track { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 12px 0 6px; }
-.rosary-track::before { content: ""; position: absolute; height: 3px; top: 30px; left: 10%; right: 10%; background: repeating-linear-gradient(90deg, #ae8b49 0 2px, #d9c79d 2px 5px, #ae8b49 5px 6px, transparent 6px 8px); opacity: .7; }
-.touch-bead { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-width: 44px; min-height: 76px; padding: 6px 0; color: var(--muted); border: 1px solid transparent; background: transparent; border-radius: 12px; }
-.touch-bead-stone { position: relative; display: grid; place-items: center; width: 42px; height: 48px; color: #80602d; border: 1px solid #9e7939; border-radius: 48%; background: radial-gradient(ellipse at 26% 16%, #fffdf2 2%, #f7e8c3 30%, #c5a15c 78%, #80622e); box-shadow: inset 1px 2px 0 #fff9df, inset -2px -3px 3px #77562150, inset 0 0 0 3px #b69c6660, 0 3px 0 #9d7b43, 0 6px 8px #45372235; }
-.touch-bead-stone::after { content: ""; position: absolute; inset: 5px; border: 1px solid #fff3cf70; border-radius: 48%; pointer-events: none; }
-.touch-bead-stone::before { content: ""; position: absolute; width: 5px; height: 5px; top: -5px; left: calc(50% - 3px); border: 1px solid #b4975c; border-radius: 50%; background: var(--card); }
-.touch-bead-stone svg { display: block; width: 32px; height: 36px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 1px 0 #ffefd57a); }
-.medal-halo { opacity: .55; }
-.medal-robe { fill: currentColor; fill-opacity: .1; }
-.medal-shield { fill: currentColor; fill-opacity: .08; }
-.touch-bead-count { position: absolute; right: -2px; bottom: -1px; display: grid; place-items: center; width: 15px; height: 15px; border: 1px solid #ba9c62; border-radius: 50%; background: #fffaf0; color: #634b26; font: 700 9px/1 system-ui; }
-.touch-bead-label { font-size: 8px; font-weight: 750; letter-spacing: .5px; text-transform: uppercase; }
-.touch-bead[data-state="done"] { opacity: .8; }
-.touch-bead[data-state="done"] .touch-bead-stone { background: radial-gradient(ellipse at 30% 20%, #f6f7ee, #d5dfd3); color: #4a604c; border-color: #a4af96; box-shadow: inset 0 0 0 2px #f4f4e7, inset 0 0 0 3px #9ca68d60, 0 1px 3px #29463c18; }
-.touch-bead[data-state="locked"] { opacity: .6; }
-.touch-bead[data-state="now"] { color: var(--ink); }
-.touch-bead[data-state="now"] .touch-bead-stone { background: radial-gradient(ellipse at 26% 16%, #779687, #36574a 45%, #162f27 85%); color: #fff1c8; border-color: #a88b4c; box-shadow: inset 1px 2px 0 #a8b6a4, inset 0 0 0 3px #ccb57d, 0 3px 0 #172e25, 0 6px 8px #29463c40; }
-.touch-bead[data-state="next"], .touch-bead[data-state="start"] { color: #664c1e; }
-.touch-bead[data-state="next"] .touch-bead-stone, .touch-bead[data-state="start"] .touch-bead-stone { background: radial-gradient(ellipse at 26% 16%, #fffdf0, #f1d28c 40%, #ac7c2e 85%); color: #573b12; border-color: #95702c; box-shadow: inset 1px 2px 0 #fff6d1, inset 0 0 0 3px #b38c43, 0 0 0 3px #c19b4c24, 0 3px 0 #89642c, 0 6px 8px #7f602540; }
-#virtual-hint { font-size: 11px; line-height: 1.5; height: 50px; overflow-y: auto; margin: 8px 0; }
-.touch-rosary-dock .prayer-controls { margin-top: 12px; }
-.touch-rosary-dock .prayer-controls button { flex: 1; }
-.touch-rosary-dock .prayer-controls { gap: 12px; }
-.touch-rosary-dock .prayer-controls button { height: 52px; min-height: 52px; padding: 8px 12px; }
-.virtual-restart-row { flex: none; height: calc(44px + env(safe-area-inset-bottom, 0px)); }
-@media(max-width:650px) {
-  .rosary-view-switch button { flex: 1; padding-inline: 10px; font-size: 12px; }
-  .virtual-card { padding: 12px 12px 0; }
-  .virtual-reader { padding-inline: 6px; }
-  .virtual-card .prayer-text { font-size: 20px; line-height: 1.8; }
-  .virtual-reader>h2 { font-size: 28px; }
-  .touch-progress { font-size: 9px; }
-}
-@media(max-height:550px) {
-  #virtual-reading-help { display: none; }
-  #virtual-hint { height: 33px; }
-  .touch-rosary-dock .prayer-controls { margin-top: 6px; }
-}
-
 .reading-sidebar { padding: 22px; }
 .reading-sidebar>label { margin-top: 16px; }
 .reading-sidebar>label:first-child { margin-top: 0; }
