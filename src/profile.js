@@ -4,7 +4,9 @@ import { prayerMilestones, POINTS_PER_ROSARY } from './core.js';
 const paintings = [
   {id:'1952.110', name:'Madonna and Child', artist:'Lippo Memmi', goal:1},
   {id:'1954.834', name:'Virgin and Child Enthroned', artist:'Battista di Biagio Sanguigni', goal:5},
+  {id:'1950.251', name:'The Annunciation', artist:'Paolo Veronese and workshop', goal:7},
   {id:'1916.802', name:'Virgin and Child with Angels', artist:'Fra Filippo Lippi', goal:30},
+  {id:'1931.449', name:'The Crucifixion with a Carthusian Monk', artist:'Rogier van der Weyden', goal:365},
 ];
 
 const rewards = [
@@ -59,6 +61,11 @@ export function createProfilePreview(getCompletions) {
     byId('name').textContent = title.value;
     byId('unlock').textContent = painting ? total >= painting.goal ? 'Museum background unlocked.' : `Preview only · unlocks at ${painting.goal} completed ${painting.goal === 1 ? 'rosary' : 'rosaries'}.` : `Unlock milestone: ${goal}.`;
     const earned = badges.filter(b => b.earned);
+    byId('catalog').replaceChildren(...badges.map(b => {
+      const item = document.createElement('li');
+      item.textContent = `${b.name} · ${b.earned ? '✓ Earned' : `${b.progress} / ${b.goal}`}`;
+      return item;
+    }));
     byId('award-note').textContent = earned.length ? `${points} points from your recorded rosaries.` : 'Your first award appears here when you complete a rosary. Trying a background doesn’t earn an award.';
     byId('awards').replaceChildren(...earned.map(badge => {
       const chip = document.createElement('li');

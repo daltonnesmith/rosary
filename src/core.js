@@ -187,5 +187,6 @@ export function prayerMilestones(completions, today = localDate()) {
   for (const goal of [5, 7, 30, 365]) add(`${goal} rosaries in total`, entries.length, goal);
   for (const goal of [7, 30]) add(`${goal} days in a row`, longest, goal);
   add('A year of prayer · 365 prayer days', days.length, 365);
+  add('Full Bouquet · all four mystery sets', new Set(entries.map(item => item.mystery).filter(set => Object.hasOwn(MYSTERIES, set))).size, 4);
   return { points: entries.length * POINTS_PER_ROSARY, badges };
 }

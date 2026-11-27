@@ -3,6 +3,11 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { READING_BOOKS } from '../src/scripture.js';
 import { prayerMilestones } from '../src/core.js';
+test('Full Bouquet needs all four distinct sets, not four completions of one set', () => {
+  const earned = sets => prayerMilestones(sets.map(mystery => ({mystery,date:'2026-01-01'})), '2026-01-01').badges.find(b => b.name.startsWith('Full Bouquet')).earned;
+  assert.equal(earned(['joyful','luminous','sorrowful','joyful']), false);
+  assert.equal(earned(['joyful','luminous','sorrowful','glorious']), true);
+});
 
 test('lifetime totals count repeat rosaries while streaks count consecutive local days', () => {
   const entries = Array.from({length:30}, () => ({date:'2024-02-23'}));
