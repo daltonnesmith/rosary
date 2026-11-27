@@ -1,5 +1,25 @@
 import { drawStrand } from '../chapel/medals.js';
 import { prayerMilestones, POINTS_PER_ROSARY } from './core.js';
+import { localDate } from './dates.js';
+import { fastName } from './fasting.js';
+
+function renderFastHistory(fasts) {
+  const today = localDate();
+  const past = fasts.filter(f => f.end < today).sort((a,b)=>b.end.localeCompare(a.end));
+  const list = document.getElementById('fast-history-list');
+  const date = d => new Date(`${d}T12:00:00Z`).toLocaleDateString(undefined, {month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+  const line = (tag,text) => Object.assign(document.createElement(tag),{textContent:text});
+  list.replaceChildren(...past.map(f=>{
+    const entry = document.createElement('details');
+    entry.className = 'fast-entry';
+    entry.append(line('summary',`${fastName(f)} · ${date(f.end)}`));
+    if (f.intention) entry.append(line('p',f.intention));
+    entry.append(line('p',`${date(f.start)} – ${date(f.end)}`),
+      line('p',f.days.length ? `${f.days.length} ${f.days.length === 1 ? 'day' : 'days'} recorded: ${[...f.days].sort().map(date).join('; ')}` : 'No days recorded.'));
+    return entry;
+  }));
+  if (!past.length) list.append(line('p','No past fasts yet. Your records appear here after their end date.'));
+}
 
 const paintings = [
   {id:'1952.110', name:'Madonna and Child', artist:'Lippo Memmi', goal:1},
@@ -98,6 +118,7 @@ export function createProfilePreview(getState) {
   function render() {
     if (!strand.clientWidth) return;
     const state = getState();
+    renderFastHistory(state.fasts);
     const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed,state.checkins,state.fasts);
     const total = points / POINTS_PER_ROSARY;
     const previewLocked = byId('preview-locked').checked;

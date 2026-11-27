@@ -147,10 +147,6 @@
                   <div id="fast-range"><div><label for="fast-start">Start date</label><input id="fast-start" type="date"></div><div><label for="fast-end">End date</label><input id="fast-end" type="date"></div></div>
                   <button class="secondary" type="submit">Join fast</button>
                 </form>
-                <details id="fast-history"><summary>Fasting history</summary>
-                  <p class="small muted">Past fasts, newest first. Open a record to see the days you marked.</p>
-                  <div id="fast-history-list"></div>
-                </details>
               </section>
               <div class="lit-local"><label for="lit-ascension">Ascension in your diocese</label><select id="lit-ascension"><option value="sunday">Sunday (most U.S. dioceses)</option><option value="thursday">Thursday</option></select><p class="small muted">Check your parish's calendar. This choice lasts for this visit and never changes your prayer history.</p></div>
             </aside>
@@ -199,6 +195,10 @@
               <button type="button" class="secondary" id="profile-equip">Equip background &amp; beads</button><p id="profile-equip-status" role="status" class="small"></p>
             </div>
           </article>
+          <details class="panel" id="fast-history"><summary>Fasting history</summary>
+            <p class="small muted">Past fasts, newest first. Open a record to see your intention and the days you marked.</p>
+            <div id="fast-history-list"></div>
+          </details>
           <article class="panel profile-awards"><h2>Your earned awards</h2><p id="profile-award-note" class="small muted"></p><ul id="profile-awards"></ul><details id="award-catalog" open><summary>Review all awards</summary><ul id="profile-catalog"></ul></details></article>
         </section>
         <section id="about" aria-labelledby="about-heading" hidden>

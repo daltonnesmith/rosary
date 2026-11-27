@@ -106,18 +106,6 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
       card.append(make('p', `${prettyDate(f.start)}${f.end === f.start ? '' : ` – ${prettyDate(f.end)}`} · ${daysKept} ${daysKept === 1 ? 'day' : 'days'} recorded`, 'small muted'), button);
       list.append(card);
     }
-    const past = fasts.filter(f => f.end < today).sort((a,b)=>b.end.localeCompare(a.end));
-    const history = $('#fast-history-list');
-    history.replaceChildren();
-    if (!past.length) history.append(make('p','No past fasts yet. Your records appear here after their end date.', 'small'));
-    for (const f of past) {
-      const entry = make('details', undefined, 'fast-entry');
-      entry.append(make('summary', `${fastName(f)} · ${prettyDate(f.end)}`));
-      if (f.intention) entry.append(make('p', f.intention));
-      entry.append(make('p', `${prettyDate(f.start)} – ${prettyDate(f.end)}`, 'small muted'),
-        make('p', f.days.length ? `${f.days.length} ${f.days.length === 1 ? 'day' : 'days'} recorded: ${[...f.days].sort().map(prettyDate).join('; ')}` : 'No days recorded.', 'small'));
-      history.append(entry);
-    }
     const available = plans.filter(p => canJoinSeason(p,selected,today) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
     const options = [...available, {kind:'personal', start:selected}];
     const previousKind = kind.value;
