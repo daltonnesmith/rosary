@@ -164,5 +164,14 @@
     <dialog id="confirm-dialog"><form method="dialog"><h2 id="confirm-title">Start again?</h2><p id="confirm-text"></p><div class="dialog-actions"><button value="cancel" class="secondary" autofocus>Keep my place</button><button value="confirm" class="primary">Start new rosary</button></div></form></dialog>
     <noscript><p class="notice error">Stillwater needs JavaScript to display prayers and save your journal. Enable JavaScript and reload.</p></noscript>
     <dialog id="chapel-dialog" aria-label="Stained-glass chapel"><div id="chapel-host"></div></dialog>
+    <dialog id="finished-dialog" aria-labelledby="finished-title" aria-describedby="finished-status">
+      <form id="finished-form">
+        <h2 id="finished-title">Rosary completed</h2>
+        <p id="finished-status"></p>
+        <label for="finished-note">Journal note (optional)</label>
+        <textarea id="finished-note" rows="3" maxlength="10000" placeholder="What would you like to remember?"></textarea>
+        <div class="dialog-actions"><button class="primary" type="submit" autofocus>Done</button></div>
+      </form>
+    </dialog>
   </body>
 </html>

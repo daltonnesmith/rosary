@@ -160,14 +160,35 @@ function nextPrayer(options = {}) {
   if (!state.progress) return start();
   const last = sequence(state.progress.set, state.progress.fatima).length - 1;
   if (state.progress.step === last) {
-    const saved = commit(finishRosary(state));
+    const now = new Date();
+    const saved = commit(finishRosary(state, now));
     completed = true;
     completionSaved = saved;
-    completedDate = localDate();
+    completedDate = localDate(now);
     notify(saved ? 'Rosary completed and saved. Your journal is up to date.' : 'Rosary completed in this tab, but not saved to device storage. Export a backup.');
   } else commit({ ...state, progress: moveRosaryProgress(state.progress, 1, options) });
   renderPrayer(true);
+  if (completed) {
+    if ($('#chapel-dialog').open) $('#chapel-dialog').close();
+    $('#finished-form').reset();
+    $('#finished-status').textContent = completionSaved
+      ? 'Recorded in your journal. Add a reflection if you like, or just tap Done.'
+      : 'Completed in this tab only. Your device could not save it. Export a backup before closing.';
+    $('#finished-dialog').showModal();
+  }
 }
+$('#finished-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!$('#finished-dialog').open) return;
+  const text = $('#finished-note').value.trim();
+  if (text) {
+    const note = { id: crypto.randomUUID(), date: completedDate, text, updatedAt: new Date().toISOString() };
+    const saved = commit({ ...state, notes: [...state.notes, note] });
+    notify(saved ? 'Your rosary and reflection are saved in your journal.' : 'Your reflection is only in this tab. Export a backup before closing.');
+    if (saved) completionSaved = true;
+  }
+  $('#finished-dialog').close();
+});
 $('#next').addEventListener('click', () => nextPrayer());
 function previousPrayer(options = {}) {
   if (!state.progress || state.progress.step === 0) return;
