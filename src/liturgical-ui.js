@@ -1,4 +1,5 @@
 import { localDate } from './dates.js';
+import { annualFasts, fastKey, fastName, includesDay } from './fasting.js';
 import { CALENDAR_SOURCE, FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote } from './liturgical.js';
 
 const $ = selector => document.querySelector(selector);
@@ -14,11 +15,75 @@ const colorText = (event, day) => {
   return colors.length ? `${colors.map(color => COLORS[color]).join(' / ')}${event.optional && !event.colors.length ? ' (weekday color)' : ''}` : 'No daytime Mass';
 };
 
-export function createLiturgicalCalendar({getChecks,toggle}) {
+export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) {
   let selected = localDate();
   selected = selected < FIRST_DAY ? FIRST_DAY : selected > LAST_DAY ? LAST_DAY : selected;
   let ascension = 'sunday';
   const input = $('#lit-date');
+  const kind = $('#fast-kind'), end = $('#fast-end'), intention = $('#fast-intention');
+  let formDate;
+  function showRule() {
+    const personal = kind.value === 'personal';
+    $('#fast-range').hidden = !personal;
+    end.required = personal;
+    end.disabled = !personal;
+    $('#fast-rule').textContent = personal ? `Starts ${selected}. Earn Small Offering on your first recorded day, and A Week of Offerings after seven distinct days.` :
+      kind.value === 'lent' ? 'Seven recorded days this Lent earn the yearly medal. They need not be consecutive.' : 'Record this observance once to earn its medal for the year.';
+  }
+  function renderFasts(fasts, plans, today) {
+    const list = $('#fast-active');
+    list.replaceChildren();
+    for (const f of fasts.filter(f => includesDay(f, selected))) {
+      const card = make('article', undefined, 'fast-entry');
+      const recorded = f.days.includes(selected);
+      const button = make('button', recorded ? '✓ Kept this fast · undo' : 'I kept this fast', 'secondary');
+      button.type = 'button';
+      button.disabled = selected > today;
+      button.setAttribute('aria-pressed', String(recorded));
+      button.addEventListener('click', () => {
+        if (selected > localDate()) return;
+        const days = recorded ? f.days.filter(d => d !== selected) : [...f.days, selected].sort();
+        saveFasts(getFasts().map(item => fastKey(item) === fastKey(f) ? {...item, days} : item),
+          recorded ? 'Fasting check-in removed.' : 'Fasting check-in saved.');
+        render();
+      });
+      card.append(make('strong', fastName(f)));
+      if (f.intention) card.append(make('p', f.intention));
+      card.append(make('p', `${f.start} – ${f.end} · ${f.days.filter(d=>d<=today).length} days recorded`, 'small muted'), button);
+      list.append(card);
+    }
+    const available = plans.filter(p => includesDay(p, selected) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
+    const options = [...available, {kind:'personal', start:selected}];
+    const previousKind = kind.value;
+    kind.replaceChildren(...options.map(p => new Option(fastName(p), p.kind)));
+    if (formDate === selected && options.some(p=>p.kind===previousKind)) kind.value = previousKind;
+    end.min = selected;
+    end.max = LAST_DAY;
+    if (formDate !== selected) {
+      end.value = selected;
+      intention.value = '';
+      formDate = selected;
+    }
+    intention.setCustomValidity('');
+    showRule();
+  }
+  kind.addEventListener('change', () => { intention.setCustomValidity(''); showRule(); });
+  $('#fast-form').addEventListener('input', () => intention.setCustomValidity(''));
+  $('#fast-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const plan = kind.value === 'personal' ? {kind:'personal', start:selected, end:end.value} :
+      annualFasts(selected.slice(0,4)).find(p => p.kind === kind.value && includesDay(p, selected));
+    if (!plan) return;
+    const fast = {...plan, intention:intention.value.trim(), days:[]};
+    if (getFasts().some(f => fastKey(f) === fastKey(fast))) {
+      intention.setCustomValidity('You have already joined this fast. Use its daily check-in above.');
+      intention.reportValidity();
+      return;
+    }
+    saveFasts([...getFasts(), fast], 'Fast joined. No days marked yet.');
+    formDate = undefined;
+    render();
+  });
   input.min = FIRST_DAY;
   input.max = LAST_DAY;
   $('#lit-coverage').textContent = `Offline coverage: ${CALENDAR_SOURCE.startYear}–${CALENDAR_SOURCE.endYear}, calculated using the bundled current rules, not archival calendars. Future decrees may change dates.`;
@@ -37,7 +102,9 @@ export function createLiturgicalCalendar({getChecks,toggle}) {
   function render() {
     const today = localDate();
     const checks=getChecks();
-    const markedDates=new Set(checks.map(c=>c.date));
+    const fasts = getFasts();
+    const plans = annualFasts(selected.slice(0, 4));
+    const markedDates=new Set([...checks.map(c=>c.date), ...fasts.flatMap(f=>f.days)]);
     const month = selected.slice(0, 7);
     const first = `${month}-01`;
     const count = Number(moveDay(moveMonth(first, 1), -1).slice(8));
@@ -74,6 +141,11 @@ export function createLiturgicalCalendar({getChecks,toggle}) {
       const dot = make('span', '', 'lit-dot');
       dot.setAttribute('aria-hidden', 'true');
       heading.append(make('span', String(number)), dot);
+      const occasions = plans.filter(p => p.start === date);
+      if (occasions.length) {
+        heading.append(make('span', '◇', 'lit-fast-mark'));
+        button.setAttribute('aria-label', `${button.getAttribute('aria-label')} Fasting: ${occasions.map(fastName).join(', ')}.`);
+      }
       button.append(heading, make('span', event.name, 'lit-day-name'), make('span', COLORS[color] ?? 'No Mass', 'lit-day-color'));
       if(markedDates.has(date)){
         heading.append(make('span','✓','lit-check-mark'));
@@ -82,6 +154,7 @@ export function createLiturgicalCalendar({getChecks,toggle}) {
       td.append(button);
     }
     const day = liturgicalDay(selected, ascension);
+    renderFasts(fasts, plans, today);
     const isLent=day.season==='LENT';
     const challenge=$('#lent-challenge');
     challenge.hidden=!isLent;

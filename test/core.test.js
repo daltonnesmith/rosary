@@ -216,3 +216,32 @@ test('merge restores backed-up progress only when no rosary is currently underwa
   const current = { ...emptyState(), notes: [note()] };
   assert.deepEqual(mergeBackup(current, emptyState()).notes, current.notes);
 });
+import { annualFasts, fastMedals } from '../src/fasting.js';
+
+test('annual fasting medals count only recorded days in their own observance and year', () => {
+  const [lent, ash, friday] = annualFasts('2026');
+  assert.deepEqual([lent.start, lent.end, ash.start, friday.start], ['2026-02-18','2026-04-02','2026-02-18','2026-04-03']);
+  const days = Array.from({length:7}, (_,i)=>`2026-02-${18+i}`);
+  const plans = [{...lent, intention:'Scrolling', days}, {...ash, intention:'', days:[]}];
+  const awards = today => fastMedals(plans,today).filter(b=>b.earned).map(b=>b.title);
+  assert.deepEqual(awards(days[5]), []);
+  assert.deepEqual(awards('2027-04-01'), ['Lent 2026']);
+  plans[0].days.pop();
+  plans[1].days.push(ash.start);
+  assert.deepEqual(awards('2026-02-24'), ['Ash Wednesday 2026']);
+});
+
+test('fast backups merge daily records once, retain intentions, and reject dates outside a fast', () => {
+  const a = {kind:'personal', start:'2026-02-18', end:'2026-02-25', intention:'Evening scrolling', days:['2026-02-18']};
+  const current = {...emptyState(), fasts:[a]};
+  const incoming = {...emptyState(), fasts:[{...a, days:['2026-02-19']}, {...a, intention:'Games'}]};
+  const merged = mergeBackup(current, parseBackup(JSON.stringify(incoming)));
+  assert.deepEqual(merged.fasts[0].days, ['2026-02-18','2026-02-19']);
+  assert.deepEqual(mergeBackup(merged, incoming), merged);
+  const medals = fastMedals(merged.fasts,'2026-02-25');
+  assert.equal(medals.find(b=>b.title==='A Week of Offerings').progress,2);
+  assert.equal(medals.find(b=>b.title==='Small Offering').earned,true);
+  for (const change of [{days:['2026-02-26']}, {kind:'friday'}, {days:[a.start,a.start]}]) {
+    assert.throws(()=>parseBackup(JSON.stringify({...current,fasts:[{...a,...change}]})), /valid Stillwater backup/);
+  }
+});

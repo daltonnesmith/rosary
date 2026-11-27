@@ -2,6 +2,7 @@ import { localDate, validDate, previousDate, validTimestamp as stamp } from './d
 import { emptyReading, validateReading, mergeReading, booksFor } from './reading.js';
 import { PASSAGES } from './mystery-passages.js';
 import { liturgicalDay } from './liturgical.js';
+import { validateFasts, mergeFasts, fastMedals } from './fasting.js';
 export { localDate, validDate, previousDate } from './dates.js';
 
 export const PRAYERS = {
@@ -96,7 +97,7 @@ export function moveRosaryProgress(progress, direction, { mysteryCards = false }
   if (mysteryCards && direction === 1 && steps[result.step].prayer === 'father' && steps[result.step].decade > 0) result.stage = 'mystery';
   return result;
 }
-export const emptyState = () => ({ version: 2, progress: null, completions: [], notes: [], checkins: [], fatima: true, reading: emptyReading() });
+export const emptyState = () => ({ version: 2, progress: null, completions: [], notes: [], checkins: [], fasts: [], fatima: true, reading: emptyReading() });
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const id = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value);
 const mystery = value => typeof value === 'string' && Object.hasOwn(MYSTERIES, value);
@@ -125,7 +126,8 @@ export function validateState(value) {
     return {date:row.date,kind:row.kind};
   });
   if (new Set(checkins.map(c=>`${c.date}:${c.kind}`)).size !== checkins.length) invalid();
-  return { version: 2, progress: progress && { set: progress.set, fatima: progress.fatima, step: progress.step, startedAt: progress.startedAt, ...(progress.stage === undefined ? {} : { stage: progress.stage }) }, fatima: value.fatima, notes, completions, reading, checkins };
+  const fasts = validateFasts(value.fasts === undefined ? [] : value.fasts, invalid);
+  return { version: 2, progress: progress && { set: progress.set, fatima: progress.fatima, step: progress.step, startedAt: progress.startedAt, ...(progress.stage === undefined ? {} : { stage: progress.stage }) }, fatima: value.fatima, notes, completions, reading, checkins, fasts };
 }
 export const STORAGE_KEY = 'stillwater-v1';
 export function loadState(storage) {
@@ -149,6 +151,7 @@ export function mergeBackup(current, incoming, createId = () => crypto.randomUUI
   const merged = validateState(current);
   const backup = validateState(incoming);
   const existingChecks = new Set(merged.checkins.map(c=>`${c.date}:${c.kind}`));
+  merged.fasts = mergeFasts(merged.fasts, backup.fasts);
   merged.checkins.push(...backup.checkins.filter(c=>!existingChecks.has(`${c.date}:${c.kind}`)));
   for (const note of backup.notes) {
     const existing = merged.notes.find(item => item.id === note.id);
@@ -183,7 +186,7 @@ export function finishRosary(state, now = new Date(), createId = () => crypto.ra
 }
 
 export const POINTS_PER_ROSARY = 10;
-export function prayerMilestones(completions, today = localDate(), gospelChapters = [], checkins = []) {
+export function prayerMilestones(completions, today = localDate(), gospelChapters = [], checkins = [], fasts = []) {
   const entries = completions.filter(item => item.date <= today);
   const days = [...new Set(entries.map(item => item.date))].sort();
   let last, run = 0, longest = 0;
@@ -215,5 +218,6 @@ export function prayerMilestones(completions, today = localDate(), gospelChapter
     lentYears.set(year,(lentYears.get(year)??0)+1);
   }
   add('lent','Lenten Journey · seven days of prayer in one Lent',Math.max(0,...lentYears.values()),7);
+  badges.push(...fastMedals(fasts, today));
   return { points: entries.length * POINTS_PER_ROSARY, badges };
 }

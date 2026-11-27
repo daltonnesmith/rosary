@@ -34,16 +34,16 @@ function medal(badge) {
   icon.setAttribute('aria-hidden','true');
   icon.setAttribute('viewBox','0 0 40 40');
   const use = document.createElementNS(icon.namespaceURI,'use');
-  const artwork = {mass:'chalice', confession:'dove', lent:'olive'}[badge.symbol] ?? badge.symbol;
+  const artwork = badge.art ?? {mass:'chalice', confession:'dove', lent:'olive'}[badge.symbol] ?? badge.symbol;
   use.setAttribute('href',`./icons/awards.svg#${artwork}`);
   icon.append(use);
   const name = document.createElement('strong'), rule = document.createElement('span'), status = document.createElement('small');
-  name.textContent = symbols[badge.symbol] ?? gospelNames[badge.symbol];
+  name.textContent = badge.title ?? symbols[badge.symbol] ?? gospelNames[badge.symbol];
   rule.textContent = badge.name.replace(/^Jerusalem Cross · /,'');
   status.textContent = badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`;
   const unlock = document.createElement('small');
   const finish = Object.values(finishes).find(([,key])=>key===badge.symbol);
-  unlock.textContent = finish ? `Beads: ${finish[0]}` : ['mass','confession','lent'].includes(badge.symbol) ? 'Private calendar milestone' : 'Reward: profile background';
+  unlock.textContent = finish ? `Beads: ${finish[0]}` : badge.symbol.startsWith('fast-') || ['mass','confession','lent'].includes(badge.symbol) ? 'Private calendar milestone' : 'Reward: profile background';
   if (badge.children) {
     const details=document.createElement('details'), summary=document.createElement('summary'), list=document.createElement('ul');
     summary.append(icon,name,rule,status,unlock,document.createTextNode('View Gospel medals'));
@@ -98,7 +98,7 @@ export function createProfilePreview(getState) {
   function render() {
     if (!strand.clientWidth) return;
     const state = getState();
-    const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed,state.checkins);
+    const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed,state.checkins,state.fasts);
     const total = points / POINTS_PER_ROSARY;
     const previewLocked = byId('preview-locked').checked;
     const unlocked = new Set(badges.flatMap(b=>[b,...(b.children??[])]).filter(b=>b.earned).map(b=>b.symbol));

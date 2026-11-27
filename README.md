@@ -6,6 +6,8 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 
 Collectible art decorates the Profile card only; the chapel keeps the stained-glass window for each decade and your equipped beads. In **Calendar**, select a past or current date to record or undo Mass and Confession check-ins. Lenten dates, starting on Ash Wednesday, offer a seven-day prayer challenge. These private milestones do not earn rosary points; JSON backups include the check-in dates and activities.
 
+**Calendar → Fasting:** Select a date to join a personal fast with an end date, or choose Lent, Ash Wednesday, or Good Friday when offered. A diamond marks the start of a built-in fast. Optionally name what you are setting aside. Tap **I kept this fast** on each day you choose to record; tap again to undo. Seven distinct days during one Lent earn that year's Lent medal. Ash Wednesday and Good Friday each have a one-day annual medal; personal fasts earn medals at one and seven distinct days. These are voluntary devotional milestones, separate from the Lenten prayer challenge and from Church fasting obligations. Intentions and dates stay on your device and are included in exported journal backups.
+
 For local testing, open the app on localhost with `?testEquip=1`. **Try background & beads** applies even unearned styles in that tab until reload, without saving preferences or granting awards.
 
 In the Profile award catalog, expand **Chi-Rho · A year of prayer** to see cumulative prayer-day milestones in order. Multiple rosaries on one date count as one day here, and breaks do not reset the count.

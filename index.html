@@ -122,6 +122,19 @@
                 <section id="lent-challenge" hidden><h3 id="lent-heading"></h3><p id="lent-count" class="small"></p><button class="secondary" data-checkin="lent" data-label="Prayed today for Lent">Prayed today for Lent</button></section>
               </section>
               <p id="lit-day-note" class="small lit-day-note" hidden></p>
+              <section class="lit-checkins" id="fasting">
+                <p class="eyebrow">PERSONAL PRACTICE</p><h3>Fasting</h3>
+                <p class="small muted">Choose something to set aside, such as evening scrolling. These voluntary practices are not a measure of faith. Joining never checks off a day.</p>
+                <div id="fast-active"></div>
+                <form id="fast-form">
+                  <label for="fast-kind">Choose a fast</label><select id="fast-kind"></select>
+                  <p id="fast-rule" class="small muted"></p>
+                  <label for="fast-intention">What are you setting aside? (optional)</label>
+                  <input id="fast-intention" type="text" maxlength="160" placeholder="Evening scrolling">
+                  <div id="fast-range"><label for="fast-end">Last day of personal fast</label><input id="fast-end" type="date"></div>
+                  <button class="secondary" type="submit">Join fast</button>
+                </form>
+              </section>
               <div class="lit-local"><label for="lit-ascension">Ascension in your diocese</label><select id="lit-ascension"><option value="sunday">Sunday (most U.S. dioceses)</option><option value="thursday">Thursday</option></select><p class="small muted">Check your parish's calendar. This choice lasts for this visit and never changes your prayer history.</p></div>
             </aside>
           </div>

@@ -246,11 +246,11 @@ document.addEventListener('keydown', event => {
 
 function renderJournal() {
   const summary = stats(state.completions);
-  const {points, badges} = prayerMilestones(state.completions, localDate(), state.reading.gospels.completed,state.checkins);
+  const {points, badges} = prayerMilestones(state.completions, localDate(), state.reading.gospels.completed,state.checkins,state.fasts);
   $('#achievement-summary').textContent = `${points} points · ${badges.filter(b => b.earned).length} of ${badges.length} milestones earned`;
   $('#achievement-list').replaceChildren(...badges.map(badge => {
     const item = make('li');
-    item.append(make('span', badge.name), make('strong', badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`));
+    item.append(make('span', badge.title ? `${badge.title} · ${badge.name}` : badge.name), make('strong', badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`));
     return item;
   }));
   $('#stats').replaceChildren(...[[summary.streak, 'day current streak'], [summary.days, 'days of prayer'], [summary.today ? 'Yes' : 'Not yet', 'prayed today']].map(([value, label]) => {
@@ -441,6 +441,8 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar({
+  getFasts:()=>state.fasts,
+  saveFasts:(fasts,message)=>notify(commit({...state,fasts}) ? message : 'Fast changed in this tab only. Export a backup before closing.'),
   getChecks:()=>state.checkins,
   toggle:(date,kind)=>{
     const exists=state.checkins.some(c=>c.date===date && c.kind===kind);
