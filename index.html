@@ -71,7 +71,17 @@
             </article>
           </div>
           <div class="gentle-footer"><span aria-hidden="true">✧</span> Let this be a little sanctuary in your day.</div>
+        </details>
+            </div>
+            <aside class="panel lit-details" aria-labelledby="lit-day-title">
+        <p id="lit-season" class="lit-season"></p><h2 id="lit-day-title"></h2>
+        <div id="lit-events" aria-live="polite" aria-atomic="true"></div>
+        <section class="lit-checkins"><h3>Private check-ins</h3><p class="small muted">For the selected date. Tap again to undo. Only the date and activity are stored in your journal backup; no confession details.</p>
+          <button class="secondary" data-checkin="mass" data-label="Attended Mass">Attended Mass</button>
+          <button class="secondary" data-checkin="confession" data-label="Went to Confession">Went to Confession</button>
+          <section id="lent-challenge" hidden><h3 id="lent-heading"></h3><p id="lent-count" class="small"></p><button class="secondary" data-checkin="lent" data-label="Prayed today for Lent">Prayed today for Lent</button></section>
         </section>
+        <p id="lit-day-note" class="small lit-day-note" hidden></p>
         <section id="scripture" aria-labelledby="scripture-heading" hidden>
           <div class="intro"><p class="eyebrow">SCRIPTURE &amp; PRAYER</p><h1 id="scripture-heading">The Daily Chapter</h1><p>Read one chapter in five passages, with a short prayer between them.</p></div>
           <div class="prayer-layout scripture-layout">
@@ -106,24 +116,17 @@
         <section id="liturgical" aria-labelledby="liturgical-heading" hidden>
           <div class="intro"><p class="eyebrow">THE RHYTHM OF THE CHURCH</p><h1 id="liturgical-heading">A season for every prayer.</h1><p>Feasts, saints, and sacred seasons in the U.S. Roman Catholic calendar.</p></div>
           <div class="lit-layout">
+            <div class="lit-month-column">
             <article class="panel lit-month-panel">
               <div class="calendar-heading lit-month-heading"><button id="lit-back" class="quiet" aria-label="Previous liturgical calendar month">←</button><h2 id="lit-month-title" aria-live="polite"></h2><button id="lit-next" class="quiet" aria-label="Next liturgical calendar month">→</button></div>
               <div class="lit-controls"><div><label for="lit-date">Go to date</label><input id="lit-date" type="date" required></div><button id="lit-today" class="secondary">Today</button></div>
               <p class="small muted lit-grid-help">Select a day for all its observances. The background shows the season; the dot shows the main celebration's color.</p>
               <table class="lit-month" aria-labelledby="lit-month-title"><thead><tr><th scope="col" abbr="Sunday">Sun</th><th scope="col" abbr="Monday">Mon</th><th scope="col" abbr="Tuesday">Tue</th><th scope="col" abbr="Wednesday">Wed</th><th scope="col" abbr="Thursday">Thu</th><th scope="col" abbr="Friday">Fri</th><th scope="col" abbr="Saturday">Sat</th></tr></thead><tbody id="lit-days"></tbody></table>
+              <p class="small muted"><span class="fast-swatch" aria-hidden="true"></span> A gold half marks a day in your fasting plan, not a completed fast.</p>
               <p class="small muted lit-grid-help">Keyboard: arrow keys move days or weeks; Page Up/Down changes month; Home/End moves within a week.</p>
             </article>
-            <aside class="panel lit-details" aria-labelledby="lit-day-title">
-              <p id="lit-season" class="lit-season"></p><h2 id="lit-day-title"></h2>
-              <div id="lit-events" aria-live="polite" aria-atomic="true"></div>
-              <section class="lit-checkins"><h3>Private check-ins</h3><p class="small muted">For the selected date. Tap again to undo. Only the date and activity are stored in your journal backup; no confession details.</p>
-                <button class="secondary" data-checkin="mass" data-label="Attended Mass">Attended Mass</button>
-                <button class="secondary" data-checkin="confession" data-label="Went to Confession">Went to Confession</button>
-                <section id="lent-challenge" hidden><h3 id="lent-heading"></h3><p id="lent-count" class="small"></p><button class="secondary" data-checkin="lent" data-label="Prayed today for Lent">Prayed today for Lent</button></section>
-              </section>
-              <p id="lit-day-note" class="small lit-day-note" hidden></p>
-              <section class="lit-checkins" id="fasting">
-                <p class="eyebrow">PRAYER &amp; SELF-DENIAL</p><h3>Fasting</h3>
+              <details class="panel lit-checkins" id="fasting">
+                <summary>Fasting <span id="fast-summary-date"></span></summary>
                 <p class="small muted">Set something aside to make room for prayer. Each day is yours to record.</p>
                 <article id="lent-feature" hidden>
                   <div class="lent-seal" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="./icons/awards.svg#olive"/></svg></div>

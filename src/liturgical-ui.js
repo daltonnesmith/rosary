@@ -152,6 +152,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     if (focus) $(`#lit-days button[data-date="${selected}"]`).focus();
   }
   function render() {
+    $('#fast-summary-date').textContent = prettyDate(selected);
     const today = localDate();
     const checks=getChecks();
     const fasts = getFasts();
@@ -194,6 +195,10 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
       dot.setAttribute('aria-hidden', 'true');
       heading.append(make('span', String(number)), dot);
       const occasions = plans.filter(p => p.start === date);
+      if (fasts.some(f => includesDay(f,date) && !(f.kind === 'lent' && today < f.start))) {
+        button.classList.add('fast-day');
+        button.setAttribute('aria-label',`${button.getAttribute('aria-label')} Scheduled fasting day.`);
+      }
       if (occasions.length) {
         heading.append(make('span', '◇', 'lit-fast-mark'));
         button.setAttribute('aria-label', `${button.getAttribute('aria-label')} Fasting: ${occasions.map(fastName).join(', ')}.`);

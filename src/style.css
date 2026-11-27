@@ -202,3 +202,9 @@ section>.intro{margin:18px auto 24px;padding:clamp(20px,3vw,34px) 18px;border-ra
 .profile-fold[open]>summary::after{transform:rotate(225deg)}
 .profile-fold>summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .profile-fold[open]{padding-bottom:12px!important}.profile-fold .profile-controls{padding:0 0 4px}
+#liturgical .fast-day,.fast-swatch{background-image:linear-gradient(to bottom right,transparent 50%,#efd398 50%)}
+.fast-swatch{display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:middle;background-color:#e8efe7;border:1px solid #a79879}
+.lit-month-column{min-width:0}
+#fasting>summary{cursor:pointer;min-height:44px;align-content:center;color:#664b28;font:21px var(--serif)}
+#fast-summary-date{font:13px system-ui;color:var(--muted);margin-inline-start:.55rem}
+.lit-month-column>#fasting{padding:10px 20px;background:linear-gradient(110deg,#f7edd6,var(--card) 65%)}
