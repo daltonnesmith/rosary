@@ -250,3 +250,19 @@ body[data-appearance="EASTER_TIME"]{--season-dark:#20504f;--season-mid:#427a65}
   #feast-title,#advent-countdown{font-size:clamp(20px,5.6vw,26px)}
   #feast-reflection,#advent-week{line-height:1.45}
 }
+body[data-appearance="ADVENT"]{--season-dark:#44304e;--season-mid:#6c4a71;--season-light:#eee3ef;--metal:#f0d195}
+body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) :is(.primary,.secondary[aria-pressed=true]){
+  color:#fffaf0;border-color:var(--season-dark);
+  background:linear-gradient(115deg,var(--season-dark),var(--season-mid));
+  box-shadow:inset 0 -2px var(--metal)
+}
+body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) .secondary:not([aria-pressed=true]):not(#lent-choose){
+  color:var(--season-dark);border-color:var(--season-mid);
+  background:linear-gradient(115deg,var(--card),var(--season-light))
+}
+body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) .tabs [aria-current=page]{
+  color:var(--season-dark);border-color:var(--season-mid);
+  background:linear-gradient(to top,var(--season-light),transparent 80%)
+}
+body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) :is(.primary,.secondary):not(:disabled):hover{box-shadow:inset 0 -3px var(--season-mid),0 2px 6px #30213024}
+body[data-appearance]:not([data-appearance="ORDINARY_TIME"]) :is(.primary,.secondary):focus-visible{outline:3px solid var(--season-dark);outline-offset:3px}
