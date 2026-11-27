@@ -4,6 +4,16 @@ import { READING_BOOKS, PLANS, emptyReading, booksFor, chapterFor, firstPosition
 import { emptyState, validateState, mergeBackup, parseBackup, localDate } from '../src/core.js';
 import { SCRIPTURE_SOURCE } from '../src/scripture.js';
 import { selectBook } from '../src/reading.js';
+import { prayerMilestones } from '../src/core.js';
+
+test('Jerusalem Cross requires every chapter in each Gospel, not four chapter records', () => {
+  const all = booksFor('gospels').flatMap(b => b.chapters.map(c => entry(b.id,c.number)));
+  const cross = chapters => prayerMilestones([],localDate(now),chapters).badges.find(b => b.symbol === 'jerusalem');
+  const missing = all.slice(0,-1);
+  assert.equal(cross([...missing, missing[0]]).progress,3);
+  assert.equal(cross(missing).earned,false);
+  assert.equal(cross(all).earned,true);
+});
 
 const now = new Date(2026, 10, 17, 0, 5);
 const stamp = now.toISOString();

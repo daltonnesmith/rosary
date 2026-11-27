@@ -1,8 +1,8 @@
-const CACHE = 'stillwater-shell-v21';
+const CACHE = 'stillwater-shell-v22';
 // Profile artwork and the tester are local, just like the prayer windows.
 const FILES = ['./', './index.html', './src/style.css', './src/app.js', './src/core.js', './src/dates.js', './src/platform.js', './src/rosary-ui.js', './src/reading.js', './src/reading-ui.js', './src/scripture.js', './src/liturgical.js', './src/liturgical-ui.js', './src/liturgical-data.js', './SCRIPTURE-LICENSE.txt', './CALENDAR-LICENSE.txt', './NATIVE-LICENSE.txt', './APACHE-2.0.txt', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 FILES.push('./src/profile.js', './icons/profile-windows.svg', './src/mystery-passages.js', './chapel/chapel.html', './chapel/chapel.css', './chapel/chapel.js', './chapel/medals.js', './chapel/windows.svg');
-FILES.push('./icons/1952.110.jpg', './icons/1954.834.jpg', './icons/1916.802.jpg', './icons/1950.251.jpg', './icons/1931.449.jpg');
+FILES.push('./icons/awards.svg', './icons/1952.110.jpg', './icons/1954.834.jpg', './icons/1916.802.jpg', './icons/1950.251.jpg', './icons/1931.449.jpg');
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
 });

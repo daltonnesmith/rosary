@@ -1,5 +1,5 @@
 import { localDate, validDate, previousDate, validTimestamp as stamp } from './dates.js';
-import { emptyReading, validateReading, mergeReading } from './reading.js';
+import { emptyReading, validateReading, mergeReading, booksFor } from './reading.js';
 import { PASSAGES } from './mystery-passages.js';
 export { localDate, validDate, previousDate } from './dates.js';
 
@@ -172,7 +172,7 @@ export function finishRosary(state, now = new Date(), createId = () => crypto.ra
 }
 
 export const POINTS_PER_ROSARY = 10;
-export function prayerMilestones(completions, today = localDate()) {
+export function prayerMilestones(completions, today = localDate(), gospelChapters = []) {
   const entries = completions.filter(item => item.date <= today);
   const days = [...new Set(entries.map(item => item.date))].sort();
   let last, run = 0, longest = 0;
@@ -182,11 +182,14 @@ export function prayerMilestones(completions, today = localDate()) {
     last = day;
   }
   const badges = [];
-  const add = (name, count, goal) => badges.push({ name, progress: Math.min(count, goal), goal, earned: count >= goal });
-  add('First complete rosary', entries.length, 1);
-  for (const goal of [5, 7, 30, 365]) add(`${goal} rosaries in total`, entries.length, goal);
-  for (const goal of [7, 30]) add(`${goal} days in a row`, longest, goal);
-  add('A year of prayer · 365 prayer days', days.length, 365);
-  add('Full Bouquet · all four mystery sets', new Set(entries.map(item => item.mystery).filter(set => Object.hasOwn(MYSTERIES, set))).size, 4);
+  const add = (symbol, name, count, goal) => badges.push({ symbol, name, progress: Math.min(count, goal), goal, earned: count >= goal });
+  add('shell', 'First complete rosary', entries.length, 1);
+  for (const [goal,symbol] of [[5,'beads'],[7,'lily'],[30,'heart'],[365,'keys']]) add(symbol, `${goal} rosaries in total`, entries.length, goal);
+  for (const [goal,symbol] of [[7,'candle'],[30,'lamp']]) add(symbol, `${goal} days in a row`, longest, goal);
+  add('chi-rho', 'A year of prayer · 365 prayer days', days.length, 365);
+  add('roses', 'Full Bouquet · all four mystery sets', new Set(entries.map(item => item.mystery).filter(set => Object.hasOwn(MYSTERIES, set))).size, 4);
+  const chapters = new Set(gospelChapters.filter(c => c.date <= today).map(c => `${c.book}:${c.chapter}`));
+  const finishedBooks = booksFor('gospels').filter(b => b.chapters.every(c => chapters.has(`${b.id}:${c.number}`)));
+  add('jerusalem', 'Jerusalem Cross · complete all four Gospels', finishedBooks.length, 4);
   return { points: entries.length * POINTS_PER_ROSARY, badges };
 }

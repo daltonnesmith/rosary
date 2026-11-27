@@ -19,7 +19,25 @@ const rewards = [
   ['bouquet', 'Stained-glass bouquet', 'Full Bouquet', 'Pray all four mystery sets'],
 ];
 
-export function createProfilePreview(getCompletions) {
+const symbols = { shell:'Pilgrim’s Shell', beads:'Holy Rosary', lily:'Annunciation Lily', heart:'Sacred Heart', keys:'Keys of Saint Peter', candle:'Paschal Candle', lamp:'Sanctuary Lamp', 'chi-rho':'Chi-Rho', roses:'Marian Roses', jerusalem:'Jerusalem Cross' };
+function medal(badge) {
+  const item = document.createElement('li');
+  item.className = 'award-medal';
+  item.dataset.earned = badge.earned;
+  const icon = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  icon.setAttribute('aria-hidden','true');
+  icon.setAttribute('viewBox','0 0 40 40');
+  const use = document.createElementNS(icon.namespaceURI,'use');
+  use.setAttribute('href',`./icons/awards.svg#${badge.symbol}`);
+  icon.append(use);
+  const name = document.createElement('strong'), rule = document.createElement('span'), status = document.createElement('small');
+  name.textContent = symbols[badge.symbol];
+  rule.textContent = badge.name.replace(/^Jerusalem Cross · /,'');
+  status.textContent = badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`;
+  item.append(icon, name, rule, status);
+  return item;
+}
+export function createProfilePreview(getState) {
   const byId = id => document.getElementById(`profile-${id}`);
   const scene = byId('scene'), title = byId('title'), finish = byId('finish');
   for (const [id, name, honor] of rewards) {
@@ -35,7 +53,8 @@ export function createProfilePreview(getCompletions) {
   let lit = false;
   function render() {
     if (!strand.clientWidth) return;
-    const {points, badges} = prayerMilestones(getCompletions());
+    const state = getState();
+    const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed);
     const total = points / POINTS_PER_ROSARY;
     const previewLocked = byId('preview-locked').checked;
     for (const [i, option] of [...gallery.children].entries()) {
@@ -61,17 +80,9 @@ export function createProfilePreview(getCompletions) {
     byId('name').textContent = title.value;
     byId('unlock').textContent = painting ? total >= painting.goal ? 'Museum background unlocked.' : `Preview only · unlocks at ${painting.goal} completed ${painting.goal === 1 ? 'rosary' : 'rosaries'}.` : `Unlock milestone: ${goal}.`;
     const earned = badges.filter(b => b.earned);
-    byId('catalog').replaceChildren(...badges.map(b => {
-      const item = document.createElement('li');
-      item.textContent = `${b.name} · ${b.earned ? '✓ Earned' : `${b.progress} / ${b.goal}`}`;
-      return item;
-    }));
+    byId('catalog').replaceChildren(...badges.map(medal));
     byId('award-note').textContent = earned.length ? `${points} points from your recorded rosaries.` : 'Your first award appears here when you complete a rosary. Trying a background doesn’t earn an award.';
-    byId('awards').replaceChildren(...earned.map(badge => {
-      const chip = document.createElement('li');
-      chip.textContent = `✦ ${badge.name}`;
-      return chip;
-    }));
+    byId('awards').replaceChildren(...earned.map(medal));
     votive.hidden = id !== 'alcove';
     votive.setAttribute('aria-pressed', String(lit));
     votive.textContent = lit ? 'Extinguish the votive' : 'Light a votive';

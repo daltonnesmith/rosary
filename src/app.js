@@ -246,7 +246,7 @@ document.addEventListener('keydown', event => {
 
 function renderJournal() {
   const summary = stats(state.completions);
-  const {points, badges} = prayerMilestones(state.completions);
+  const {points, badges} = prayerMilestones(state.completions, localDate(), state.reading.gospels.completed);
   $('#achievement-summary').textContent = `${points} points · ${badges.filter(b => b.earned).length} of ${badges.length} milestones earned`;
   $('#achievement-list').replaceChildren(...badges.map(badge => {
     const item = make('li');
@@ -441,7 +441,7 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar();
-const renderProfile = createProfilePreview(() => state.completions);
+const renderProfile = createProfilePreview(() => state);
 let chapel;
 $('#view-chapel').addEventListener('click', async () => {
   const button = $('#view-chapel');
