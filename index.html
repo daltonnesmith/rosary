@@ -31,20 +31,30 @@
       <button id="test-design" class="quiet" type="button" hidden>Test design</button>
       <aside id="advent-banner" aria-label="Advent countdown" hidden>
         <div><p class="advent-caption" id="advent-caption"></p><strong id="advent-countdown"></strong><p id="advent-week"></p></div>
-        <div class="advent-candles" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="advent-candles" aria-hidden="true"><i></i><i></i><i></i><i></i>
+          <svg class="advent-wreath" viewBox="0 0 120 34" fill="none">
+            <defs><g id="wreath-sprig" fill="#78ab82"><path d="M0 0Q-1-8 9-10Q8-3 0 0Zm1 1Q8 1 11 8Q3 8 1 1Z"/></g></defs>
+            <ellipse cx="60" cy="16" rx="54" ry="11" stroke="#315e49" stroke-width="8"/>
+            <g stroke="#98b78c" stroke-width=".6"><use href="#wreath-sprig" transform="translate(8 14) rotate(-35)"/><use href="#wreath-sprig" transform="translate(20 21)"/><use href="#wreath-sprig" transform="translate(34 24)"/><use href="#wreath-sprig" transform="translate(49 26)"/><use href="#wreath-sprig" transform="translate(67 26) scale(-1 1)"/><use href="#wreath-sprig" transform="translate(84 24) scale(-1 1)"/><use href="#wreath-sprig" transform="translate(99 20) scale(-1 1)"/><use href="#wreath-sprig" transform="translate(111 14) rotate(25) scale(-1 1)"/></g>
+            <g fill="#e5a292"><circle cx="27" cy="24" r="2"/><circle cx="31" cy="26" r="2"/><circle cx="88" cy="23" r="2"/></g>
+          </svg>
+        </div>
       </aside>
       <div id="storage-error" class="notice error" role="alert" hidden></div>
       <aside id="feast-banner" aria-label="Seasonal reflection" hidden>
         <div><p id="feast-label"></p><strong id="feast-title"></strong><p id="feast-reflection"></p></div>
         <svg viewBox="0 0 120 76" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <defs>
-            <g id="motif-star"><path d="m60 4 3 19 14 4-14 3-3 24-4-24-14-3 14-4zM8 66q30-20 59-4t47-1"/><path d="m20 20 2 4-2 4-2-4zm76 18 2 4-2 4-2-4z"/></g>
-            <g id="motif-manger"><path d="m11 37 49-30 49 30M23 32v36m74-36v36M35 44q22 9 50 0l-9 14H45zM48 58l25 11m0-11L48 69"/><circle cx="53" cy="38" r="6"/><path d="M60 42q10-10 18 2"/></g>
-            <g id="motif-lantern"><path d="M53 16a7 7 0 0 1 14 0m-23 9 16-10 16 10zm3 1 3 34h20l3-34M47 64h26M60 51q-8-4 0-17 8 13 0 17zM19 38h12m58 0h12M30 14l8 7m44 0 8-7"/></g>
-            <g id="motif-desert"><circle cx="87" cy="20" r="8"/><path d="M5 56q25-24 55-5t55 4M5 67q39-28 68-10t42 8M38 47V17m-9 9h18"/></g>
-            <g id="motif-crosses"><path d="M7 67q53-27 106 0M59 54V8M44 21h30M28 58V26m-9 10h18m54 22V26m-9 10h18"/></g>
-            <g id="motif-tomb"><path d="M4 62h111M14 61q8-46 39-41 22 2 29 40M30 61q2-24 17-24t18 24M72 24a14 14 0 0 1 26 6m-15-23V3m17 11 5-6m0 22h9"/><circle cx="82" cy="52" r="11"/></g>
-            <g id="motif-lily"><path d="M60 69V37m0 1Q38 35 33 11q18 4 27 19 7-14 26-21-2 23-26 29zm-7-18 7-16 7 16M60 61Q41 61 34 44q18 2 26 17zm1-7q5-16 25-18-7 15-25 18z"/></g>
+            <linearGradient id="leaf-gold" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#fff1ba"/><stop offset=".55" stop-color="#eeb953"/><stop offset="1" stop-color="#ad7136"/></linearGradient>
+            <g id="gold-branch" stroke="#e1ae63" stroke-width="1"><path d="M2 23Q15 19 24 2"/><path fill="url(#leaf-gold)" d="M7 21Q3 12 7 8q5 6 0 13zm6-5q1-9 5-13 3 9-5 13zm1 0q5-7 15-6-4 7-15 6z"/></g>
+            <g id="motif-star"><circle cx="60" cy="27" r="23" fill="#46639c" stroke="#7894bf"/><path fill="url(#leaf-gold)" d="m60 3 3 19 14 5-14 3-3 23-4-23-14-3 14-5z"/><path fill="#375780" stroke="#8da9cf" d="M4 67q22-23 49-11t63-6v22H4z"/><path fill="#20375a" stroke="#a9bacc" d="M28 66v-9h7v-8l5-4 5 4v11h8v8zm43 1V54l7-5 6 5v8h8v6z"/><path d="m15 19 2 4-2 4-2-4zm83 4 2 4-2 4-2-4z"/></g>
+            <g id="motif-manger"><use href="#gold-branch" transform="translate(0 46)"/><use href="#gold-branch" transform="translate(120 46) scale(-1 1)"/><path fill="#984e3e" d="m10 36 50-32 50 32-5 4L60 13 15 40z"/><path d="M23 34v30m74-30v30"/><circle cx="51" cy="38" r="11" fill="#ffdb7b" stroke="#f4b65a"/><circle cx="51" cy="38" r="5" fill="#b57753" stroke="#ffe0ad"/><path fill="#eee7d2" d="M57 44q12-19 25 0l-10 5z"/><path fill="#aa6833" d="M35 44q22 9 50 0l-9 14H45z"/><path d="m48 58 25 11m0-11L48 69"/></g>
+            <g id="single-bell"><circle cx="0" cy="20" r="3" fill="#e8aa51"/><path d="M-14 17q5-5 5-14 0-11 9-11t9 11q0 8 5 14z" fill="url(#leaf-gold)"/><path d="M-9 11H9" stroke="#a86a31"/></g>
+            <g id="motif-bells"><use href="#single-bell" transform="translate(45 37) rotate(19)"/><use href="#single-bell" transform="translate(76 38) rotate(-19)"/><path fill="#c35655" d="M59 21Q31 3 37 20q4 9 22 1-7 8-7 16l8-6 7 6q0-9-6-16 19 7 22-3 2-15-24 3z"/><use href="#gold-branch" transform="translate(5 42)"/><use href="#gold-branch" transform="translate(115 42) scale(-1 1)"/></g>
+            <g id="motif-desert"><circle cx="88" cy="19" r="10" fill="#f3ab72"/><path fill="#976582" stroke="#d4aec7" d="M4 56q25-24 55-6t57 4v16H4z"/><path fill="#c48b6b" stroke="#ecc49b" d="M4 69q40-29 66-13t46 6v10H4z"/><path stroke="#e4bd91" stroke-width="4" d="M39 49V12m-10 13h20"/><path fill="#c6a7d4" stroke="#856695" d="M31 22q6 4 15 0l-1 16-4-3 1-9-7 1-1 10-4-1z"/></g>
+            <g id="motif-crosses"><path fill="#5f3647" stroke="#b17482" d="M3 68q57-29 114 0v5H3z"/><path stroke="#bea987" d="M26 59V29m-8 9h16m59 21V29m-8 9h16"/><path stroke="#d59d5e" stroke-width="5" d="M60 58V7M43 20h34"/><circle cx="60" cy="22" r="4" fill="#f6ddb6"/><path stroke="#f6ddb6" stroke-width="3" d="m46 20 10 8h7l11-8m-14 8-1 12 4 9-3 5"/><path fill="#e8e1cf" d="m54 37 10 1-2 6-7-3z"/></g>
+            <g id="motif-tomb"><circle cx="86" cy="29" r="14" fill="#ffd47a"/><path d="M86 8V3m17 12 5-5m0 19h8M68 14l-5-5"/><path fill="#a96b4d" d="M7 63q12-46 44-43 27 4 31 43z"/><path fill="#3c3540" d="M28 62q4-26 20-25 13 0 17 25z"/><circle cx="82" cy="53" r="12" fill="#ca9f73"/><path d="M4 66h112"/><use href="#gold-branch" transform="translate(112 52) scale(-.75 .75)"/></g>
+            <g id="motif-lily"><use href="#gold-branch" transform="translate(16 47)"/><use href="#gold-branch" transform="translate(104 47) scale(-1 1)"/><path stroke="#88bd8c" stroke-width="3" d="M60 71V34"/><path fill="#fff5df" stroke="#e6c6a1" d="M60 39Q39 35 32 10q17 3 24 15L60 4l7 20q9-11 21-14-6 25-28 29z"/><path stroke="#edb957" d="M59 32l-7-12m9 12 8-13m-9 11V17"/><path fill="#78a77c" stroke="#aecf98" d="M60 61Q42 60 34 44q17 1 26 17zm1-7q6-17 25-19-6 16-25 19z"/></g>
           </defs>
           <use id="feast-motif"></use>
         </svg>

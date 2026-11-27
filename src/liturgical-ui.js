@@ -14,7 +14,7 @@ const looks = {
   ORDINARY_TIME: [SEASONS.ORDINARY_TIME], ADVENT: [SEASONS.ADVENT],
   CHRISTMAS_EVE: ['Christmas Eve','A light over Bethlehem','One day until Christmas','star'],
   CHRISTMAS_DAY: ['Christmas Day','Christ is born','Glory to God in the highest.','manger'],
-  CHRISTMAS_TIME: ['Christmas season','The light of the world','Carry the joy of the Nativity into these days.','lantern'],
+  CHRISTMAS_TIME: ['Christmas season','The light of the world','Carry the joy of the Nativity into these days.','bells'],
   LENT: ['Lent','Into the quiet','Make room for prayer, fasting, and almsgiving.','desert'],
   PASCHAL_TRIDUUM: ['Paschal Triduum','The three holy days','Keep watch in prayer.','crosses'],
   EASTER_SUNDAY: ['Easter Sunday','Christ is risen!','Alleluia, alleluia.','tomb'],

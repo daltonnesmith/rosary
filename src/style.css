@@ -236,3 +236,17 @@ body:has(#feast-banner:not([hidden])) .intro{--wash:var(--season-light);--accent
 #feast-label{font:650 10px/1.6 system-ui;letter-spacing:.18em;color:var(--metal);text-transform:uppercase;margin:0}
 #feast-title{display:block;font:normal clamp(23px,3.8vw,40px)/1.2 var(--serif);margin:5px 0}
 #feast-reflection{font-size:13px;margin:0}
+.advent-candles:has(.advent-wreath){position:relative;padding-inline:12px;padding-bottom:11px;margin-bottom:8px;border:0}
+.advent-wreath{position:absolute;width:115%;height:auto;left:-7.5%;bottom:-10%;pointer-events:none}
+#feast-banner:has(#feast-motif){background:radial-gradient(ellipse at 87% 45%,var(--season-mid),transparent 58%),linear-gradient(120deg,var(--season-dark) 12%,var(--season-mid));border-bottom:3px solid var(--metal)}
+#feast-banner>svg{width:clamp(98px,20vw,185px);filter:drop-shadow(0 3px 4px #18172555)}
+body[data-appearance="CHRISTMAS_DAY"]{--season-dark:#712638;--season-mid:#a34e32}
+body[data-appearance="CHRISTMAS_TIME"]{--season-dark:#12473f;--season-mid:#327454}
+body[data-appearance="EASTER_TIME"]{--season-dark:#20504f;--season-mid:#427a65}
+@media(max-width:480px){
+  #feast-banner,#advent-banner{gap:9px;padding:14px 12px}
+  #feast-banner>div,#advent-banner>div:first-child{min-width:0}
+  #feast-banner>svg{width:clamp(82px,25vw,110px)}
+  #feast-title,#advent-countdown{font-size:clamp(20px,5.6vw,26px)}
+  #feast-reflection,#advent-week{line-height:1.45}
+}
