@@ -172,3 +172,4 @@ In the fasting panel, existing fasts and their check-ins appear first. Use **Pla
 In the localhost preview, **Test design** cycles through all nine looks without leaving your current tab. The Calendar dropdown lets you jump directly to a design; choose **Automatic** or reload to follow today's date again.
 Seasonal headers use compact, bundled artwork: Advent greenery surrounds the weekly candles, Christmas bells and gold branches mark the Nativity season, and the Triduum crucifix gives way to the Easter sunrise and lilies. The illustrations are decorative and never cover the prayer text.
 Seasonal colors also carry into the active tab and action buttons, including prayer navigation. Ordinary Time keeps the original button styling.
+In the chapel, a gold ring marks the current bead on the strand and on the whole-rosary view. The separate **TAP** cue advances to the next prayer.

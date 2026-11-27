@@ -56,6 +56,11 @@ function medal(c,x,y,r,yaw,tone,mark) {
   }
 }
 export const finishColors = {wood:[145,93,52],pearl:[228,216,202],MAT:[161,92,60],MAR:[77,135,96],LUK:[122,90,158],JOH:[63,103,162],jerusalem:[222,165,58],rose:[178,101,109],fish:[74,149,157],harp:[192,145,89],anchor:[90,113,138],vine:[118,134,79],chalice:[203,174,98],olive:[136,147,90],dove:[190,196,185],star:[96,107,157]};
+function currentRing(c,x,y,r) {
+  c.beginPath();c.arc(x,y,r,0,tau);
+  c.lineWidth=5;c.strokeStyle='#40301f';c.stroke();
+  c.lineWidth=2.8;c.strokeStyle='#fff0a8';c.stroke();
+}
 export function drawStrand(canvas,index,set,offset,steps,previewFinish,showTap=!previewFinish) {
   const {c,w,h}=surface(canvas), r=Math.min(34,h*.33);
   const link=c.createLinearGradient(0,h*.47-4,0,h*.47+4);
@@ -68,13 +73,15 @@ export function drawStrand(canvas,index,set,offset,steps,previewFinish,showTap=!
     const x=w*(.5+(i+offset)*.24), next=i===1;
     const s=steps[index+i];if(!s)continue;
     const motif=s.stage==='mystery'?windowMotif[set]:({mary:'mary',queen:'mary',glory:'dove',fatima:'heart'})[s.prayer]||'crucifix';
-    if(next){
+    const current=i===0 && showTap;
+    if(current){
       const glow=c.createRadialGradient(x,h*.47,0,x,h*.47,r*1.55);
       glow.addColorStop(0,'#ffdf7280');glow.addColorStop(1,'#ffdf7200');
       c.fillStyle=glow;c.fillRect(x-r*1.55,h*.47-r*1.55,r*3.1,r*3.1);
     }
     const tone = finishColors[previewFinish] ?? tones[set];
-    medal(c,x,h*.47,r*(next?1.06:.88),Math.sin((index+i)*1.7)*.32+offset*.6,tone,motif);
+    medal(c,x,h*.47,r*(current?1.08:.88),Math.sin((index+i)*1.7)*.32+offset*.6,tone,motif);
+    if(current)currentRing(c,x,h*.47,r*1.22);
     if(next && showTap){c.fillStyle='#fff2d3';c.font='bold 10px system-ui';c.textAlign='center';c.fillText('TAP',x,h-1);}
   }
 }
@@ -90,7 +97,8 @@ export function drawLoop(canvas,angle,s,set) {
   c.strokeStyle='#b99b69'; c.lineWidth=1.8;c.beginPath();
   points.forEach(({pos:[x,y]},i)=>i?c.lineTo(x,y):c.moveTo(x,y)); c.closePath(); c.stroke();
   const [cx,cy]=proj(0,.89); c.beginPath();c.moveTo(cx,cy);c.lineTo(cx,cy+k*1.24);c.stroke();
-  for(const gap of [.22,.42,.56,.70,.91]) points.push({pos:proj(0,.89+gap),large:gap===.22||gap===.91});
+  const tailGap=!s.decade && (s.prayer==='father'?.91:s.prayer==='mary'?[.70,.56,.42][s.bead-1]:s.prayer==='glory'?.22:null);
+  for(const gap of [.22,.42,.56,.70,.91]) points.push({pos:proj(0,.89+gap),large:gap===.22||gap===.91,active:gap===tailGap});
   for(const {pos:[x,y,,p],large,active} of points.sort((a,b)=>a.pos[2]-b.pos[2])){
     if(x===cx && y===cy){medal(c,x,y,k*.08,a,tones[set],windowMotif[set]);continue;}
     const r=k*(large?.049:.037)*p, grad=c.createRadialGradient(x-r*.35,y-r*.4,0,x,y,r);
@@ -98,4 +106,12 @@ export function drawLoop(canvas,angle,s,set) {
     if(active){c.strokeStyle='#ffdf87';c.lineWidth=2;c.stroke();}
   }
   c.fillStyle='#e5bd71'; c.fillRect(cx-2,cy+k*1.06,4,k*.26);c.fillRect(cx-k*.08,cy+k*1.14,k*.16,4);
+  const spot=points.find(p=>p.active);
+  if(spot){
+    const [x,y,,p]=spot.pos;
+    currentRing(c,x,y,Math.max(7,k*(spot.large?.085:.067)*p+2));
+  }else if(!s.decade){
+    const cross=s.prayer==='cross'||s.prayer==='creed';
+    currentRing(c,cx,cross?cy+k*1.19:cy,cross?k*.17:k*.105);
+  }
 }
