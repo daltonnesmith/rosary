@@ -28,6 +28,10 @@
         <button data-tab="profile">Profile</button>
         <button data-tab="about">Guidance</button>
       </nav>
+      <aside id="advent-banner" aria-label="Advent countdown" hidden>
+        <div><p class="advent-caption" id="advent-caption"></p><strong id="advent-countdown"></strong><p id="advent-week"></p></div>
+        <div class="advent-candles" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </aside>
       <div id="storage-error" class="notice error" role="alert" hidden></div>
       <div id="status" class="notice" role="status" hidden></div>
       <main>
@@ -115,6 +119,9 @@
         </section>
         <section id="liturgical" aria-labelledby="liturgical-heading" hidden>
           <div class="intro"><p class="eyebrow">THE RHYTHM OF THE CHURCH</p><h1 id="liturgical-heading">A season for every prayer.</h1><p>Feasts, saints, and sacred seasons in the U.S. Roman Catholic calendar.</p></div>
+          <div class="season-picker"><label for="season-preview">Seasonal appearance</label>
+            <select id="season-preview"><option value="auto" selected>Automatic · follow today</option></select>
+            <p class="small muted" id="season-note" role="status"></p></div>
           <div class="lit-layout">
             <div class="lit-month-column">
             <article class="panel lit-month-panel">

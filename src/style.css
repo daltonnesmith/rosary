@@ -210,3 +210,15 @@ section>.intro{margin:18px auto 24px;padding:clamp(20px,3vw,34px) 18px;border-ra
 .lit-month-column>#fasting{padding:10px 20px;background:linear-gradient(110deg,#f7edd6,var(--card) 65%)}
 #personal-planner>summary{cursor:pointer;min-height:44px;align-content:center;color:#664b28}
 .season-join{display:grid;gap:.45rem;grid-column:1/-1}.season-join button{justify-self:start}
+.season-picker{display:grid;grid-template-columns:auto minmax(12rem,20rem);align-items:center;gap:.35rem 1rem;margin:0 0 1.25rem}.season-picker label{font-weight:600}.season-picker p{grid-column:1/-1;margin:0}
+body[data-appearance="ADVENT"]{background:linear-gradient(#e9e3ef,#f7f3ed 30rem);--gold:#805d32}
+body[data-appearance="ADVENT"] .intro{--wash:#e8ddec;--accent:#533657}
+body[data-appearance="ADVENT"] .tabs [aria-current=page]{color:#543757;border-color:#78577c}
+#advent-banner{margin-top:16px;border:1px solid #665473;border-radius:16px;padding:clamp(16px,3vw,30px);display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff4df;background:radial-gradient(ellipse at 86% 100%,#615471,transparent 58%),linear-gradient(115deg,#342840,#473452);box-shadow:inset 0 0 0 4px #ffffff09}
+#advent-banner p{margin:0;color:#efdfc6;font-size:13px}#advent-banner .advent-caption{color:#f0d195;font:600 10px/1.5 system-ui;letter-spacing:.16em}
+#advent-countdown{display:block;font:normal clamp(23px,3.8vw,40px)/1.2 var(--serif);margin:5px 0}
+.advent-candles{display:flex;align-items:end;gap:clamp(5px,1vw,12px);padding:19px 6px 4px;border-bottom:4px solid #91a58a}
+.advent-candles i{position:relative;width:clamp(10px,1.8vw,21px);height:clamp(28px,4vw,47px);border-radius:3px 3px 0 0;background:linear-gradient(90deg,#82618f,#c2a8c9,#8e709a)}
+.advent-candles i:nth-child(3){background:linear-gradient(90deg,#b77e91,#f2c8ce,#c98c99)}
+.advent-candles .lit::before{content:"";position:absolute;bottom:100%;left:50%;width:7px;height:13px;background:#ffe4a0;box-shadow:0 0 10px #ffc565;border-radius:75% 20% 65% 40%;transform:translateX(-50%)}
+@media(max-width:550px){.season-picker{grid-template-columns:1fr}}

@@ -2,6 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { LITURGICAL_DAYS, THURSDAY_OVERRIDES } from '../src/liturgical-data.js';
+import { adventAppearance } from '../src/liturgical.js';
+test('Advent countdown follows the four Sundays and stops at Christmas', () => {
+  assert.equal(adventAppearance('2026-11-28'),null);
+  for(const [date,week,remaining] of [['2026-11-29',1,26],['2026-12-06',2,19],['2026-12-13',3,12],['2026-12-24',4,1]]) {
+    assert.deepEqual(adventAppearance(date),{week,remaining});
+  }
+  assert.equal(adventAppearance('2026-12-25'),null);
+});
 import { FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote } from '../src/liturgical.js';
 
 const primary = (date, mode) => liturgicalDay(date, mode).celebrations[0];

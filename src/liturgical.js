@@ -37,6 +37,12 @@ export function moveMonth(date, amount) {
   next.setUTCDate(Math.min(day, last));
   return next.toISOString().slice(0, 10);
 }
+export function adventAppearance(date) {
+  const day = liturgicalDay(date);
+  if (day?.season !== 'ADVENT') return null;
+  const christmas = `${date.slice(0,4)}-12-25`;
+  return { week: day.week, remaining: (Date.parse(christmas) - Date.parse(date)) / 86400000 };
+}
 export function observanceLabel(event, day) {
   if (event.optional && !event.colors.length) return 'Optional commemoration';
   if (event.id === 'commemoration_of_all_the_faithful_departed') return 'Commemoration';

@@ -1,6 +1,6 @@
 import { localDate } from './dates.js';
 import { annualFasts, fastKey, fastName, includesDay, canJoinSeason, nextLent } from './fasting.js';
-import { CALENDAR_SOURCE, FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote } from './liturgical.js';
+import { CALENDAR_SOURCE, FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote, adventAppearance } from './liturgical.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -20,6 +20,41 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   selected = selected < FIRST_DAY ? FIRST_DAY : selected > LAST_DAY ? LAST_DAY : selected;
   let ascension = 'sunday';
   const input = $('#lit-date');
+  const preview = $('#season-preview');
+  for (const [id,label] of Object.entries(SEASONS)) preview.add(new Option(label,id));
+  function applyAppearance() {
+    const today = localDate();
+    const automatic = preview.value === 'auto';
+    const season = automatic ? liturgicalDay(today)?.season : preview.value;
+    document.body.dataset.appearance = season ?? 'default';
+    $('#advent-banner').hidden = season !== 'ADVENT';
+    if (season === 'ADVENT') {
+      let date = automatic ? today : selected;
+      if (!adventAppearance(date)) {
+        date = `${date.slice(0,4)}-11-27`;
+        while (!adventAppearance(date)) date = moveDay(date,1);
+      }
+      const {week,remaining} = adventAppearance(date);
+      $('#advent-caption').textContent = automatic ? 'THE SEASON OF ADVENT' : `ADVENT PREVIEW · ${format(date,{month:'short',day:'numeric'})}`;
+      $('#advent-countdown').textContent = `${remaining} ${remaining === 1 ? 'day' : 'days'} until Christmas`;
+      $('#advent-week').textContent = `Week ${week} of Advent`;
+      $('#advent-banner').querySelectorAll('i').forEach((c,i)=>c.classList.toggle('lit',i<week));
+    }
+    $('#season-note').textContent = automatic ? 'Follows your local date. Choose a season to preview its appearance.' :
+      season === 'ADVENT' ? 'Appearance preview only. Select an Advent date below to see its candles and countdown.' :
+      season === 'ORDINARY_TIME' ? 'Previewing the usual Stillwater appearance.' : `${SEASONS[season]} uses the usual appearance for now; its design is still to come.`;
+  }
+  preview.addEventListener('change',applyAppearance);
+  let midnightTimer;
+  function refreshAtMidnight() {
+    clearTimeout(midnightTimer);
+    applyAppearance();
+    const next = new Date();
+    next.setHours(24,0,0,0);
+    midnightTimer = setTimeout(refreshAtMidnight, Math.max(1,next.getTime()-Date.now()));
+  }
+  refreshAtMidnight();
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden) refreshAtMidnight();});
   const start = $('#fast-start'), end = $('#fast-end'), intention = $('#fast-intention');
   const prettyDate = date => format(date, {month:'short', day:'numeric', year:'numeric'});
   start.min = FIRST_DAY;
@@ -147,6 +182,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     if (focus) $(`#lit-days button[data-date="${selected}"]`).focus();
   }
   function render() {
+    applyAppearance();
     $('#fast-summary-date').textContent = prettyDate(selected);
     const today = localDate();
     const checks=getChecks();
