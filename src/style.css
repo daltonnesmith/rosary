@@ -208,3 +208,5 @@ section>.intro{margin:18px auto 24px;padding:clamp(20px,3vw,34px) 18px;border-ra
 #fasting>summary{cursor:pointer;min-height:44px;align-content:center;color:#664b28;font:21px var(--serif)}
 #fast-summary-date{font:13px system-ui;color:var(--muted);margin-inline-start:.55rem}
 .lit-month-column>#fasting{padding:10px 20px;background:linear-gradient(110deg,#f7edd6,var(--card) 65%)}
+#personal-planner>summary{cursor:pointer;min-height:44px;align-content:center;color:#664b28}
+.season-join{display:grid;gap:.45rem;grid-column:1/-1}.season-join button{justify-self:start}

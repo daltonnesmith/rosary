@@ -20,16 +20,23 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   selected = selected < FIRST_DAY ? FIRST_DAY : selected > LAST_DAY ? LAST_DAY : selected;
   let ascension = 'sunday';
   const input = $('#lit-date');
-  const kind = $('#fast-kind'), start = $('#fast-start'), end = $('#fast-end'), intention = $('#fast-intention');
+  const start = $('#fast-start'), end = $('#fast-end'), intention = $('#fast-intention');
   const prettyDate = date => format(date, {month:'short', day:'numeric', year:'numeric'});
   start.min = FIRST_DAY;
   start.max = end.max = LAST_DAY;
   start.addEventListener('input', () => { end.min = start.value || FIRST_DAY; });
-  $('#lent-choose').addEventListener('click', () => {
-    kind.value = 'lent';
-    kind.dispatchEvent(new Event('change'));
-    intention.focus();
-  });
+  start.required = end.required = true;
+  for (const [form, field] of [['#lent-join','#lent-intention'],['#observance-join','#observance-intention']]) {
+    $(form).addEventListener('submit', event => {
+      event.preventDefault();
+      const fasts = getFasts();
+      const plan = annualFasts(selected.slice(0,4)).find(p =>
+        (form === '#lent-join' ? p.kind === 'lent' : p.kind !== 'lent') && canJoinSeason(p,selected,localDate()));
+      if (plan && !fasts.some(f=>f.kind === plan.kind && f.start === plan.start))
+        saveFasts([...fasts,{...plan,intention:$(field).value.trim(),days:[]}], 'Fast started. No days marked yet.');
+      render();
+    });
+  }
   let formDate;
   let preparing, preparedKey;
   const planText = $('#lent-plan-text');
@@ -54,14 +61,6 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     render();
   });
   planText.addEventListener('input', () => planText.setCustomValidity(''));
-  function showRule() {
-    const personal = kind.value === 'personal';
-    $('#fast-range').hidden = !personal;
-    start.required = end.required = personal;
-    start.disabled = end.disabled = !personal;
-    $('#fast-rule').textContent = personal ? 'Choose any start and end dates. Your first recorded day earns Small Offering; seven distinct days earn A Week of Offerings.' :
-      kind.value === 'lent' ? 'Seven recorded days this Lent earn the yearly medal. They need not be consecutive.' : 'Record this observance once to earn its medal for the year.';
-  }
   function renderFasts(fasts, plans, today) {
     const lent = plans.find(p => p.kind === 'lent' && includesDay(p, selected));
     preparing = lent && lent.start > today ? lent : selected === today && !lent ? nextLent(today) : undefined;
@@ -82,14 +81,14 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
       $('#lent-fast-dates').textContent = `${format(lent.start,{month:'long',day:'numeric'})} – ${format(lent.end,{month:'long',day:'numeric'})}`;
       $('#lent-fast-progress').textContent = count === 7 ? 'Seven days kept · yearly medal earned' : `${count} of 7 days toward your Lent medal`;
       $('#lent-stones').replaceChildren(...Array.from({length:7},(_,i)=>make('span','',i<count?'kept':'')));
-      $('#lent-choose').hidden = joined.length > 0 || !canJoinSeason(lent,selected,today);
+      $('#lent-join').hidden = joined.length > 0 || !canJoinSeason(lent,selected,today);
     }
     const list = $('#fast-active');
     list.replaceChildren();
     for (const f of fasts.filter(f => includesDay(f, selected) && !(f.kind === 'lent' && f.start > today))) {
       const card = make('article', undefined, 'fast-entry');
       const recorded = f.days.includes(selected);
-      const button = make('button', recorded ? '✓ Kept this fast · undo' : 'I kept this fast', 'secondary');
+      const button = make('button', recorded ? '✓ Kept this fast · undo' : selected === today ? 'I kept this fast today' : 'I kept this fast', 'secondary');
       button.type = 'button';
       button.disabled = selected > today;
       button.setAttribute('aria-pressed', String(recorded));
@@ -106,33 +105,29 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
       card.append(make('p', `${prettyDate(f.start)}${f.end === f.start ? '' : ` – ${prettyDate(f.end)}`} · ${daysKept} ${daysKept === 1 ? 'day' : 'days'} recorded`, 'small muted'), button);
       list.append(card);
     }
-    const available = plans.filter(p => canJoinSeason(p,selected,today) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
-    const options = [...available, {kind:'personal', start:selected}];
-    const previousKind = kind.value;
-    kind.replaceChildren(...options.map(p => new Option(fastName(p), p.kind)));
-    if (formDate === selected && options.some(p=>p.kind===previousKind)) kind.value = previousKind;
+    const observance = plans.find(p => p.kind !== 'lent' && canJoinSeason(p,selected,today) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
+    $('#observance-join').hidden = !observance;
+    if (observance) $('#observance-begin').textContent = `Begin ${fastName(observance).replace(/ \d{4}$/, '')} fast`;
     if (formDate !== selected) {
       start.value = end.min = end.value = selected;
       intention.value = '';
+      $('#lent-intention').value = $('#observance-intention').value = '';
       formDate = selected;
     }
     intention.setCustomValidity('');
-    showRule();
   }
-  kind.addEventListener('change', () => { intention.setCustomValidity(''); showRule(); });
   $('#fast-form').addEventListener('input', () => intention.setCustomValidity(''));
   $('#fast-form').addEventListener('submit', event => {
     event.preventDefault();
-    const plan = kind.value === 'personal' ? {kind:'personal', start:start.value, end:end.value} :
-      annualFasts(selected.slice(0,4)).find(p => p.kind === kind.value && canJoinSeason(p,selected,localDate()));
-    if (!plan) return;
+    const plan = {kind:'personal', start:start.value, end:end.value};
     const fast = {...plan, intention:intention.value.trim(), days:[]};
     if (getFasts().some(f => fastKey(f) === fastKey(fast))) {
       intention.setCustomValidity('You have already joined this fast. Use its daily check-in above.');
       intention.reportValidity();
       return;
     }
-    saveFasts([...getFasts(), fast], 'Fast joined. No days marked yet.');
+    saveFasts([...getFasts(), fast], 'Fast saved. No days marked yet.');
+    $('#personal-planner').open = false;
     formDate = undefined;
     choose(includesDay(fast, selected) ? selected : fast.start);
   });

@@ -128,13 +128,14 @@
               <details class="panel lit-checkins" id="fasting">
                 <summary>Fasting <span id="fast-summary-date"></span></summary>
                 <p class="small muted">Set something aside to make room for prayer. Each day is yours to record.</p>
+                <div id="fast-active"></div>
                 <article id="lent-feature" hidden>
                   <div class="lent-seal" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="./icons/awards.svg#olive"/></svg></div>
                   <div><p class="lent-kicker">SEASONAL FAST</p><h4 id="lent-fast-title"></h4><p id="lent-fast-dates"></p></div>
                   <div class="lent-path"><div id="lent-stones" aria-hidden="true"></div><p id="lent-fast-progress"></p></div>
-                  <button type="button" id="lent-choose">Choose this fast →</button>
+                  <form id="lent-join" class="season-join"><label for="lent-intention">What are you fasting from? (optional)</label><input id="lent-intention" maxlength="160"><button class="secondary" id="lent-choose">Begin Lenten fast</button></form>
                 </article>
-                <div id="fast-active"></div>
+                <form id="observance-join" class="season-join" hidden><label for="observance-intention">What are you fasting from? (optional)</label><input id="observance-intention" maxlength="160"><button class="secondary" id="observance-begin"></button></form>
                 <details id="lent-planner" hidden><summary id="lent-plan-title">Prepare for Lent</summary>
                   <form id="lent-plan-form"><p id="lent-plan-date" class="small muted"></p>
                     <label for="lent-plan-text">What will you set aside?</label>
@@ -142,14 +143,14 @@
                     <button class="secondary" type="submit">Save intention</button>
                   </form>
                 </details>
+                <details id="personal-planner"><summary>Plan a personal fast</summary>
                 <form id="fast-form">
-                  <label for="fast-kind">Choose a fast</label><select id="fast-kind"></select>
-                  <p id="fast-rule" class="small muted"></p>
                   <label for="fast-intention">What are you setting aside? (optional)</label>
                   <input id="fast-intention" type="text" maxlength="160" placeholder="What are you fasting from?">
                   <div id="fast-range"><div><label for="fast-start">Start date</label><input id="fast-start" type="date"></div><div><label for="fast-end">End date</label><input id="fast-end" type="date"></div></div>
-                  <button class="secondary" type="submit">Join fast</button>
+                  <button class="secondary" type="submit">Save fast</button>
                 </form>
+                </details>
               </section>
               <div class="lit-local"><label for="lit-ascension">Ascension in your diocese</label><select id="lit-ascension"><option value="sunday">Sunday (most U.S. dioceses)</option><option value="thursday">Thursday</option></select><p class="small muted">Check your parish's calendar. This choice lasts for this visit and never changes your prayer history.</p></div>
             </aside>
