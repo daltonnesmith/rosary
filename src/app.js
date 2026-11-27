@@ -420,15 +420,7 @@ $('#view-chapel').addEventListener('click', async () => {
         }),
         start,
         move: direction => (direction > 0 ? nextPrayer : previousPrayer)({ mysteryCards: true }),
-        leave: finished => {
-          $('#chapel-dialog').close();
-          if (finished) {
-            selectedDay = completedDate;
-            displayedMonth = new Date(`${completedDate}T12:00:00`);
-            displayedMonth.setDate(1);
-            showTab('journal');
-          }
-        },
+        leave: () => $('#chapel-dialog').close(),
       });
     }
     $('#chapel-dialog').showModal();

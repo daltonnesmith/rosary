@@ -74,7 +74,7 @@ function paint() {
   $('phase').textContent = $('phase').textContent.replace(/ · (?:Reflection|Mystery)$/, ` · ${p.reflection ? 'Reflection' : 'Mystery'}`);
   $('back').disabled = !index && !page;
   const ctx = controls.context();
-  $('next').textContent = !ctx.progress ? 'Begin rosary →' : page < pages.length - 1 ? pages[page + 1].reflection && !p.reflection ? 'Read reflection →' : 'Continue reading →' : index < steps.length - 1 ? 'Next bead →' : 'Complete rosary ✓';
+  $('next').textContent = !ctx.progress ? 'Begin rosary →' : page < pages.length - 1 ? pages[page + 1].reflection && !p.reflection ? 'Read reflection →' : 'Continue reading →' : index < steps.length - 1 ? 'Next bead →' : 'Finish & close ✓';
   $('bead').disabled = index === steps.length-1 && page === pages.length-1;
   $('message').textContent = ctx.error || (ctx.progress ? `Card ${index+1} of ${steps.length}` : 'Gather your intentions.');
   drawStrand($('strand'), index, set, 0, steps);
@@ -84,7 +84,7 @@ function move(direction) {
   if (page + direction >= 0 && page + direction < pages.length) { page += direction; paint(); return; }
   const finishing = direction > 0 && index === steps.length-1;
   controls.move(direction);
-  if (finishing) { controls.leave(true); return; }
+  if (finishing) { controls.leave(); return; }
   sync(direction < 0 ? Infinity : 0);
   cancelAnimationFrame(frame);
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -99,7 +99,7 @@ function move(direction) {
 }
 $('next').onclick = $('bead').onclick = () => move(1);
 $('back').onclick = () => move(-1);
-$('exit').onclick = () => controls.leave(false);
+$('exit').onclick = () => controls.leave();
 function loop() { drawLoop($('loop'), Number($('angle').value), steps[index], set); }
 $('whole').onclick = () => { dialog.showModal(); loop(); };
 $('close').onclick = () => dialog.close();
