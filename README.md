@@ -162,3 +162,5 @@ The bundled coverage is **2024-2035**, calculated using current rules, not a rec
 
 To reproduce the dataset, run `npm ci` followed by `npm run prepare:calendar`. Normal builds never regenerate or download data. When refreshing the pinned engine/calendar pair or extending coverage, review official calendars, regenerate, run the checks, inspect transferred celebrations and optional commemorations, and increment the service-worker cache. `src/liturgical.js` contains pure navigation/display rules and `src/liturgical-ui.js` handles the independent calendar interface.
 Personal fasts have independent **Start date** and **End date** fields; both default to the selected calendar day. During Lent, the violet seasonal card shows the year’s medal and seven progress marks.
+
+On today's calendar, **Prepare for Lent** lets you save or revise the next Lent's intention before Ash Wednesday. It becomes available for check-ins when the season starts on your device's local calendar; browsing ahead never unlocks it. **Fasting history** lists ended fasts, intentions and the specific days marked, including fasts with no check-ins.

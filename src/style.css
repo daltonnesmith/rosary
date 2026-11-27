@@ -175,3 +175,6 @@ summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; bor
 #lent-choose{justify-self:start;background:#f6e5c4;color:#442f45;border:0;border-radius:8px;padding:.65rem .95rem;min-height:44px}
 #fast-range:not([hidden]){display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.6rem),1fr));gap:.6rem}#fast-range>div{min-width:0}
 #fasting .fast-entry{border-radius:0 10px 10px 0;background:linear-gradient(110deg,#f3ebda,#fcf8f0)}
+#lent-planner,#fast-history{border-top:1px solid var(--line);margin-top:1rem;padding-top:.45rem}
+#lent-planner summary,#fast-history summary{cursor:pointer;padding:.65rem 0}
+#lent-plan-form{display:grid;gap:.45rem}#lent-plan-text{width:100%;min-width:0}

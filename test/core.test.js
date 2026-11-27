@@ -216,7 +216,16 @@ test('merge restores backed-up progress only when no rosary is currently underwa
   const current = { ...emptyState(), notes: [note()] };
   assert.deepEqual(mergeBackup(current, emptyState()).notes, current.notes);
 });
-import { annualFasts, fastMedals } from '../src/fasting.js';
+import { annualFasts, fastMedals, canJoinSeason, nextLent } from '../src/fasting.js';
+
+test('Lent preparation crosses years; browsing ahead cannot open tracking', () => {
+  const lent = nextLent('2025-12-25');
+  assert.equal(lent.start, '2026-02-18');
+  assert.equal(canJoinSeason(lent, lent.start, '2026-02-17'), false);
+  assert.equal(canJoinSeason(lent, lent.start, lent.start), true);
+  assert.equal(canJoinSeason(lent, lent.end, '2026-04-03'), false);
+  assert.equal(nextLent('2026-11-27').start, '2027-02-10');
+});
 
 test('annual fasting medals count only recorded days in their own observance and year', () => {
   const [lent, ash, friday] = annualFasts('2026');

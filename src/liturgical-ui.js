@@ -1,5 +1,5 @@
 import { localDate } from './dates.js';
-import { annualFasts, fastKey, fastName, includesDay } from './fasting.js';
+import { annualFasts, fastKey, fastName, includesDay, canJoinSeason, nextLent } from './fasting.js';
 import { CALENDAR_SOURCE, FIRST_DAY, LAST_DAY, SEASONS, COLORS, liturgicalDay, moveDay, moveMonth, observanceLabel, celebrationColors, dayNote } from './liturgical.js';
 
 const $ = selector => document.querySelector(selector);
@@ -31,6 +31,29 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
     intention.focus();
   });
   let formDate;
+  let preparing, preparedKey;
+  const planText = $('#lent-plan-text');
+  $('#lent-plan-form').addEventListener('submit', event => {
+    event.preventDefault();
+    if (!preparing || localDate() >= preparing.start) { render(); return; }
+    const text = planText.value.trim();
+    if (!text) {
+      planText.setCustomValidity('Enter an intention before saving.');
+      planText.reportValidity();
+      return;
+    }
+    const fasts = getFasts();
+    const previous = fasts.find(f => f.kind === 'lent' && f.start === preparing.start);
+    const updated = {...(previous ?? {...preparing, days:[]}), intention:text};
+    if (previous && fasts.some(f=>f !== previous && fastKey(f) === fastKey(updated))) {
+      planText.setCustomValidity('This intention is already saved.');
+      planText.reportValidity();
+      return;
+    }
+    saveFasts(previous ? fasts.map(f=>f === previous ? updated : f) : [...fasts,updated], 'Lent intention saved. No days recorded.');
+    render();
+  });
+  planText.addEventListener('input', () => planText.setCustomValidity(''));
   function showRule() {
     const personal = kind.value === 'personal';
     $('#fast-range').hidden = !personal;
@@ -41,7 +64,17 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   }
   function renderFasts(fasts, plans, today) {
     const lent = plans.find(p => p.kind === 'lent' && includesDay(p, selected));
-    $('#lent-feature').hidden = !lent;
+    preparing = lent && lent.start > today ? lent : selected === today && !lent ? nextLent(today) : undefined;
+    $('#lent-planner').hidden = !preparing;
+    if (preparing) {
+      const saved = fasts.find(f=>f.kind === 'lent' && f.start === preparing.start);
+      $('#lent-plan-title').textContent = `${saved ? 'Your intention for' : 'Prepare for'} ${fastName(preparing)}`;
+      $('#lent-plan-date').textContent = `Check-ins open on Ash Wednesday, ${prettyDate(preparing.start)}. You can save or change your intention now.`;
+      const key = JSON.stringify([preparing.start, saved?.intention]);
+      if (key !== preparedKey) { planText.value = saved?.intention ?? ''; planText.setCustomValidity(''); }
+      preparedKey = key;
+    }
+    $('#lent-feature').hidden = !lent || lent.start > today;
     if (lent) {
       const joined = fasts.filter(f => f.kind === 'lent' && f.start === lent.start);
       const count = Math.min(7, new Set(joined.flatMap(f=>f.days.filter(d=>d<=today))).size);
@@ -49,11 +82,11 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
       $('#lent-fast-dates').textContent = `${format(lent.start,{month:'long',day:'numeric'})} – ${format(lent.end,{month:'long',day:'numeric'})}`;
       $('#lent-fast-progress').textContent = count === 7 ? 'Seven days kept · yearly medal earned' : `${count} of 7 days toward your Lent medal`;
       $('#lent-stones').replaceChildren(...Array.from({length:7},(_,i)=>make('span','',i<count?'kept':'')));
-      $('#lent-choose').hidden = joined.length > 0;
+      $('#lent-choose').hidden = joined.length > 0 || !canJoinSeason(lent,selected,today);
     }
     const list = $('#fast-active');
     list.replaceChildren();
-    for (const f of fasts.filter(f => includesDay(f, selected))) {
+    for (const f of fasts.filter(f => includesDay(f, selected) && !(f.kind === 'lent' && f.start > today))) {
       const card = make('article', undefined, 'fast-entry');
       const recorded = f.days.includes(selected);
       const button = make('button', recorded ? '✓ Kept this fast · undo' : 'I kept this fast', 'secondary');
@@ -73,7 +106,19 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
       card.append(make('p', `${prettyDate(f.start)}${f.end === f.start ? '' : ` – ${prettyDate(f.end)}`} · ${daysKept} ${daysKept === 1 ? 'day' : 'days'} recorded`, 'small muted'), button);
       list.append(card);
     }
-    const available = plans.filter(p => includesDay(p, selected) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
+    const past = fasts.filter(f => f.end < today).sort((a,b)=>b.end.localeCompare(a.end));
+    const history = $('#fast-history-list');
+    history.replaceChildren();
+    if (!past.length) history.append(make('p','No past fasts yet. Your records appear here after their end date.', 'small'));
+    for (const f of past) {
+      const entry = make('details', undefined, 'fast-entry');
+      entry.append(make('summary', `${fastName(f)} · ${prettyDate(f.end)}`));
+      if (f.intention) entry.append(make('p', f.intention));
+      entry.append(make('p', `${prettyDate(f.start)} – ${prettyDate(f.end)}`, 'small muted'),
+        make('p', f.days.length ? `${f.days.length} ${f.days.length === 1 ? 'day' : 'days'} recorded: ${[...f.days].sort().map(prettyDate).join('; ')}` : 'No days recorded.', 'small'));
+      history.append(entry);
+    }
+    const available = plans.filter(p => canJoinSeason(p,selected,today) && !fasts.some(f => f.kind === p.kind && f.start === p.start));
     const options = [...available, {kind:'personal', start:selected}];
     const previousKind = kind.value;
     kind.replaceChildren(...options.map(p => new Option(fastName(p), p.kind)));
@@ -91,7 +136,7 @@ export function createLiturgicalCalendar({getChecks,toggle,getFasts,saveFasts}) 
   $('#fast-form').addEventListener('submit', event => {
     event.preventDefault();
     const plan = kind.value === 'personal' ? {kind:'personal', start:start.value, end:end.value} :
-      annualFasts(selected.slice(0,4)).find(p => p.kind === kind.value && includesDay(p, selected));
+      annualFasts(selected.slice(0,4)).find(p => p.kind === kind.value && canJoinSeason(p,selected,localDate()));
     if (!plan) return;
     const fast = {...plan, intention:intention.value.trim(), days:[]};
     if (getFasts().some(f => fastKey(f) === fastKey(fast))) {

@@ -6,6 +6,11 @@ const names = { lent: 'Lent', ash: 'Ash Wednesday', friday: 'Good Friday', perso
 export const fastName = fast => fast.kind === 'personal' ? names.personal : `${names[fast.kind]} ${fast.start.slice(0, 4)}`;
 export const includesDay = (fast, date) => fast.start <= date && date <= fast.end;
 export const fastKey = f => JSON.stringify([f.kind, f.start, f.end, f.intention]);
+export const canJoinSeason = (plan, selected, today) => includesDay(plan, selected) && includesDay(plan, today);
+export function nextLent(today) {
+  const year = Number(today.slice(0, 4));
+  return [year, year + 1].flatMap(y => annualFasts(String(y))).find(p => p.kind === 'lent' && p.start > today);
+}
 
 export function annualFasts(year) {
   if (!seasons.has(year)) {

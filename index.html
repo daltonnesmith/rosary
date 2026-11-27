@@ -132,6 +132,13 @@
                   <button type="button" id="lent-choose">Choose this fast →</button>
                 </article>
                 <div id="fast-active"></div>
+                <details id="lent-planner" hidden><summary id="lent-plan-title">Prepare for Lent</summary>
+                  <form id="lent-plan-form"><p id="lent-plan-date" class="small muted"></p>
+                    <label for="lent-plan-text">What will you set aside?</label>
+                    <input id="lent-plan-text" type="text" maxlength="160" required placeholder="Evening scrolling">
+                    <button class="secondary" type="submit">Save intention</button>
+                  </form>
+                </details>
                 <form id="fast-form">
                   <label for="fast-kind">Choose a fast</label><select id="fast-kind"></select>
                   <p id="fast-rule" class="small muted"></p>
@@ -140,6 +147,10 @@
                   <div id="fast-range"><div><label for="fast-start">Start date</label><input id="fast-start" type="date"></div><div><label for="fast-end">End date</label><input id="fast-end" type="date"></div></div>
                   <button class="secondary" type="submit">Join fast</button>
                 </form>
+                <details id="fast-history"><summary>Fasting history</summary>
+                  <p class="small muted">Past fasts, newest first. Open a record to see the days you marked.</p>
+                  <div id="fast-history-list"></div>
+                </details>
               </section>
               <div class="lit-local"><label for="lit-ascension">Ascension in your diocese</label><select id="lit-ascension"><option value="sunday">Sunday (most U.S. dioceses)</option><option value="thursday">Thursday</option></select><p class="small muted">Check your parish's calendar. This choice lasts for this visit and never changes your prayer history.</p></div>
             </aside>
