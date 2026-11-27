@@ -44,6 +44,9 @@ jobs:
           packages: platform-tools platforms;android-36 build-tools;36.0.0
       - name: Prepare emulator access
         run: |
+          # The hosted runner's unused toolchains compete with the AVD's writable disk.
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc
+          df -h / "$ANDROID_HOME"
           sudo chmod a+rw /dev/kvm
           chmod +x android/gradlew
       - name: Assemble app and instrumentation before starting the emulator
@@ -70,6 +73,7 @@ jobs:
             adb shell svc data disable
             adb install -t android/app/build/outputs/apk/debug/app-debug.apk
             adb install -t android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+            adb logcat -v threadtime </dev/null >device.log 2>&1 & echo $! > logcat.pid
             adb shell am instrument -w io.github.daltonnesmith.stillwater.test.test/androidx.test.runner.AndroidJUnitRunner > instrumentation.txt
             cat instrumentation.txt
             grep -Eq '^OK \(1 test\)' instrumentation.txt
@@ -89,6 +93,12 @@ jobs:
           mkdir -p android-artifacts
           cp "$apk" android-artifacts/Stillwater-1.2.0-test.7.apk
           cd android-artifacts && sha256sum Stillwater-1.2.0-test.7.apk > SHA256SUMS.txt
+      - name: Diagnose runner resource failures
+        if: failure()
+        run: |
+          df -h /
+          free -h
+          sudo dmesg | tail -100
       - uses: actions/upload-artifact@v4
         with:
           name: stillwater-android-test
@@ -101,6 +111,7 @@ jobs:
           name: android-test-results
           path: |
             instrumentation.txt
+            device.log
             android/app/build/reports/androidTests/
             android/app/build/outputs/androidTest-results/
             apk-metadata.txt
