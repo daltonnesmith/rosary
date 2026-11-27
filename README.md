@@ -4,6 +4,8 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 
 ## What it does
 
+For local testing, open the app on localhost with `?testEquip=1`. **Try background & beads** applies even unearned styles in that tab until reload, without saving preferences or granting awards.
+
 In the Profile award catalog, expand **Chi-Rho · A year of prayer** to see cumulative prayer-day milestones in order. Multiple rosaries on one date count as one day here, and breaks do not reset the count.
 
 Profile awards are illustrated Catholic medallions. The **Jerusalem Cross** (a central cross with four smaller crosses) is earned by completing every chapter of Matthew, Mark, Luke, and John in Scripture & prayer. Previously recorded chapters count; previewing a medal never grants it.
