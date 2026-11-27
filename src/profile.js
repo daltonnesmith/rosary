@@ -47,7 +47,21 @@ function medal(badge) {
     summary.append(icon,name,rule,status,unlock,document.createTextNode('View Gospel medals'));
     list.append(...badge.children.map(medal));
     details.append(summary,list); item.append(details);
+  } else if (badge.symbol === 'chi-rho') {
+    const details = document.createElement('details'), summary = document.createElement('summary');
+    const list = document.createElement('ol');
+    list.className = 'prayer-days-ladder';
+    summary.append(icon, name, rule, status, unlock, document.createTextNode('View total prayer days'));
+    for (const days of [1, 7, 30, 60, 90, 180, 270, badge.goal]) {
+      const row = document.createElement('li');
+      const reached = badge.progress >= days;
+      row.dataset.earned = reached;
+      row.textContent = `${days} ${days === 1 ? 'prayer day' : 'prayer days'} · ${reached ? '✓ Reached' : `${badge.progress} / ${days}`}`;
+      list.append(row);
+    }
+    details.append(summary, list); item.append(details);
   } else item.append(icon, name, rule, status, unlock);
+  item.dataset.symbol = badge.symbol;
   return item;
 }
 export function createProfilePreview(getState) {
@@ -111,9 +125,9 @@ export function createProfilePreview(getState) {
     byId('unlock').textContent = painting ? total >= painting.goal ? 'Museum background unlocked.' : `Preview only · unlocks at ${painting.goal} completed ${painting.goal === 1 ? 'rosary' : 'rosaries'}.` : `Unlock milestone: ${goal}.`;
     const earned = badges.flatMap(b=>[b,...(b.children??[])]).filter(b => b.earned);
     for(const [list,items] of [[byId('catalog'),badges],[byId('awards'),earned]]) {
-      const wasOpen=list.querySelector('details')?.open;
+      const openSymbols=new Set([...list.querySelectorAll('details[open]')].map(d=>d.parentElement.dataset.symbol));
       list.replaceChildren(...items.map(medal));
-      if(wasOpen) list.querySelector('details').open=true;
+      for (const d of list.querySelectorAll('details')) d.open=openSymbols.has(d.parentElement.dataset.symbol);
     }
     byId('award-note').textContent = earned.length ? `${points} points from your recorded rosaries.` : 'Your first award appears here when you complete a rosary. Trying a background doesn’t earn an award.';
     byId('equip').disabled = scene.selectedOptions[0].dataset.unlocked!=='true' || finish.selectedOptions[0].dataset.unlocked!=='true';

@@ -4,6 +4,8 @@ A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and m
 
 ## What it does
 
+In the Profile award catalog, expand **Chi-Rho · A year of prayer** to see cumulative prayer-day milestones in order. Multiple rosaries on one date count as one day here, and breaks do not reset the count.
+
 Profile awards are illustrated Catholic medallions. The **Jerusalem Cross** (a central cross with four smaller crosses) is earned by completing every chapter of Matthew, Mark, Luke, and John in Scripture & prayer. Previously recorded chapters count; previewing a medal never grants it.
 
 **Profile → My Little Chapel** shows all medals, with unearned medals greyed out. Open the Jerusalem Cross to see Matthew, Mark, Luke, and John with their own chapter counts and finishes. Each completed Gospel unlocks its finish, and all four unlock Jerusalem gold. Preview locked rewards freely without changing progress; **Equip background & beads** saves an unlocked profile background and prayer-strand finish on the device. The candlelit alcove also has a votive to light.
