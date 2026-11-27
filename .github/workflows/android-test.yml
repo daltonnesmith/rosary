@@ -46,6 +46,9 @@ jobs:
         run: |
           sudo chmod a+rw /dev/kvm
           chmod +x android/gradlew
+      - name: Assemble app and instrumentation before starting the emulator
+        working-directory: android
+        run: ./gradlew --no-daemon --max-workers=2 :app:assembleDebug :app:assembleDebugAndroidTest
       - name: Build, install and test with Wi-Fi and mobile data disabled
         uses: ReactiveCircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
@@ -53,13 +56,18 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_5
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -skin 720x1280
           disable-animations: true
           emulator-boot-timeout: 600
           script: |
             adb shell cmd connectivity airplane-mode enable
             adb shell svc wifi disable
             adb shell svc data disable
-            cd android && ./gradlew --no-daemon :app:assembleDebug :app:connectedDebugAndroidTest
+            adb install -t android/app/build/outputs/apk/debug/app-debug.apk
+            adb install -t android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+            adb shell am instrument -w io.github.daltonnesmith.stillwater.test.test/androidx.test.runner.AndroidJUnitRunner > instrumentation.txt
+            cat instrumentation.txt
+            grep -Eq '^OK \(1 test\)' instrumentation.txt
       - name: Verify signature, Android metadata and all bundled assets
         run: |
           set -euo pipefail
@@ -87,6 +95,7 @@ jobs:
         with:
           name: android-test-results
           path: |
+            instrumentation.txt
             android/app/build/reports/androidTests/
             android/app/build/outputs/androidTest-results/
             apk-metadata.txt
