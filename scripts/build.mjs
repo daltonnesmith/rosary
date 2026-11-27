@@ -11,6 +11,7 @@ for (const file of ['index.html', 'manifest.webmanifest', 'sw.js', 'SCRIPTURE-LI
 }
 await copyFile(path.join(root, 'src/mystery-passages.js'), path.join(out, 'src/mystery-passages.js'));
 for (const file of ['src/profile.js','icons/profile-windows.svg']) await copyFile(path.join(root,file),path.join(out,file));
+for (const id of ['1952.110','1954.834','1916.802']) await copyFile(path.join(root,'icons',`${id}.jpg`),path.join(out,'icons',`${id}.jpg`));
 await mkdir(path.join(out, 'chapel'), {recursive:true});
 for (const file of ['chapel.html','chapel.css','chapel.js','medals.js','windows.svg']) await copyFile(path.join(root,'chapel',file),path.join(out,'chapel',file));
 for (const [size, filename] of [[192, 'icon-192.png'], [512, 'icon-512.png'], [180, 'apple-touch-icon.png']]) await writeFile(path.join(out, 'icons', filename), icon(size));

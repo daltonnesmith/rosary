@@ -441,7 +441,7 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar();
-const renderProfile = createProfilePreview();
+const renderProfile = createProfilePreview(() => state.completions);
 let chapel;
 $('#view-chapel').addEventListener('click', async () => {
   const button = $('#view-chapel');

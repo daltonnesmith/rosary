@@ -148,6 +148,7 @@
           <div class="intro"><p class="eyebrow">PROFILE · REWARD PREVIEW</p><h1 id="profile-heading">My Little Chapel</h1><p>Try every reward. Nothing here earns points or changes your journal.</p></div>
           <article class="profile-study panel">
             <div id="profile-window" data-scene="dawn">
+              <img id="profile-painting" alt="" hidden>
               <svg viewBox="0 0 240 140" aria-hidden="true"><use id="profile-art" href="./icons/profile-windows.svg#dawn"></use></svg>
               <h2 id="profile-name">Little Pilgrim</h2>
               <canvas id="profile-strand" aria-label="Sample strand of devotional beads"></canvas>
@@ -155,11 +156,14 @@
             <div class="profile-controls">
               <label for="profile-scene">Preview a background</label><select id="profile-scene"></select>
               <p id="profile-unlock" class="small muted"></p>
+              <a id="profile-credit" class="small" target="_blank" rel="noopener" hidden></a>
+              <label class="museum-filter"><input id="profile-preview-locked" type="checkbox" checked> Preview unearned museum artwork</label>
               <button id="profile-votive" class="secondary" hidden>Light a votive</button>
               <label for="profile-title">Display title</label><select id="profile-title"></select>
               <label for="profile-finish">Bead finish</label><select id="profile-finish"><option value="enamel">Jordan blue enamel</option><option value="wood">Olivewood &amp; brass</option><option value="pearl">Pearl &amp; gold</option></select>
             </div>
           </article>
+          <article class="panel profile-awards"><h2>Your earned awards</h2><p id="profile-award-note" class="small muted"></p><ul id="profile-awards"></ul></article>
         </section>
         <section id="about" aria-labelledby="about-heading" hidden>
           <div class="intro"><p class="eyebrow">ALWAYS WITH YOU</p><h1 id="about-heading">A small, sacred space.</h1><p>No account. No noise. Just a little room for prayer.</p></div>
