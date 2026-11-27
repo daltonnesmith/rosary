@@ -157,13 +157,14 @@
               <label for="profile-scene">Preview a background</label><select id="profile-scene"></select>
               <p id="profile-unlock" class="small muted"></p>
               <a id="profile-credit" class="small" target="_blank" rel="noopener" hidden></a>
-              <label class="museum-filter"><input id="profile-preview-locked" type="checkbox" checked> Preview unearned museum artwork</label>
+              <label class="museum-filter"><input id="profile-preview-locked" type="checkbox" checked> Preview locked rewards (cannot equip)</label>
               <button id="profile-votive" class="secondary" hidden>Light a votive</button>
               <label for="profile-title">Display title</label><select id="profile-title"></select>
               <label for="profile-finish">Bead finish</label><select id="profile-finish"><option value="enamel">Jordan blue enamel</option><option value="wood">Olivewood &amp; brass</option><option value="pearl">Pearl &amp; gold</option></select>
+              <button type="button" class="secondary" id="profile-equip">Equip background &amp; beads</button><p id="profile-equip-status" role="status" class="small"></p>
             </div>
           </article>
-          <article class="panel profile-awards"><h2>Your earned awards</h2><p id="profile-award-note" class="small muted"></p><ul id="profile-awards"></ul><details id="award-catalog"><summary>Review all awards</summary><ul id="profile-catalog"></ul></details></article>
+          <article class="panel profile-awards"><h2>Your earned awards</h2><p id="profile-award-note" class="small muted"></p><ul id="profile-awards"></ul><details id="award-catalog" open><summary>Review all awards</summary><ul id="profile-catalog"></ul></details></article>
         </section>
         <section id="about" aria-labelledby="about-heading" hidden>
           <div class="intro"><p class="eyebrow">ALWAYS WITH YOU</p><h1 id="about-heading">A small, sacred space.</h1><p>No account. No noise. Just a little room for prayer.</p></div>

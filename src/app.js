@@ -76,7 +76,7 @@ function showTab(tab) {
     else button.removeAttribute('aria-current');
   });
   if (tab === 'journal') renderJournal();
-  if (tab === 'profile') renderProfile();
+  if (tab === 'profile') profile.render();
   if (tab === 'scripture') readingCompanion.render();
   if (tab === 'liturgical') liturgicalCalendar.render();
 }
@@ -441,7 +441,7 @@ if (isAndroidApp()) {
 
 const readingCompanion = createReadingCompanion({ getState: () => state, commit, notify, confirmChange: confirmRestart });
 const liturgicalCalendar = createLiturgicalCalendar();
-const renderProfile = createProfilePreview(() => state);
+const profile = createProfilePreview(() => state);
 let chapel;
 $('#view-chapel').addEventListener('click', async () => {
   const button = $('#view-chapel');
@@ -450,6 +450,7 @@ $('#view-chapel').addEventListener('click', async () => {
     if (!chapel) {
       const { createChapel } = await import('../chapel/chapel.js');
       chapel = await createChapel($('#chapel-host'), {
+        getFinish: profile.getFinish,
         context: () => ({
           progress: state.progress, set: state.progress?.set ?? selectedSet,
           fatima: state.progress?.fatima ?? state.fatima,

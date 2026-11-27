@@ -77,7 +77,7 @@ function paint() {
   $('next').textContent = !ctx.progress ? 'Begin rosary →' : page < pages.length - 1 ? pages[page + 1].reflection && !p.reflection ? 'Read reflection →' : 'Continue reading →' : index < steps.length - 1 ? 'Next bead →' : 'Complete rosary ✓';
   $('bead').disabled = index === steps.length-1 && page === pages.length-1;
   $('message').textContent = ctx.error || (ctx.progress ? `Card ${index+1} of ${steps.length}` : 'Gather your intentions.');
-  drawStrand($('strand'), index, set, 0, steps);
+  drawStrand($('strand'), index, set, 0, steps, controls.getFinish(), true);
 }
 function move(direction) {
   if (!controls.context().progress) { controls.start(); sync(); return; }
@@ -91,7 +91,7 @@ function move(direction) {
     const start = performance.now();
     const tick = now => {
       const t = Math.max(0, 1 - (now - start) / 340);
-      drawStrand($('strand'), index, set, direction * t * t, steps);
+      drawStrand($('strand'), index, set, direction * t * t, steps, controls.getFinish(), true);
       if (t > 0) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);

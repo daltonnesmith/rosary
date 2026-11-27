@@ -21,6 +21,10 @@ const rewards = [
 
 const symbols = { shell:'Pilgrim’s Shell', beads:'Holy Rosary', lily:'Annunciation Lily', heart:'Sacred Heart', keys:'Keys of Saint Peter', candle:'Paschal Candle', lamp:'Sanctuary Lamp', 'chi-rho':'Chi-Rho', roses:'Marian Roses', jerusalem:'Jerusalem Cross' };
 Object.assign(symbols, { rose:'Golden Rose', fish:'Ichthys', harp:'David’s Harp', anchor:'Anchor of Hope', vine:'True Vine', chalice:'Eucharistic Chalice', olive:'Olive Branch', dove:'Dove of Peace', star:'Star of the Sea' });
+const gospelNames = {MAT:'Matthew · Winged Man',MAR:'Mark · Winged Lion',LUK:'Luke · Winged Ox',JOH:'John · Eagle'};
+const finishes = {wood:['Olivewood & brass','beads'],pearl:['Pearl & gold','chi-rho'],MAT:['Burnished copper','MAT'],MAR:['Emerald','MAR'],LUK:['Amethyst','LUK'],JOH:['Sapphire','JOH'],jerusalem:['Jerusalem gold','jerusalem']};
+for (const id of ['rose','fish','harp','anchor','vine','chalice','olive','dove','star']) finishes[id] = [`${symbols[id]} enamel`,id];
+const sceneKeys = ['','beads','candle','heart','lamp','chi-rho','roses'];
 function medal(badge) {
   const item = document.createElement('li');
   item.className = 'award-medal';
@@ -32,15 +36,24 @@ function medal(badge) {
   use.setAttribute('href',`./icons/awards.svg#${badge.symbol}`);
   icon.append(use);
   const name = document.createElement('strong'), rule = document.createElement('span'), status = document.createElement('small');
-  name.textContent = symbols[badge.symbol];
+  name.textContent = symbols[badge.symbol] ?? gospelNames[badge.symbol];
   rule.textContent = badge.name.replace(/^Jerusalem Cross · /,'');
   status.textContent = badge.earned ? '✓ Earned' : `${badge.progress} / ${badge.goal}`;
-  item.append(icon, name, rule, status);
+  const unlock = document.createElement('small');
+  const finish = Object.values(finishes).find(([,key])=>key===badge.symbol);
+  unlock.textContent = finish ? `Beads: ${finish[0]}` : 'Reward: profile background';
+  if (badge.children) {
+    const details=document.createElement('details'), summary=document.createElement('summary'), list=document.createElement('ul');
+    summary.append(icon,name,rule,status,unlock,document.createTextNode('View Gospel medals'));
+    list.append(...badge.children.map(medal));
+    details.append(summary,list); item.append(details);
+  } else item.append(icon, name, rule, status, unlock);
   return item;
 }
 export function createProfilePreview(getState) {
   const byId = id => document.getElementById(`profile-${id}`);
   const scene = byId('scene'), title = byId('title'), finish = byId('finish');
+  finish.replaceChildren(new Option('Mystery enamel','enamel'), ...Object.entries(finishes).map(([id,[name]])=>new Option(name,id)));
   for (const [id, name, honor] of rewards) {
     scene.add(new Option(name, id));
     title.add(new Option(honor, honor));
@@ -52,15 +65,31 @@ export function createProfilePreview(getState) {
   const strand = byId('strand'), votive = byId('votive');
   const sample = ['mary','glory','mary','father','mary'].map(prayer => ({prayer}));
   let lit = false;
+  let equipped = {scene:'dawn',finish:'enamel'};
+  const storageKey = 'stillwater-profile-style';
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
+    if (saved && [...scene.options].some(o=>o.value===saved.scene) && [...finish.options].some(o=>o.value===saved.finish)) {
+      equipped = saved; scene.value=saved.scene; finish.value=saved.finish;
+    }
+  } catch { byId('equip-status').textContent='Saved appearance could not be read.'; }
   function render() {
     if (!strand.clientWidth) return;
     const state = getState();
     const {points, badges} = prayerMilestones(state.completions, undefined, state.reading.gospels.completed);
     const total = points / POINTS_PER_ROSARY;
     const previewLocked = byId('preview-locked').checked;
+    const unlocked = new Set(badges.flatMap(b=>[b,...(b.children??[])]).filter(b=>b.earned).map(b=>b.symbol));
+    function gate(option,allowed,fallback) {
+      option.dataset.unlocked=String(allowed);
+      option.disabled=!allowed && !previewLocked;
+      if(option.disabled && option.selected) option.parentNode.closest('select').value=fallback;
+    }
+    rewards.forEach((_,i)=>gate(scene.options[i],!sceneKeys[i] || unlocked.has(sceneKeys[i]),'dawn'));
+    for(const opt of finish.options) gate(opt,opt.value==='enamel' || unlocked.has(finishes[opt.value][1]),'enamel');
     for (const [i, option] of [...gallery.children].entries()) {
       const p = paintings[i], earned = total >= p.goal;
-      option.disabled = !previewLocked && !earned;
+      gate(option,earned,'dawn');
       option.textContent = `${p.name} · ${earned ? 'unlocked' : `${p.goal} ${p.goal === 1 ? 'rosary' : 'rosaries'}`}`;
       if (option.disabled && option.selected) scene.value = 'dawn';
     }
@@ -80,17 +109,28 @@ export function createProfilePreview(getState) {
     byId('art').setAttribute('href', `./icons/profile-windows.svg#${id === 'alcove' && lit ? 'lit' : id}`);
     byId('name').textContent = title.value;
     byId('unlock').textContent = painting ? total >= painting.goal ? 'Museum background unlocked.' : `Preview only · unlocks at ${painting.goal} completed ${painting.goal === 1 ? 'rosary' : 'rosaries'}.` : `Unlock milestone: ${goal}.`;
-    const earned = badges.filter(b => b.earned);
-    byId('catalog').replaceChildren(...badges.map(medal));
+    const earned = badges.flatMap(b=>[b,...(b.children??[])]).filter(b => b.earned);
+    for(const [list,items] of [[byId('catalog'),badges],[byId('awards'),earned]]) {
+      const wasOpen=list.querySelector('details')?.open;
+      list.replaceChildren(...items.map(medal));
+      if(wasOpen) list.querySelector('details').open=true;
+    }
     byId('award-note').textContent = earned.length ? `${points} points from your recorded rosaries.` : 'Your first award appears here when you complete a rosary. Trying a background doesn’t earn an award.';
-    byId('awards').replaceChildren(...earned.map(medal));
+    byId('equip').disabled = scene.selectedOptions[0].dataset.unlocked!=='true' || finish.selectedOptions[0].dataset.unlocked!=='true';
     votive.hidden = id !== 'alcove';
     votive.setAttribute('aria-pressed', String(lit));
     votive.textContent = lit ? 'Extinguish the votive' : 'Light a votive';
     drawStrand(strand, 2, 'luminous', 0, sample, finish.value);
   }
-  for (const control of [scene, title, finish, byId('preview-locked')]) control.addEventListener('change', render);
+  for (const control of [scene, title, finish, byId('preview-locked')]) control.addEventListener('change', () => {byId('equip-status').textContent='';render();});
+  byId('equip').onclick=()=>{
+    render();
+    if(byId('equip').disabled)return;
+    const style={scene:scene.value,finish:finish.value};
+    try {localStorage.setItem(storageKey,JSON.stringify(style));equipped=style;byId('equip-status').textContent='Profile background and chapel beads saved on this device.';}
+    catch {byId('equip-status').textContent='Could not save your appearance on this device.';}
+  };
   votive.addEventListener('click', () => { lit = !lit; render(); });
   new ResizeObserver(render).observe(strand);
-  return render;
+  return {render, getFinish:()=>equipped.finish};
 }

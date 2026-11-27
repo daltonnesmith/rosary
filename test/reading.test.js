@@ -10,6 +10,9 @@ test('Jerusalem Cross requires every chapter in each Gospel, not four chapter re
   const all = booksFor('gospels').flatMap(b => b.chapters.map(c => entry(b.id,c.number)));
   const cross = chapters => prayerMilestones([],localDate(now),chapters).badges.find(b => b.symbol === 'jerusalem');
   const missing = all.slice(0,-1);
+  assert.deepEqual(cross(missing).children.map(b=>[b.symbol,b.progress,b.earned]), [
+    ['MAT',28,true], ['MAR',16,true], ['LUK',24,true], ['JOH',20,false],
+  ]);
   assert.equal(cross([...missing, missing[0]]).progress,3);
   assert.equal(cross(missing).earned,false);
   assert.equal(cross(all).earned,true);

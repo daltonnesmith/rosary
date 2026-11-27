@@ -189,7 +189,11 @@ export function prayerMilestones(completions, today = localDate(), gospelChapter
   add('chi-rho', 'A year of prayer · 365 prayer days', days.length, 365);
   add('roses', 'Full Bouquet · all four mystery sets', new Set(entries.map(item => item.mystery).filter(set => Object.hasOwn(MYSTERIES, set))).size, 4);
   const chapters = new Set(gospelChapters.filter(c => c.date <= today).map(c => `${c.book}:${c.chapter}`));
-  const finishedBooks = booksFor('gospels').filter(b => b.chapters.every(c => chapters.has(`${b.id}:${c.number}`)));
-  add('jerusalem', 'Jerusalem Cross · complete all four Gospels', finishedBooks.length, 4);
+  const children = booksFor('gospels').map(b => {
+    const progress = b.chapters.filter(c => chapters.has(`${b.id}:${c.number}`)).length;
+    return {symbol:b.id, name:b.name, progress, goal:b.chapters.length, earned:progress === b.chapters.length};
+  });
+  add('jerusalem', 'Jerusalem Cross · complete all four Gospels', children.filter(b => b.earned).length, 4);
+  badges.at(-1).children = children;
   return { points: entries.length * POINTS_PER_ROSARY, badges };
 }
