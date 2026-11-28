@@ -1,0 +1,4 @@
+test/
+local.settings.json
+README.md
+copy-validator.mjs

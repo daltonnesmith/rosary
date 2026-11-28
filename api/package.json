@@ -1,0 +1,16 @@
+{
+  "name": "stillwater-profile-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node copy-validator.mjs",
+    "test": "node --test test/profile.test.mjs"
+  },
+  "dependencies": {
+    "@azure/storage-blob": "^12.28.0"
+  }
+}
