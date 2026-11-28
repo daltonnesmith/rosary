@@ -8,9 +8,12 @@
   },
   "scripts": {
     "build": "node copy-validator.mjs",
-    "test": "node --test test/profile.test.mjs"
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.28.0"
+    "@azure/storage-blob": "^12.28.0",
+    "jose": "^6.1.0",
+    "openid-client": "^6.8.0",
+    "stillwater-rosary": "file:.."
   }
 }

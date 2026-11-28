@@ -110,6 +110,10 @@ The **Publish Stillwater website** workflow deploys `dist` after checks pass on 
 
 ## Privacy, storage, and recovery
 
+**Email sign-in:** On the website choose **Profile → Continue with email**, then verify a one-time code in the Microsoft-hosted Stillwater sign-in screen. Already use Microsoft for Stillwater? Choose **Link email to this profile** while signed into that journal *before* using the email as a standalone login. A matching address alone never merges accounts. Email sessions expire after 24 hours; signing in again reopens the same journal. The website stays on the Free hosting plan.
+
+The email callback uses a separate Entra External ID tenant, an email OTP sign-up/sign-in flow, and a confidential web app registration. Keep `EMAIL_OIDC_SECRET` and `EMAIL_COOKIE_KEY` only in the site's server-side settings. Rotate the registration credential before expiry; replacing the 32-byte base64 cookie key signs email sessions out. The existing Microsoft login continues to use Static Web Apps authentication.
+
 Guest data stays in browser storage (`stillwater-v1`), separate from the service-worker cache. App updates do not clear it. On the hosted website open **Profile** to sign in with Microsoft and opt into cloud saving. Use the same Microsoft account on the other device. The previously released Android test APK remains local-only; use its JSON export to move data to the hosted app.
 
 The private cloud copy includes journal notes, fasting intentions, calendar check-ins, prayer history and current rosary and Scripture progress. It does not go in GitHub or the public site. Microsoft handles authentication; Stillwater does not receive passwords. The API scopes each blob to the authenticated user and checks its version before changes. Azure encrypts storage at rest; this is **not** end-to-end encryption. The hosting administrator has administrative access. You can delete the cloud copy from Profile; exported files and other devices' local copies are separate.

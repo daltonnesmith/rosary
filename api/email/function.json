@@ -1,0 +1,7 @@
+{
+  "scriptFile": "index.cjs",
+  "bindings": [
+    { "type": "httpTrigger", "direction": "in", "name": "req", "authLevel": "anonymous", "route": "email/{action}" },
+    { "type": "http", "direction": "out", "name": "res" }
+  ]
+}

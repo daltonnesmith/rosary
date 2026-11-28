@@ -31,11 +31,25 @@ export async function openHostedJournal(getGuest) {
       finally { if (!leaving) document.body.inert = false; }
     });
   }
-  function redirect(logout) {
+  async function redirect(logout) {
     if (logout && !window.confirm('Sign out and return to the shared device journal? Unsynced saved changes will stay on this browser for this account. Unsaved form text will be lost.')) return;
+    if (logout && session?.startsWith('email:')) {
+      const res = await fetch('/api/email/logout',{method:'POST',credentials:'same-origin',cache:'no-store'});
+      if (!res.ok) throw new Error('Reconnect to sign out of email before sharing this browser.');
+    }
     localStorage.setItem(sessionKey, `${logout ? 'out' : 'in'}:${crypto.randomUUID()}`);
     if (logout && navigator.onLine === false) leave();
     else leave(logout ? '/.auth/logout?post_logout_redirect_uri=/' : '/.auth/login/aad?post_login_redirect_uri=/');
+  }
+  async function startEmail(link = false) {
+    if (link && !window.confirm(`Allow a verified email address to open the existing journal for ${user.name}? Use only an inbox you control.`)) return;
+    const res = await fetch('/api/email/start',{method:'POST',credentials:'same-origin',cache:'no-store',
+      headers:link ? {'X-Stillwater-Link':user.id} : {}});
+    if (!res.ok) throw new Error('Could not start email sign-in. If Microsoft is still signed in, sign out first.');
+    const {url} = await res.json();
+    if (new URL(url).origin !== 'https://stillwaterjournaldn.ciamlogin.com') throw new Error('Unexpected sign-in address.');
+    localStorage.setItem(sessionKey, `email:${crypto.randomUUID()}`);
+    leave(url);
   }
   window.addEventListener('pageshow', event => { if (event.persisted) leave(); });
   window.addEventListener('pagehide', () => { document.body.hidden = true; account?.stop(); releaseLock?.(); });
@@ -44,15 +58,19 @@ export async function openHostedJournal(getGuest) {
   });
   try {
     session = localStorage.getItem(sessionKey);
-    user = await identity();
+    user = await identity(undefined,session?.startsWith('email:'));
     if (session !== localStorage.getItem(sessionKey)) { leave(); return; }
     if (user) action('logout', () => redirect(true));
     if (!user || session?.startsWith('out:')) {
       status(user ? 'Account journal closed. Finish signing out before sharing this browser.' : 'No account needed. Sign in only if you want to sync.');
-      if (!user) action('login', () => redirect(false));
+      if (!user) {
+        action('login', () => redirect(false));
+        action('email', () => startEmail());
+      }
       return;
     }
     byId('account-user').textContent = `Signed in as ${user.name}.`;
+    if (!session?.startsWith('email:')) action('link', () => startEmail(true));
     releaseLock = await claimAccount(navigator.locks, user.id);
     account = createAccount({ user, storage: localStorage, session, status, changed: () => leave() });
     if (!account.draft) {

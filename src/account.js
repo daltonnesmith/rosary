@@ -13,9 +13,9 @@ async function request(path, options = {}) {
   });
 }
 
-export async function identity(send = request) {
-  const response = await send('/.auth/me');
-  if (!response.ok) throw new Error('Could not check the Microsoft session. Reconnect and retry.');
+export async function identity(send = request, email = false) {
+  const response = await send(email ? '/api/email/me' : '/.auth/me');
+  if (!response.ok) throw new Error('Could not check your sign-in session. Reconnect and retry.');
   const { clientPrincipal } = await response.json();
   if (clientPrincipal === null) return null;
   if (!clientPrincipal || typeof clientPrincipal.userId !== 'string' || !clientPrincipal.userId)
@@ -64,7 +64,7 @@ export function createAccount({ user, storage, session, send = request, status, 
   }
   async function check() {
     guard();
-    if ((await identity(send))?.id !== user.id) invalidate();
+    if ((await identity(send, session?.startsWith('email:')))?.id !== user.id) invalidate();
     guard();
   }
   async function api(method, body) {
@@ -72,7 +72,7 @@ export function createAccount({ user, storage, session, send = request, status, 
     guard();
     const headers = { 'X-Stillwater-Account': user.id };
     if (body) headers['Content-Type'] = 'application/json';
-    const response = await send('/api/profile', { method, headers, ...(body && { body: JSON.stringify(body) }) });
+    const response = await send(session?.startsWith('email:') ? '/api/email/profile' : '/api/profile', { method, headers, ...(body && { body: JSON.stringify(body) }) });
     guard();
     if ([401, 403].includes(response.status)) {
       await check();
