@@ -86,7 +86,7 @@ function medal(badge) {
   item.dataset.symbol = badge.symbol;
   return item;
 }
-export function createProfilePreview(getState) {
+export function createProfilePreview(getState, storageKey = 'stillwater-profile-style') {
   const byId = id => document.getElementById(`profile-${id}`);
   const scene = byId('scene'), title = byId('title'), finish = byId('finish');
   finish.replaceChildren(new Option('Mystery enamel','enamel'), ...Object.entries(finishes).map(([id,[name]])=>new Option(name,id)));
@@ -102,7 +102,6 @@ export function createProfilePreview(getState) {
   const sample = ['mary','glory','mary','father','mary'].map(prayer => ({prayer}));
   let lit = false;
   let equipped = {scene:'dawn',finish:'enamel'};
-  const storageKey = 'stillwater-profile-style';
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
     if (saved && [...scene.options].some(o=>o.value===saved.scene) && [...finish.options].some(o=>o.value===saved.finish)) {

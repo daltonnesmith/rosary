@@ -5,6 +5,8 @@ import { createLiturgicalCalendar } from './liturgical-ui.js';
 import { prayerMilestones, POINTS_PER_ROSARY } from './core.js';
 import { createProfilePreview } from './profile.js';
 import { isAndroidApp, saveAndroidBackup } from './platform.js';
+import { supportsAccounts } from './account.js';
+import { openHostedJournal } from './account-ui.js';
 
 const $ = selector => document.querySelector(selector);
 const make = (tag, text, className) => {
@@ -35,8 +37,14 @@ function notify(message) {
   $('#status').textContent = message;
   $('#status').hidden = false;
 }
+const account = supportsAccounts(location.origin, isAndroidApp()) ? await openHostedJournal(() => {
+  if (!canWrite || localStorage.getItem(STORAGE_KEY) !== storedSnapshot) throw new Error('Device journal changed or cannot be read safely. Reload before copying.');
+  return state;
+}) : null;
+// Browser form-history suggestions must not carry private intentions across journals.
+for (const form of document.forms) form.autocomplete = 'off';
 try {
-  state = loadState({ getItem(key) {
+  state = account?.draft.state ?? loadState({ getItem(key) {
     storedSnapshot = window.localStorage.getItem(key);
     return storedSnapshot;
   } });
@@ -53,6 +61,11 @@ function commit(next) {
     return false;
   }
   try {
+    if (account) {
+      account.save(next);
+      $('#storage-error').hidden = true;
+      return true;
+    }
     if (window.localStorage.getItem(STORAGE_KEY) !== storedSnapshot) {
       canWrite = false;
       storageError('Your saved data changed outside this tab. This activity is temporary and will not overwrite it. Export a backup, then reload to reopen saved data.');
@@ -397,7 +410,7 @@ $('#import').addEventListener('change', async event => {
   finally { input.value = ''; }
 });
 window.addEventListener('storage', event => {
-  if (event.key === STORAGE_KEY || event.key === null) {
+  if (!account && (event.key === STORAGE_KEY || event.key === null)) {
     canWrite = false;
     storageError('Your saved data changed in another tab. This tab will not overwrite it. Export any unsaved activity, then reload before continuing.');
   }
@@ -463,7 +476,7 @@ const liturgicalCalendar = createLiturgicalCalendar({
     notify(saved ? (exists?'Calendar check-in removed.':'Calendar check-in saved.') : 'Check-in changed in this tab only. Export a backup before closing.');
   },
 });
-const profile = createProfilePreview(() => state);
+const profile = createProfilePreview(() => state, account ? `${account.key}:appearance` : undefined);
 let chapel;
 $('#switch-view').addEventListener('click', () => {
   prayerView = prayerView === 'chapel' ? 'guided' : 'chapel';

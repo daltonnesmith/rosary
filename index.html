@@ -41,6 +41,7 @@
         </div>
       </aside>
       <div id="storage-error" class="notice error" role="alert" hidden></div>
+      <p id="account-workspace" class="small muted" aria-live="polite" hidden></p>
       <aside id="feast-banner" aria-label="Seasonal reflection" hidden>
         <div><p id="feast-label"></p><strong id="feast-title"></strong><p id="feast-reflection"></p></div>
         <svg viewBox="0 0 120 76" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -202,7 +203,7 @@
           </div>
         </section>
         <section id="journal" aria-labelledby="journal-heading" hidden>
-          <div class="intro"><p class="eyebrow">A FAITHFUL RHYTHM</p><h1 id="journal-heading">One day at a time.</h1><p>Your prayers and reflections, kept only on this device.</p></div>
+          <div class="intro"><p class="eyebrow">A FAITHFUL RHYTHM</p><h1 id="journal-heading">One day at a time.</h1><p>Your prayers and reflections, one day at a time.</p></div>
           <div class="stats" id="stats"></div>
           <details class="panel achievements"><summary><strong>Prayer milestones</strong> · <span id="achievement-summary"></span></summary>
             <p class="small muted">Each complete rosary earns 10 points. Lifetime totals can grow at any pace. Streak awards count consecutive prayer days and stay earned after a break.</p>
@@ -216,6 +217,20 @@
         </section>
         <section id="profile" aria-labelledby="profile-heading" hidden>
           <div class="intro"><p class="eyebrow">YOUR PROFILE</p><h1 id="profile-heading">My Little Chapel</h1><p>Your chapel, your fasts, and the medals you’ve earned along the way.</p></div>
+          <article id="account-panel" class="panel" hidden>
+            <h2>Account &amp; sync</h2>
+            <p id="account-user"></p><p id="account-status" role="status">Checking Microsoft sign-in…</p>
+            <p class="small muted">The device journal is shared by anyone using this browser. Account journals are separate. Enabling sync stores notes, prayer history, reading progress, fasts and check-ins in your private cloud profile. A copy stays in this browser; use a private browser profile on shared devices.</p>
+            <div class="backup-actions">
+              <button id="account-login" class="secondary" hidden>Sign in with Microsoft</button>
+              <button id="account-enable" class="secondary" hidden>Enable sync without device entries</button>
+              <button id="account-copy" class="secondary" hidden>Copy device journal to a new cloud journal</button>
+              <button id="account-retry" class="secondary" hidden>Retry sync / reconnect</button>
+              <button id="account-restore" class="secondary" hidden>Restore cloud copy</button>
+              <button id="account-delete" class="secondary" hidden>Delete account journal</button>
+              <button id="account-logout" class="secondary" hidden>Sign out / switch account</button>
+            </div>
+          </article>
           <article class="profile-study panel">
             <div id="profile-window" data-scene="dawn">
               <img id="profile-painting" alt="" hidden>
@@ -244,7 +259,7 @@
           <details class="profile-fold profile-awards" id="award-catalog"><summary><svg aria-hidden="true" viewBox="0 0 40 40"><use href="./icons/awards.svg#jerusalem"></use></svg>All awards</summary><ul id="profile-catalog"></ul></details>
         </section>
         <section id="about" aria-labelledby="about-heading" hidden>
-          <div class="intro"><p class="eyebrow">ALWAYS WITH YOU</p><h1 id="about-heading">A small, sacred space.</h1><p>No account. No noise. Just a little room for prayer.</p></div>
+          <div class="intro"><p class="eyebrow">ALWAYS WITH YOU</p><h1 id="about-heading">A small, sacred space.</h1><p>No account required. Just a little room for prayer.</p></div>
           <div class="guidance panel">
             <div id="native-install-guidance" hidden><h2>Your Android companion.</h2><p>This test app includes every prayer, Scripture reading, and calendar file for offline use. It does not need website hosting or a Google Play login.</p><p>Its saved journal is separate from Chrome and from the PC preview. To move existing prayers and notes, export a backup in the old app and import that JSON file in <strong>Your journal</strong> here.</p><p>This is a separately signed test build, not a Play Store release. A later build may require uninstalling this one. <strong>Export your backup before uninstalling or clearing app data</strong>; uninstalling can erase your journal. Android automatic cloud backup and device transfer are disabled for this app. Save your own private backups regularly.</p></div>
             <div id="web-install-guidance"><h2>Make it your own.</h2><p>Open the hosted app in your phone's browser, then add it to your home screen. After your first successful online visit, the app is available offline on this device.</p>
@@ -257,7 +272,7 @@
             <hr><h2>Praying the rosary.</h2><p>Begin with the Sign of the Cross, the Apostles' Creed, one Our Father, three Hail Marys for faith, hope, and charity, and the Glory Be. Each of the five mysteries has one Our Father, ten Hail Marys, and a Glory Be, followed by the optional Fatima prayer. Close with the Hail Holy Queen, the concluding prayer, and the Sign of the Cross.</p>
             <p>Joyful mysteries are suggested on Monday and Saturday; Sorrowful on Tuesday and Friday; Glorious on Wednesday and Sunday; Luminous on Thursday. Seasonal and personal customs may differ. You can choose any set.</p>
             <p>The English prayers here use traditional public-domain wording, including the traditional Apostles' Creed, not a modern copyrighted liturgical translation. The four mystery sets follow the customary Catholic rosary. The optional Fatima prayer is a traditional devotional prayer.</p>
-            <hr><h2>Private, by design.</h2><p>Your history, place, and notes stay in this browser's local storage. Nothing is sent to a server. They do not automatically sync between devices or between a browser and an installed app. Private browsing, uninstalling, clearing site data, or switching the site's address may remove or separate them. Export a backup before making changes.</p>
+            <hr><h2>Private, by design.</h2><p>Your device journal stays in this browser. On the official hosted app, you can separately enable Microsoft account sync in Profile. Signing in alone does not upload the device journal. The Android test app does not sync. Clearing site data or uninstalling can erase local journals and changes that have not synced. Export a backup before making changes.</p>
             <p>Backups contain your notes in plain text: keep them somewhere private. Imports are validated and merged without deleting your existing entries. If an imported note differs from an existing note with the same ID, both are kept.</p>
             <p id="offline-status" role="status" class="small muted"></p>
           </div>

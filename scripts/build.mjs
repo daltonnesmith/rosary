@@ -10,6 +10,7 @@ for (const file of ['index.html', 'manifest.webmanifest', 'sw.js', 'SCRIPTURE-LI
   await copyFile(path.join(root, file), path.join(out, file));
 }
 await copyFile(path.join(root, 'src/mystery-passages.js'), path.join(out, 'src/mystery-passages.js'));
+for (const file of ['src/account.js', 'src/account-ui.js']) await copyFile(path.join(root, file), path.join(out, file));
 for (const file of ['src/profile.js','icons/profile-windows.svg','icons/awards.svg']) await copyFile(path.join(root,file),path.join(out,file));
 for (const id of ['1952.110','1954.834','1916.802','1950.251','1931.449']) await copyFile(path.join(root,'icons',`${id}.jpg`),path.join(out,'icons',`${id}.jpg`));
 await mkdir(path.join(out, 'chapel'), {recursive:true});

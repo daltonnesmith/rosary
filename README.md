@@ -1,12 +1,12 @@
 # Stillwater
 
-A quiet, classy rosary companion for phone and desktop. Ivory, deep green, and muted gold; no account, ads, analytics, external fonts, or backend. Your prayer history and notes stay on your device.
+A quiet rosary companion for phone and desktop. No account is required. Use it offline, or sign in on the hosted website to keep a private, optional cloud copy of your journal and progress. No ads or analytics.
 
 ## What it does
 
 Collectible art decorates the Profile card only; the chapel keeps the stained-glass window for each decade and your equipped beads. In **Calendar**, select a past or current date to record or undo Mass and Confession check-ins. Lenten dates, starting on Ash Wednesday, offer a seven-day prayer challenge. These private milestones do not earn rosary points; JSON backups include the check-in dates and activities.
 
-**Calendar → Fasting:** Select a date to join a personal fast with an end date, or choose Lent, Ash Wednesday, or Good Friday when offered. A diamond marks the start of a built-in fast. Optionally name what you are setting aside. Tap **I kept this fast** on each day you choose to record; tap again to undo. Seven distinct days during one Lent earn that year's Lent medal. Ash Wednesday and Good Friday each have a one-day annual medal; personal fasts earn medals at one and seven distinct days. These are voluntary devotional milestones, separate from the Lenten prayer challenge and from Church fasting obligations. Intentions and dates stay on your device and are included in exported journal backups.
+**Calendar → Fasting:** Select a date to join a personal fast with an end date, or choose Lent, Ash Wednesday, or Good Friday when offered. A diamond marks the start of a built-in fast. Optionally name what you are setting aside. Tap **I kept this fast** on each day you choose to record; tap again to undo. Seven distinct days during one Lent earn that year's Lent medal. Ash Wednesday and Good Friday each have a one-day annual medal; personal fasts earn medals at one and seven distinct days. These are voluntary devotional milestones, separate from the Lenten prayer challenge and from Church fasting obligations. Intentions and dates are included in exported journal backups and, only if enabled, your cloud profile.
 
 
 In the Profile award catalog, expand **Chi-Rho · A year of prayer** to see cumulative prayer-day milestones in order. Multiple rosaries on one date count as one day here, and breaks do not reset the count.
@@ -102,7 +102,7 @@ Open [Stillwater on the web](https://yellow-coast-010c33a0f.3.azurestaticapps.ne
 
 The owner has made this repository **public** so friends can download the Android APK without a GitHub account. Source code, commit history and published releases are public; saved notes and prayer history remain on each device. Making the repository public does not automatically deploy a website.
 
-The website uses Azure Static Web Apps Free. The public host serves the app files, not private journals. Use the same installed PWA or browser profile and URL across releases; normal deployments do not erase local progress.
+The website uses Azure Static Web Apps Free with a managed Functions API. Only the app files are public. The optional profile service uses a separate, metered Standard LRS storage account; no paid website tier is required. Normal deployments do not erase local progress.
 
 Build with `npm run build`, then publish **the contents of `dist`** as the site root. The app uses relative paths throughout: both a domain root and a repository path such as `/rosary/` work without recompilation. Keep the trailing slash on the app's base URL. Serve `.webmanifest` as `application/manifest+json`, JavaScript as JavaScript, and `sw.js` without long-lived HTTP caching. Do not rewrite missing static files to the HTML shell. HTTPS is required except on localhost.
 
@@ -110,7 +110,11 @@ The **Publish Stillwater website** workflow deploys `dist` after checks pass on 
 
 ## Privacy, storage, and recovery
 
-The app stores a versioned JSON document under the stable localStorage key `stillwater-v1`. The current document format is version 2; version-1 rosary data and backups are migrated without changing existing notes, rosary history or place. Notes and history are separate from the service-worker cache; app-cache updates never clear localStorage. There is no synchronization, account, network API, telemetry, or remote data store.
+Guest data stays in browser storage (`stillwater-v1`), separate from the service-worker cache. App updates do not clear it. On the hosted website open **Profile** to sign in with Microsoft and opt into cloud saving. Use the same Microsoft account on the other device. The previously released Android test APK remains local-only; use its JSON export to move data to the hosted app.
+
+The private cloud copy includes journal notes, fasting intentions, calendar check-ins, prayer history and current rosary and Scripture progress. It does not go in GitHub or the public site. Microsoft handles authentication; Stillwater does not receive passwords. The API scopes each blob to the authenticated user and checks its version before changes. Azure encrypts storage at rest; this is **not** end-to-end encryption. The hosting administrator has administrative access. You can delete the cloud copy from Profile; exported files and other devices' local copies are separate.
+
+For deployment, create a private `profiles` blob container with anonymous blob access disabled. Set `STILLWATER_STORAGE_CONNECTION` in the Static Web App's server-side application settings only. Do not put that connection string in client files, version control, or build artifacts.
 
 Data belongs to this browser profile and site origin. Clearing browser/site data, private browsing, uninstalling, storage eviction, or using another device/browser/origin may lose or separate it. On iOS, an installed app may have storage separate from the browser. **Export a backup regularly**, especially before updates, moving hosts, or uninstalling.
 
