@@ -96,17 +96,17 @@ First visit the **hosted app's HTTPS URL**, not its GitHub repository page. Once
 - **Android:** Chrome menu → **Install app** or **Add to Home screen**.
 - **PC / Mac:** Chrome or Edge's address-bar install icon or browser **Install app** menu. Other browsers can use the website normally.
 
-There is no verified live deployment included merely by pushing this repository. A build or GitHub Actions artifact is not an installable HTTPS address.
+Open [Stillwater on the web](https://yellow-coast-010c33a0f.3.azurestaticapps.net/) to use or install the PWA. To move your history from the Android test app, export a backup there and import it in the installed PWA before you start a new rosary.
 
 ## Website hosting
 
 The owner has made this repository **public** so friends can download the Android APK without a GitHub account. Source code, commit history and published releases are public; saved notes and prayer history remain on each device. Making the repository public does not automatically deploy a website.
 
-With the owner's approval, the browser/PWA version can be deployed through GitHub Pages or another static HTTPS host. The app does not upload notes to that host; access logs are controlled by the chosen host. Password-protected/private hosting is a separate hosting choice.
+The website uses Azure Static Web Apps Free. The public host serves the app files, not private journals. Use the same installed PWA or browser profile and URL across releases; normal deployments do not erase local progress.
 
 Build with `npm run build`, then publish **the contents of `dist`** as the site root. The app uses relative paths throughout: both a domain root and a repository path such as `/rosary/` work without recompilation. Keep the trailing slash on the app's base URL. Serve `.webmanifest` as `application/manifest+json`, JavaScript as JavaScript, and `sw.js` without long-lived HTTP caching. Do not rewrite missing static files to the HTML shell. HTTPS is required except on localhost.
 
-No hosting account, paid plan or deployment is configured by the app. A Pages deployment workflow can be added when website hosting is requested; the APK download does not require it.
+The **Publish Stillwater website** workflow deploys `dist` after checks pass on `main`, using the encrypted repository secret `STILLWATER_AZURE_DEPLOY_TOKEN`. The APK is distributed separately.
 
 ## Privacy, storage, and recovery
 
